@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="NLog" Version="4.5.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AwesomeChatBot">
+      <HintPath>..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.DiscordWrapper\bin\Release\netcoreapp2.1\AwesomeChatBot.dll</HintPath>
+    </Reference>
+    <Reference Include="AwesomeChatBot.DiscordWrapper">
+      <HintPath>..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.DiscordWrapper\bin\Release\netcoreapp2.1\AwesomeChatBot.DiscordWrapper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
