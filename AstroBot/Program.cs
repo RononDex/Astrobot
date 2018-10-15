@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using NLog.Extensions.Logging;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace AstroBot
 {
@@ -14,38 +15,36 @@ namespace AstroBot
     {
         static void Main(string[] args)
         {
+            // Register a global exception handler
+            System.AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
+
+            // Async wrapper of Main method
+            new Program().MainAsync().GetAwaiter().GetResult();
+        }
+
+        public async Task MainAsync()
+        {
             NLog.LogManager.LoadConfiguration("nlog.config");
 
-            var services = new ServiceCollection();
-            services.AddLogging();
-            services.AddOptions();
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info("---------------------------------------------------------");
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info("----------------- Launching Astro bot -------------------");
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info("---------------------------------------------------------");
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info("");
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info("NLog logging system loaded");
 
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables();
+            var discordBot = new DiscordAstroBot();
 
-            IConfigurationRoot configuration = builder.Build();
-            
-            // Setup the bot framework
-            var discordSettings = new DiscordSettings();
-            configuration.GetSection("DiscordSettings").Bind(discordSettings);
+            await Task.Delay(-1);
+        }
 
-            var discordWrapper = new DiscordWrapper(File.ReadAllText(discordSettings.DiscordTokenPath));
-
-            var chatbotSettings = new AwesomeChatBot.AwesomeChatBotSettings();
-            configuration.GetSection("ChatBotSettings").Bind(chatbotSettings);
-
-            services.AddSingleton<ApiWrapper>(discordWrapper);
-
-            // Setup the logging framework
-            var provider = services.BuildServiceProvider();
-
-            var serviceProvider = services.BuildServiceProvider();
-            var factory = provider.GetService<ILoggerFactory>();
-            factory.AddNLog();
-
-            var chatbotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, provider.GetService<ILoggerFactory>(), chatbotSettings);
+        /// <summary>
+        /// Global exception handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
+        {
+            NLog.LogManager.GetLogger("AstroBot").Fatal($"Unhandled exception catched by global handler: {e.ExceptionObject.ToString()}");
         }
     }
 }

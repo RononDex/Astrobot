@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="2.0.0-beta" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.1.1" />
@@ -19,12 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AwesomeChatBot">
-      <HintPath>..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.DiscordWrapper\bin\Release\netcoreapp2.1\AwesomeChatBot.dll</HintPath>
-    </Reference>
-    <Reference Include="AwesomeChatBot.DiscordWrapper">
-      <HintPath>..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.DiscordWrapper\bin\Release\netcoreapp2.1\AwesomeChatBot.DiscordWrapper.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.DiscordWrapper\AwesomeChatBot.DiscordWrapper.csproj">
+      <Private>true</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.csproj">
+      <Private>true</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
