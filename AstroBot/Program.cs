@@ -15,6 +15,9 @@ namespace AstroBot
     {
         static void Main(string[] args)
         {
+            // Set console width
+            Console.WindowWidth = 200;
+
             // Register a global exception handler
             System.AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
 
@@ -22,6 +25,10 @@ namespace AstroBot
             new Program().MainAsync().GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Async main function serves as entry point of the app
+        /// </summary>
+        /// <returns></returns>
         public async Task MainAsync()
         {
             NLog.LogManager.LoadConfiguration("nlog.config");
