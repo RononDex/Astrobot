@@ -16,7 +16,7 @@ namespace AstroBot
         static void Main(string[] args)
         {
             // Set console width
-            Console.WindowWidth = 200;
+            Console.WindowWidth = 190;
 
             // Register a global exception handler
             System.AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
