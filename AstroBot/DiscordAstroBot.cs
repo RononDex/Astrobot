@@ -83,10 +83,5 @@ namespace AstroBot
             factory = ServiceProvider.GetService<ILoggerFactory>();
             factory.AddNLog();
         }
-
-        public void GlobalExceptionHandler(object sender, UnhandledExceptionEventArgs e)
-        {
-
-        }
     }
 }

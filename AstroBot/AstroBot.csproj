@@ -20,10 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.DiscordWrapper\AwesomeChatBot.DiscordWrapper.csproj">
+    <ProjectReference Include="..\..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.DiscordWrapper\AwesomeChatBot.DiscordWrapper.csproj">
       <Private>true</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.csproj">
+    <ProjectReference Include="..\..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.csproj">
       <Private>true</Private>
     </ProjectReference>
   </ItemGroup>

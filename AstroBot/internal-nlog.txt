@@ -1,0 +1,25 @@
+2018-10-19 13:13:46.8557 Info Message Template Auto Format enabled
+2018-10-19 13:13:46.9711 Info Adding target File Target[allfile]
+2018-10-19 13:13:46.9711 Info Adding target ColoredConsole Target[c]
+2018-10-19 13:13:46.9711 Info Adding target Null Target[blackhole]
+2018-10-19 13:13:46.9942 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\AstroBot\AstroBot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-10-19 13:13:47.0076 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-10-19 13:13:47.0076 Info Found 66 configuration items
+2018-10-19 13:16:50.7602 Info Message Template Auto Format enabled
+2018-10-19 13:16:50.8317 Info Adding target File Target[allfile]
+2018-10-19 13:16:50.8317 Info Adding target ColoredConsole Target[c]
+2018-10-19 13:16:50.8456 Info Adding target Null Target[blackhole]
+2018-10-19 13:16:50.8456 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\AstroBot\AstroBot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-10-19 13:16:50.8681 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-10-19 13:16:50.8794 Info Found 66 configuration items
+2018-10-19 13:16:56.0813 Info Shutting down logging...
+2018-10-19 13:16:56.1120 Info Logger has been shut down.
+2018-10-19 13:45:35.5323 Info Message Template Auto Format enabled
+2018-10-19 13:45:35.6492 Info Adding target File Target[allfile]
+2018-10-19 13:45:35.6669 Info Adding target ColoredConsole Target[c]
+2018-10-19 13:45:35.6669 Info Adding target Null Target[blackhole]
+2018-10-19 13:45:35.6842 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\AstroBot\AstroBot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-10-19 13:45:35.7050 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-10-19 13:45:35.7207 Info Found 66 configuration items
+2018-10-19 13:46:36.3408 Info Shutting down logging...
+2018-10-19 13:46:36.3666 Info Logger has been shut down.
