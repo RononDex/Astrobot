@@ -10,12 +10,17 @@ namespace AstroBot.Commands
     /// <summary>
     /// A commend for testing
     /// </summary>
-    public class TestCommand : IRegexCommand
+    public class TestCommand : AwesomeChatBot.Commands.Command, IRegexCommand
     {
         /// <summary>
         /// A list of regex patterns that trigger the command
         /// </summary>
-        public List<string> Regex => new List<string>() { "test (?'TestParam'.*\w)" };
+        public List<string> Regex => new List<string>() { "test (?'TestParam'.*\\w)" };
+
+        /// <summary>
+        ///  Unique name of the command
+        /// </summary>
+        public override string Name => "Test";
 
         /// <summary>
         /// Execute the command
@@ -24,9 +29,15 @@ namespace AstroBot.Commands
         /// <param name="regexMatch"></param>
         /// <returns></returns>
         public Task<bool> ExecuteRegexCommand(RecievedMessage recievedMessage, Match regexMatch) {
-            var testParam = regexMatch.Groups["TestParam"].Value;
+            return Task<bool>.Factory.StartNew(() => {
 
-            recievedMessage
+                var testParam = regexMatch.Groups["TestParam"].Value;
+
+                recievedMessage.Channel.SendMessageAsync(new SendMessage($"IT'S WORKING!!! You entered {testParam}")).Wait();
+
+                return true;
+            });
+
         }
     }
 }

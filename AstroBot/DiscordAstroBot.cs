@@ -28,7 +28,9 @@ namespace AstroBot
             Initialize();
 
             // Register commands
-
+            var botFramework = this.ServiceProvider.GetRequiredService<AwesomeChatBot.AwesomeChatBot>();
+            botFramework.RegisterCommand(new Commands.TestCommand());
+            botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
         }
 
         /// <summary>
