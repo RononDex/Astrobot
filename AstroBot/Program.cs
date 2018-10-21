@@ -15,6 +15,7 @@ namespace AstroBot
     {
         static void Main(string[] args)
         {
+            // Not every host console supports setting window width
             try {
                 // Set console width
                 Console.WindowWidth = 190;

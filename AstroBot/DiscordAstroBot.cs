@@ -70,20 +70,20 @@ namespace AstroBot
 
             // Create and store a service provider
             this.ServiceProvider = services.BuildServiceProvider();
-            var factory = ServiceProvider.GetService<ILoggerFactory>();
-            factory.AddNLog();
+            var loggerFactory = ServiceProvider.GetService<ILoggerFactory>();
+            loggerFactory.AddNLog();
 
             // Setup bot framework
-            var discordWrapper = new DiscordWrapper(File.ReadAllText(discordSettings.DiscordTokenPath), factory);
-            var chatbotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, factory, chatbotSettings);
+            var discordWrapper = new DiscordWrapper(File.ReadAllText(discordSettings.DiscordTokenPath), loggerFactory);
+            var chatbotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, loggerFactory, chatbotSettings);
             
             services.AddSingleton<ApiWrapper>(discordWrapper);
             services.AddSingleton<AwesomeChatBot.AwesomeChatBot>(chatbotFramework);
 
             // Create and store a service provider
             this.ServiceProvider = services.BuildServiceProvider();
-            factory = ServiceProvider.GetService<ILoggerFactory>();
-            factory.AddNLog();
+            loggerFactory = ServiceProvider.GetService<ILoggerFactory>();
+            loggerFactory.AddNLog();
         }
     }
 }
