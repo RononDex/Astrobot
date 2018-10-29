@@ -1,5 +1,6 @@
 ﻿using AwesomeChatBot.ApiWrapper;
 using AwesomeChatBot.DiscordWrapper;
+using AstroBot.Objects.Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,15 +21,21 @@ namespace AstroBot
         /// <summary>
         /// The DI service provider
         /// </summary>
-        public ServiceProvider ServiceProvider { get; private set; }
+        public static ServiceProvider ServiceProvider { get; private set; }
 
-        public DiscordAstroBot()
+        /// <summary>
+        /// Logger factory used to create logger instances
+        /// </summary>
+        /// <value></value>
+        public static ILoggerFactory LoggerFactory { get; set; }
+
+        public void Initialize()
         {
             // Initialize the DI provider, configs and bot framework
-            Initialize();
+            InitializeFramework();
 
             // Register commands
-            var botFramework = this.ServiceProvider.GetRequiredService<AwesomeChatBot.AwesomeChatBot>();
+            var botFramework = ServiceProvider.GetRequiredService<AwesomeChatBot.AwesomeChatBot>();
             botFramework.RegisterCommand(new Commands.TestCommand());
             botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
         }
@@ -36,9 +43,9 @@ namespace AstroBot
         /// <summary>
         /// Initializes the bot framework, loads configs etc.
         /// </summary>
-        public void Initialize()
+        private void InitializeFramework()
         {
-            NLog.LogManager.GetLogger(this.GetType().FullName).Info("Initialising bot...");
+            Log<DiscordAstroBot>.Info("Initialising bot...");
 
             // Set up DI (dependency injection)
             var services = new ServiceCollection()
@@ -62,28 +69,32 @@ namespace AstroBot
             if (!File.Exists(discordSettings.DiscordTokenPath))
                 throw new ArgumentException($"The discord token file {discordSettings.DiscordTokenPath} does not exist!");
 
-            var chatbotSettings = new AwesomeChatBot.AwesomeChatBotSettings();
-            configuration.GetSection("AwesomeChatBotSettings").Bind(chatbotSettings);
+            var awesomeChatbotSettings = new AwesomeChatBot.AwesomeChatBotSettings();
+            configuration.GetSection("AwesomeChatBotSettings").Bind(awesomeChatbotSettings);
+
+            var botSettings = new Objects.Config.BotSettings();
+            configuration.GetSection("BotSettings").Bind(botSettings);
 
             NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - DiscordSettings.TokenPath:                 {discordSettings.DiscordTokenPath}");
-            NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - AwesomeChatBotSettings.ConfigFolderPath:   {chatbotSettings.ConfigFolderPath}");
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - AwesomeChatBotSettings.ConfigFolderPath:   {awesomeChatbotSettings.ConfigFolderPath}");
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - BotSettings.GoogleGeoLocationTokenPath:    {botSettings.GoogleGeoLocationTokenPath}");
 
             // Create and store a service provider
-            this.ServiceProvider = services.BuildServiceProvider();
-            var loggerFactory = ServiceProvider.GetService<ILoggerFactory>();
-            loggerFactory.AddNLog();
+            ServiceProvider = services.BuildServiceProvider();
+            var loggerFactoryTmp = ServiceProvider.GetService<ILoggerFactory>();
+            loggerFactoryTmp.AddNLog();
 
             // Setup bot framework
-            var discordWrapper = new DiscordWrapper(File.ReadAllText(discordSettings.DiscordTokenPath), loggerFactory);
-            var chatbotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, loggerFactory, chatbotSettings);
+            var discordWrapper = new DiscordWrapper(File.ReadAllText(discordSettings.DiscordTokenPath), loggerFactoryTmp);
+            var chatbotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, loggerFactoryTmp, awesomeChatbotSettings);
             
             services.AddSingleton<ApiWrapper>(discordWrapper);
             services.AddSingleton<AwesomeChatBot.AwesomeChatBot>(chatbotFramework);
 
             // Create and store a service provider
-            this.ServiceProvider = services.BuildServiceProvider();
-            loggerFactory = ServiceProvider.GetService<ILoggerFactory>();
-            loggerFactory.AddNLog();
+            ServiceProvider = services.BuildServiceProvider();
+            LoggerFactory = ServiceProvider.GetService<ILoggerFactory>();
+            LoggerFactory.AddNLog();
         }
     }
 }
