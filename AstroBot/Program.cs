@@ -43,8 +43,12 @@ namespace AstroBot
             NLog.LogManager.GetLogger(this.GetType().FullName).Info("");
             NLog.LogManager.GetLogger(this.GetType().FullName).Info("NLog logging system loaded");
 
+            // Initialize globals
+            Globals.InitGlobals();
+
             new DiscordAstroBot().Initialize();
 
+            // Wait indefinitly so the bot can run in the background
             await Task.Delay(-1);
         }
 

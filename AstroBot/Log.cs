@@ -12,7 +12,7 @@ namespace AstroBot
         /// Log as info
         /// </summary>
         public static void Info(string message){
-            DiscordAstroBot.LoggerFactory.CreateLogger(typeof(T).FullName).LogInformation(message);
+            Globals.LoggerFactory.CreateLogger(typeof(T).FullName).LogInformation(message);
         }
     }
 }

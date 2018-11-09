@@ -22,13 +22,7 @@ namespace AstroBot
         /// The DI service provider
         /// </summary>
         public static ServiceProvider ServiceProvider { get; private set; }
-
-        /// <summary>
-        /// Logger factory used to create logger instances
-        /// </summary>
-        /// <value></value>
-        public static ILoggerFactory LoggerFactory { get; set; }
-
+        
         public void Initialize()
         {
             // Initialize the DI provider, configs and bot framework
@@ -92,9 +86,7 @@ namespace AstroBot
             services.AddSingleton<AwesomeChatBot.AwesomeChatBot>(chatbotFramework);
 
             // Create and store a service provider
-            ServiceProvider = services.BuildServiceProvider();
-            LoggerFactory = ServiceProvider.GetService<ILoggerFactory>();
-            LoggerFactory.AddNLog();
+            ServiceProvider = services.BuildServiceProvider();            
         }
     }
 }

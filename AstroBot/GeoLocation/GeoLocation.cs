@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using Newtonsoft.Json;
+using AstroBot.Objects.Config;
 
 namespace AstroBot.GeoLocation
 {
@@ -19,7 +20,8 @@ namespace AstroBot.GeoLocation
         {
             Log<DiscordAstroBot>.Info($"Requesting GeoLocation for {address}");
 
-            var geoLocationKey = File.ReadAllLines(ConfigurationManager.AppSettings["GoogleGeoLocationApiKey"]).FirstOrDefault();
+            var settings       = Globals.ServiceProvider.GetService(typeof(BotSettings)) as BotSettings;
+            var geoLocationKey = settings.GoogleGeoLocationTokenPath;
             var webRequest     = WebRequest.Create(string.Format("https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}", WebUtility.UrlEncode(address), geoLocationKey));
             var response       = (HttpWebResponse)webRequest.GetResponse();
 
