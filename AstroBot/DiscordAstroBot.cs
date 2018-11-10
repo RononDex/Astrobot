@@ -22,7 +22,6 @@ namespace AstroBot
         /// The DI service provider
         /// </summary>
         public static ServiceProvider ServiceProvider { get; private set; }
-        
         public void Initialize()
         {
             // Initialize the DI provider, configs and bot framework
@@ -30,7 +29,10 @@ namespace AstroBot
 
             // Register commands
             var botFramework = ServiceProvider.GetRequiredService<AwesomeChatBot.AwesomeChatBot>();
+            
+
             botFramework.RegisterCommand(new Commands.TestCommand());
+            botFramework.RegisterCommand(new Commands.LocationCommand());
             botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
         }
 

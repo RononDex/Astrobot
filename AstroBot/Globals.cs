@@ -43,6 +43,7 @@ namespace AstroBot
             NLog.LogManager.GetLogger("AstroBot.Globals").Info("Reading settings...");
             var botSettings = new Objects.Config.BotSettings();
             configuration.GetSection("BotSettings").Bind(botSettings);
+            services.AddSingleton(botSettings);
 
             // Create service provider
             ServiceProvider = services.BuildServiceProvider();
