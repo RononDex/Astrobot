@@ -278,3 +278,54 @@
 2018-11-10 14:03:13.1579 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\Astrobot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
 2018-11-10 14:03:13.1995 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
 2018-11-10 14:03:13.2293 Info Found 66 configuration items
+2018-11-10 16:57:17.7349 Info Message Template Auto Format enabled
+2018-11-10 16:57:17.8145 Info Adding target File Target[allfile]
+2018-11-10 16:57:17.8254 Info Adding target ColoredConsole Target[c]
+2018-11-10 16:57:17.8254 Info Adding target Null Target[blackhole]
+2018-11-10 16:57:17.8254 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\Astrobot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 16:57:17.8449 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-11-10 16:57:17.8449 Info Found 66 configuration items
+2018-11-10 16:57:46.0676 Info Message Template Auto Format enabled
+2018-11-10 16:57:46.1345 Info Adding target File Target[allfile]
+2018-11-10 16:57:46.1473 Info Adding target ColoredConsole Target[c]
+2018-11-10 16:57:46.1473 Info Adding target Null Target[blackhole]
+2018-11-10 16:57:46.1572 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\Astrobot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 16:57:46.1683 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-11-10 16:57:46.1683 Info Found 66 configuration items
+2018-11-10 16:58:17.6947 Info Message Template Auto Format enabled
+2018-11-10 16:58:17.7534 Info Adding target File Target[allfile]
+2018-11-10 16:58:17.7641 Info Adding target ColoredConsole Target[c]
+2018-11-10 16:58:17.7641 Info Adding target Null Target[blackhole]
+2018-11-10 16:58:17.7641 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\Astrobot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 16:58:17.7830 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-11-10 16:58:17.7830 Info Found 66 configuration items
+2018-11-10 17:01:29.3980 Info Message Template Auto Format enabled
+2018-11-10 17:01:29.4636 Info Adding target File Target[allfile]
+2018-11-10 17:01:29.4745 Info Adding target ColoredConsole Target[c]
+2018-11-10 17:01:29.4745 Info Adding target Null Target[blackhole]
+2018-11-10 17:01:29.4833 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\Astrobot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 17:01:29.4833 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-11-10 17:01:29.5034 Info Found 66 configuration items
+2018-11-10 17:01:38.8737 Info Message Template Auto Format enabled
+2018-11-10 17:01:38.9366 Info Adding target File Target[allfile]
+2018-11-10 17:01:38.9366 Info Adding target ColoredConsole Target[c]
+2018-11-10 17:01:38.9366 Info Adding target Null Target[blackhole]
+2018-11-10 17:01:38.9563 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\Astrobot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 17:01:38.9669 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-11-10 17:01:38.9669 Info Found 66 configuration items
+2018-11-10 17:01:39.6381 Info Shutting down logging...
+2018-11-10 17:01:39.6861 Info Logger has been shut down.
+2018-11-10 17:01:49.5697 Info Message Template Auto Format enabled
+2018-11-10 17:01:49.6336 Info Adding target File Target[allfile]
+2018-11-10 17:01:49.6451 Info Adding target ColoredConsole Target[c]
+2018-11-10 17:01:49.6451 Info Adding target Null Target[blackhole]
+2018-11-10 17:01:49.6541 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\Astrobot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 17:01:49.6541 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-11-10 17:01:49.6729 Info Found 66 configuration items
+2018-11-10 20:39:39.7560 Info Message Template Auto Format enabled
+2018-11-10 20:39:39.8391 Info Adding target File Target[allfile]
+2018-11-10 20:39:39.8520 Info Adding target ColoredConsole Target[c]
+2018-11-10 20:39:39.8520 Info Adding target Null Target[blackhole]
+2018-11-10 20:39:39.8613 Info Configured from an XML element in C:\Users\tinoh\source\repos\AstroBotDev\Astrobot\AstroBot\bin\Debug\netcoreapp2.1\nlog.config...
+2018-11-10 20:39:39.8737 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: blackhole
+2018-11-10 20:39:39.8737 Info Found 66 configuration items

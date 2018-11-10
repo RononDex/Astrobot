@@ -11,6 +11,26 @@ namespace AstroBot.GeoLocation
     /// </summary>
     static class GeoLocation
     {
+        private static string _googleApiKey;
+
+        /// <summary>
+        /// Keep the Api key in memory, to reduce I/O and increase performance
+        /// </summary>
+        /// <value></value>
+        private static string GoogleApiKey {
+            get { 
+
+                // If Api Key was not loaded yet, read it from the settings file
+                if (string.IsNullOrEmpty(_googleApiKey)) {
+                    var settings       = Globals.ServiceProvider.GetService(typeof(BotSettings)) as BotSettings;
+                    _googleApiKey = File.ReadAllText(settings.GoogleGeoLocationTokenPath);
+                }
+
+                return _googleApiKey;
+            }
+        }
+
+
         /// <summary>
         /// Gets the lat/lng coordinates for a given place from google api
         /// </summary>
@@ -19,10 +39,8 @@ namespace AstroBot.GeoLocation
         public static Objects.LatLngLocation FindLocation(string address)
         {
             Log<DiscordAstroBot>.Info($"Requesting GeoLocation for {address}");
-
-            var settings       = Globals.ServiceProvider.GetService(typeof(BotSettings)) as BotSettings;
-            var geoLocationKey = File.ReadAllText(settings.GoogleGeoLocationTokenPath);
-            var webRequest     = WebRequest.Create(string.Format("https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}", WebUtility.UrlEncode(address), geoLocationKey));
+           
+            var webRequest     = WebRequest.Create(string.Format("https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}", WebUtility.UrlEncode(address), GoogleApiKey));
             var response       = (HttpWebResponse)webRequest.GetResponse();
 
             string text;

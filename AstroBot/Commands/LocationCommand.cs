@@ -39,7 +39,11 @@ namespace AstroBot.Commands
                     return true;
                 }
 
-                recievedMessage.Channel.SendMessageAsync(new SendMessage($"I found the following location for \"{location}\":\r\n```\r\nName:\t{geoLocation.Name}\r\nLat:\t{geoLocation.Lat}\r\nLng:\t{geoLocation.Lng}```"));
+                recievedMessage.Channel.SendMessageAsync(new SendMessage(   $"I found the following location for \"{location}\":\r\n" + 
+                                                                            $"```\r\n" + 
+                                                                            $"Name:   {geoLocation.Name}\r\n" + 
+                                                                            $"Lat:    {geoLocation.Lat}\r\n" + 
+                                                                            $"Lng:    {geoLocation.Lng}```"));
 
                 return true;
             });
