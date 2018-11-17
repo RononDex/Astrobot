@@ -9,7 +9,7 @@ namespace AstroBot.Commands
     /// <summary>
     /// Command that can get the lat / lng coordiantes for any place on earth
     /// </summary>
-    public class LocationCommand : AwesomeChatBot.Commands.Command, IRegexCommand
+    public class LocationCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ICommandDescription
     {
         /// <summary>
         /// The name of the command
@@ -21,6 +21,9 @@ namespace AstroBot.Commands
         /// </summary>
         /// <returns></returns>
         public List<string> Regex => new List<string>(){ @"Where is (?'SearchLocation'.*\w)(\?)?" };
+
+        public string Description => "Gets the Lat / Lng coordinates of a certain location";
+        public string ExampleCall => "Where is Zurich";
 
         /// <summary>
         /// Execute the command
@@ -40,10 +43,9 @@ namespace AstroBot.Commands
                 }
 
                 recievedMessage.Channel.SendMessageAsync(new SendMessage(   $"I found the following location for \"{location}\":\r\n" + 
-                                                                            $"```\r\n" + 
-                                                                            $"Name:   {geoLocation.Name}\r\n" + 
+                                                                            recievedMessage.ApiWrapper.MessageFormatter.Quote( $"Name:   {geoLocation.Name}\r\n" + 
                                                                             $"Lat:    {geoLocation.Lat}\r\n" + 
-                                                                            $"Lng:    {geoLocation.Lng}```"));
+                                                                            $"Lng:    {geoLocation.Lng}")));
 
                 return true;
             });
