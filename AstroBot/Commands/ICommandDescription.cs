@@ -5,6 +5,8 @@ namespace AstroBot.Commands
     /// </summary>
     public interface ICommandDescription
     {
+        string Name { get; }
+
         string Description { get; }
 
         string ExampleCall { get;  }

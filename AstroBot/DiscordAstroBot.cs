@@ -33,6 +33,7 @@ namespace AstroBot
 
             botFramework.RegisterCommand(new Commands.TestCommand());
             botFramework.RegisterCommand(new Commands.LocationCommand());
+            botFramework.RegisterCommand(new Commands.HelpCommand());
             botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
         }
 
