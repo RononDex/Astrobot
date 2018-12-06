@@ -15,7 +15,7 @@ namespace AstroBot.Commands
 
         public string Description => "Displays this help";
 
-        public string ExampleCall => "help";
+        public string[] ExampleCalls => new [] { "Help" };
 
         public List<string> Regex => new List<string>() {
             "help"
@@ -45,7 +45,13 @@ namespace AstroBot.Commands
 
                             // Write help output for the command
                             var formatter = recievedMessage.ApiWrapper.MessageFormatter;
-                            var message = $"{formatter.Bold(command.Name)}: {command.Description}\r\nExample(s):\r\n{formatter.Quote("@AstroBot " + command.ExampleCall)}";
+                            var message = $"{formatter.Bold(command.Name)}: {command.Description}\r\nExample(s):\r\n";
+                            var examples = string.Empty;
+                            foreach (var exampleCall in command.ExampleCalls){
+                                examples += "@AstroBot " + exampleCall + "\r\n";
+                            }
+
+                            message += formatter.Quote(examples);
 
                             recievedMessage.Channel.SendMessageAsync(new SendMessage(message)).Wait();
                         }

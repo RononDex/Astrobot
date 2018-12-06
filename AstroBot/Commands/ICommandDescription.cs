@@ -9,6 +9,6 @@ namespace AstroBot.Commands
 
         string Description { get; }
 
-        string ExampleCall { get;  }
+        string[] ExampleCalls { get;  }
     }
 }

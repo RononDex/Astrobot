@@ -23,7 +23,7 @@ namespace AstroBot.Commands
         public List<string> Regex => new List<string>(){ @"Where is (?'SearchLocation'.*\w)(\?)?" };
 
         public string Description => "Gets the Lat / Lng coordinates of a certain location";
-        public string ExampleCall => "Where is Zurich";
+        public string[] ExampleCalls => new [] { "Where is Zurich" };
 
         /// <summary>
         /// Execute the command
