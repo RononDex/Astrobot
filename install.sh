@@ -23,6 +23,7 @@ echo -e "-----------------------------------------------------$NC"
 
 cd $sourcePath
 
+dotnet restore
 dotnet publish --configuration Release
 
 # ---------------------------------------------
