@@ -1,0 +1,6 @@
+[Unit]
+Description=AstroBot
+
+# Network has to be online
+Wants=network-online.target
+After=network-online.target
