@@ -69,7 +69,7 @@ else
     randompw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
     sudo useradd $serviceUser
     echo $serviceUser:$randompw | chpasswd
-    sudo usermod -u 920 <username>     # Change user id to a system account, so it does not show up on display managers
+    sudo usermod -u 920 $serviceUser     # Change user id to a system account, so it does not show up on display managers
 fi
 
 # Set permissions
