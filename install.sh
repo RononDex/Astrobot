@@ -39,7 +39,7 @@ echo -e "$GREEN Installing Astrobot into the folder '$installPath' $NC"
 sudo mkdir -p $installPath
 
 # Copy the files
-sudo cp -R bin/Release/netcoreapp2.1/publish $installPath/
+sudo cp -R bin/Release/netcoreapp2.2/publish $installPath/
 
 echo -e "$GREEN Setting up systemd service ...' $NC"
 
