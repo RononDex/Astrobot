@@ -39,7 +39,7 @@ echo -e "$GREEN Installing Astrobot into the folder '$installPath' $NC"
 sudo mkdir -p $installPath
 
 # Copy the files
-sudo cp bin/Release/netcoreapp2.1/publish/* $installPath
+sudo cp -R bin/Release/netcoreapp2.1/publish $installPath/
 
 echo -e "$GREEN Setting up systemd service ...' $NC"
 
@@ -69,6 +69,7 @@ else
     randompw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
     sudo useradd $serviceUser
     echo $serviceUser:$randompw | chpasswd
+    
     sudo usermod -u 920 $serviceUser     # Change user id to a system account, so it does not show up on display managers
 fi
 
