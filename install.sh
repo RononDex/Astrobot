@@ -48,7 +48,8 @@ echo "[Service]" | sudo tee --append $targetServiceFile
 sudo echo "Type=simple" | sudo tee --append $targetServiceFile
 sudo echo "User=$serviceUser" | sudo tee --append $targetServiceFile
 sudo echo "WorkingDirectory=$installPath" | sudo tee --append $targetServiceFile
-sudo echo "ExecStart=dotnet $installPath/AstroBot.dll" | sudo tee --append $targetServiceFile
+sudo echo "ExecStart=/bin/bash -c 'dotnet $installPath/AstroBot.dll'" | sudo tee --append $targetServiceFile
+sudo echo "ExecStop=/bin/bash -c 'kill dotnet'" | sudo tee --append $targetServiceFile
 sudo echo "Restart=on-failure" | sudo tee --append $targetServiceFile
 sudo echo "" | sudo tee --append $targetServiceFile
 sudo echo "[Install]" | sudo tee --append $targetServiceFile
