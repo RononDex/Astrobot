@@ -20,7 +20,7 @@
 
     
     <PackageReference Include="AwesomeChatBot" Version="1.0.2" />
-    <PackageReference Include="AwesomeChatBot.Discord" Version="1.0.2" />
+    <PackageReference Include="AwesomeChatBot.Discord" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
