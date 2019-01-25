@@ -39,7 +39,7 @@ echo -e "$GREEN Installing Astrobot into the folder '$installPath' $NC"
 sudo mkdir -p $installPath
 
 # Copy the files
-sudo cp bin/Release/netcoreapp2.1/publish/* $installPath
+sudo cp -R bin/Release/netcoreapp2.2/publish/* $installPath/ --exclude appsettings.json
 
 echo -e "$GREEN Setting up systemd service ...' $NC"
 
@@ -48,7 +48,8 @@ echo "[Service]" | sudo tee --append $targetServiceFile
 sudo echo "Type=simple" | sudo tee --append $targetServiceFile
 sudo echo "User=$serviceUser" | sudo tee --append $targetServiceFile
 sudo echo "WorkingDirectory=$installPath" | sudo tee --append $targetServiceFile
-sudo echo "ExecStart=dotnet $installPath/AstroBot.dll" | sudo tee --append $targetServiceFile
+sudo echo "ExecStart=/bin/bash -c 'dotnet $installPath/AstroBot.dll'" | sudo tee --append $targetServiceFile
+sudo echo "ExecStop=/bin/bash -c 'kill dotnet'" | sudo tee --append $targetServiceFile
 sudo echo "Restart=on-failure" | sudo tee --append $targetServiceFile
 sudo echo "" | sudo tee --append $targetServiceFile
 sudo echo "[Install]" | sudo tee --append $targetServiceFile
@@ -69,6 +70,7 @@ else
     randompw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
     sudo useradd $serviceUser
     echo $serviceUser:$randompw | chpasswd
+    
     sudo usermod -u 920 $serviceUser     # Change user id to a system account, so it does not show up on display managers
 fi
 
