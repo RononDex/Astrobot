@@ -28,7 +28,7 @@ namespace AstroBot.Commands
         /// <param name="recievedMessage"></param>
         /// <param name="regexMatch"></param>
         /// <returns></returns>
-        public Task<bool> ExecuteRegexCommand(RecievedMessage recievedMessage, Match regexMatch) {
+        public Task<bool> ExecuteRegexCommand(ReceivedMessage recievedMessage, Match regexMatch) {
             return Task<bool>.Factory.StartNew(() => {
 
                 var testParam = regexMatch.Groups["TestParam"].Value;

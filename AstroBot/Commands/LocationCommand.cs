@@ -7,7 +7,7 @@ using AwesomeChatBot.Commands.Handlers;
 namespace AstroBot.Commands
 {
     /// <summary>
-    /// Command that can get the lat / lng coordiantes for any place on earth
+    /// Command that can get the lat / lng coordinates for any place on earth
     /// </summary>
     public class LocationCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ICommandDescription
     {
@@ -31,7 +31,7 @@ namespace AstroBot.Commands
         /// <param name="recievedMessage"></param>
         /// <param name="regexMatch"></param>
         /// <returns></returns>
-        public Task<bool> ExecuteRegexCommand(RecievedMessage recievedMessage, Match regexMatch)
+        public Task<bool> ExecuteRegexCommand(ReceivedMessage recievedMessage, Match regexMatch)
         {
             return Task<bool>.Factory.StartNew(() => {
                 var location    = regexMatch.Groups["SearchLocation"].Value;

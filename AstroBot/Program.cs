@@ -48,7 +48,7 @@ namespace AstroBot
 
             new DiscordAstroBot().Initialize();
 
-            // Wait indefinitly so the bot can run in the background
+            // Wait indefinitely so the bot can run in the background
             await Task.Delay(-1);
         }
 
@@ -59,7 +59,7 @@ namespace AstroBot
         /// <param name="e"></param>
         static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
         {
-            NLog.LogManager.GetLogger("AstroBot").Fatal($"Unhandled exception catched by global handler: {e.ExceptionObject.ToString()}");
+            NLog.LogManager.GetLogger("AstroBot").Fatal($"Unhandled exception caught by global handler: {e.ExceptionObject.ToString()}");
         }
     }
 }

@@ -21,13 +21,13 @@ namespace AstroBot.Commands
             "help"
         };
         
-        public Task<bool> ExecuteRegexCommand(RecievedMessage recievedMessage, Match regexMatch)
+        public Task<bool> ExecuteRegexCommand(ReceivedMessage recievedMessage, Match regexMatch)
         {
             return Task.Factory.StartNew(() => {
                 System.Reflection.Assembly ass = System.Reflection.Assembly.GetEntryAssembly();
 
                 recievedMessage.Channel.SendMessageAsync("Following commands are available in this server:").Wait();
-                var configStore        = recievedMessage.ApiWrapper.ConfgiStore;
+                var configStore        = recievedMessage.ApiWrapper.ConfigStore;
                 var context            = new IConfigurationDependency[] { recievedMessage.Channel.ParentServer };
 
                 foreach (System.Reflection.TypeInfo ti in ass.DefinedTypes)

@@ -6,10 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AstroBot
 {
@@ -42,7 +39,7 @@ namespace AstroBot
         /// </summary>
         private void InitializeFramework()
         {
-            Log<DiscordAstroBot>.Info("Initialising bot...");
+            Log<DiscordAstroBot>.Info("Initializing bot...");
 
             // Set up DI (dependency injection)
             var services = new ServiceCollection()
@@ -81,8 +78,10 @@ namespace AstroBot
             var loggerFactoryTmp = ServiceProvider.GetService<ILoggerFactory>();
             loggerFactoryTmp.AddNLog();
 
+            var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", ""); 
+
             // Setup bot framework
-            var discordWrapper = new DiscordWrapper(File.ReadAllText(discordSettings.DiscordTokenPath), loggerFactoryTmp);
+            var discordWrapper = new DiscordWrapper(discordToken, loggerFactoryTmp);
             var chatbotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, loggerFactoryTmp, awesomeChatbotSettings);
             
             services.AddSingleton<ApiWrapper>(discordWrapper);

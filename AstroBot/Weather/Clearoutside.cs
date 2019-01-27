@@ -18,7 +18,7 @@ namespace AstroBot.Weather
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public static Attachement GetWeatherForecast(LatLngLocation location)
+        public static Attachment GetWeatherForecast(LatLngLocation location)
         {
             #region PRECONDITION
 
