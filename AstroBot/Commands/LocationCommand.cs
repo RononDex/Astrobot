@@ -28,22 +28,22 @@ namespace AstroBot.Commands
         /// <summary>
         /// Execute the command
         /// </summary>
-        /// <param name="recievedMessage"></param>
+        /// <param name="receivedMessage"></param>
         /// <param name="regexMatch"></param>
         /// <returns></returns>
-        public Task<bool> ExecuteRegexCommand(ReceivedMessage recievedMessage, Match regexMatch)
+        public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {
             return Task<bool>.Factory.StartNew(() => {
                 var location    = regexMatch.Groups["SearchLocation"].Value;
                 var geoLocation = GeoLocation.GeoLocation.FindLocation(location);
 
                 if (geoLocation == null) {
-                    recievedMessage.Channel.SendMessageAsync(new SendMessage($"I don't know any place on earth with the name {location}")).Wait();
+                    receivedMessage.Channel.SendMessageAsync(new SendMessage($"I don't know any place on earth with the name {location}")).Wait();
                     return true;
                 }
 
-                recievedMessage.Channel.SendMessageAsync(new SendMessage(   $"I found the following location for \"{location}\":\r\n" + 
-                                                                            recievedMessage.ApiWrapper.MessageFormatter.Quote( $"Name:   {geoLocation.Name}\r\n" + 
+                receivedMessage.Channel.SendMessageAsync(new SendMessage(   $"I found the following location for \"{location}\":\r\n" + 
+                                                                            receivedMessage.ApiWrapper.MessageFormatter.Quote( $"Name:   {geoLocation.Name}\r\n" + 
                                                                             $"Lat:    {geoLocation.Lat}\r\n" + 
                                                                             $"Lng:    {geoLocation.Lng}")));
 
