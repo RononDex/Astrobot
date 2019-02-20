@@ -26,7 +26,8 @@ namespace AstroBot.Objects
         /// <summary>
         /// Override default ToString()
         /// </summary>
-        public override string ToString() {
+        public override string ToString()
+        {
             return $"Lat: {this.Lat}  Lng: {this.Lng}";
         }
     }

@@ -1,12 +1,4 @@
-﻿using AwesomeChatBot.ApiWrapper;
-using AwesomeChatBot.DiscordWrapper;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
-using NLog.Extensions.Logging;
-using System;
-using System.IO;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace AstroBot
@@ -16,11 +8,12 @@ namespace AstroBot
         static void Main(string[] args)
         {
             // Not every host console supports setting window width
-            try {
+            try
+            {
                 // Set console width
                 Console.WindowWidth = 190;
             }
-            catch {}
+            catch { }
 
             // Register a global exception handler
             System.AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;

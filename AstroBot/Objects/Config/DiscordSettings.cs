@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AstroBot.Objects.Config
+﻿namespace AstroBot.Objects.Config
 {
     /// <summary>
     /// The discord specific settings for the bot

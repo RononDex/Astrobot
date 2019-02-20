@@ -2,7 +2,6 @@ using AwesomeChatBot.Commands.Handlers;
 using AwesomeChatBot.ApiWrapper;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System;
 using System.Collections.Generic;
 
 namespace AstroBot.Commands
@@ -25,15 +24,17 @@ namespace AstroBot.Commands
         /// <summary>
         /// Execute the command
         /// </summary>
-        /// <param name="recievedMessage"></param>
+        /// <param name="receivedMessage"></param>
         /// <param name="regexMatch"></param>
         /// <returns></returns>
-        public Task<bool> ExecuteRegexCommand(ReceivedMessage recievedMessage, Match regexMatch) {
-            return Task<bool>.Factory.StartNew(() => {
+        public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
+        {
+            return Task<bool>.Factory.StartNew(() =>
+            {
 
                 var testParam = regexMatch.Groups["TestParam"].Value;
 
-                recievedMessage.Channel.SendMessageAsync(new SendMessage($"IT'S WORKING!!! You entered {testParam}")).Wait();
+                receivedMessage.Channel.SendMessageAsync(new SendMessage($"IT'S WORKING!!! You entered {testParam}")).Wait();
 
                 return true;
             });
