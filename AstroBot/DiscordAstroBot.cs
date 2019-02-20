@@ -25,7 +25,7 @@ namespace AstroBot
             InitializeFramework();
 
             // Register commands
-            var botFramework = ServiceProvider.GetRequiredService<AwesomeChatBot.AwesomeChatBot>();            
+            var botFramework = ServiceProvider.GetRequiredService<AwesomeChatBot.AwesomeChatBot>();
 
             botFramework.RegisterCommand(new Commands.TestCommand());
             botFramework.RegisterCommand(new Commands.LocationCommand());
@@ -78,17 +78,17 @@ namespace AstroBot
             var loggerFactoryTmp = ServiceProvider.GetService<ILoggerFactory>();
             loggerFactoryTmp.AddNLog();
 
-            var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", ""); 
+            var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", "");
 
             // Setup bot framework
             var discordWrapper = new DiscordWrapper(discordToken, loggerFactoryTmp);
             var chatbotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, loggerFactoryTmp, awesomeChatbotSettings);
-            
+
             services.AddSingleton<ApiWrapper>(discordWrapper);
             services.AddSingleton<AwesomeChatBot.AwesomeChatBot>(chatbotFramework);
 
             // Create and store a service provider
-            ServiceProvider = services.BuildServiceProvider();            
+            ServiceProvider = services.BuildServiceProvider();
         }
     }
 }

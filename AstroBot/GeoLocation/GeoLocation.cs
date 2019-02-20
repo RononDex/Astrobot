@@ -17,12 +17,14 @@ namespace AstroBot.GeoLocation
         /// Keep the Api key in memory, to reduce I/O and increase performance
         /// </summary>
         /// <value></value>
-        private static string GoogleApiKey {
-            get { 
-
+        private static string GoogleApiKey
+        {
+            get
+            {
                 // If Api Key was not loaded yet, read it from the settings file
-                if (string.IsNullOrEmpty(_googleApiKey)) {
-                    var settings       = Globals.ServiceProvider.GetService(typeof(BotSettings)) as BotSettings;
+                if (string.IsNullOrEmpty(_googleApiKey))
+                {
+                    var settings = Globals.ServiceProvider.GetService(typeof(BotSettings)) as BotSettings;
                     _googleApiKey = File.ReadAllText(settings.GoogleGeoLocationTokenPath);
                 }
 
@@ -39,9 +41,9 @@ namespace AstroBot.GeoLocation
         public static Objects.LatLngLocation FindLocation(string address)
         {
             Log<DiscordAstroBot>.Info($"Requesting GeoLocation for {address}");
-           
-            var webRequest     = WebRequest.Create(string.Format("https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}", WebUtility.UrlEncode(address), GoogleApiKey));
-            var response       = (HttpWebResponse)webRequest.GetResponse();
+
+            var webRequest = WebRequest.Create(string.Format("https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}", WebUtility.UrlEncode(address), GoogleApiKey));
+            var response = (HttpWebResponse)webRequest.GetResponse();
 
             string text;
             using (var sr = new StreamReader(response.GetResponseStream()))
@@ -54,13 +56,13 @@ namespace AstroBot.GeoLocation
                 return null;
 
             var hit = result.results[0];
-            var location =  new Objects.LatLngLocation()
+            var location = new Objects.LatLngLocation()
             {
                 Name = hit.formatted_address,
-                Lat  = Convert.ToSingle(hit.geometry.location.lat),
-                Lng  = Convert.ToSingle(hit.geometry.location.lng)
+                Lat = Convert.ToSingle(hit.geometry.location.lat),
+                Lng = Convert.ToSingle(hit.geometry.location.lng)
             };
-            
+
             return location;
         }
     }
