@@ -31,7 +31,6 @@ namespace AstroBot.Commands
         {
             return Task<bool>.Factory.StartNew(() =>
             {
-
                 var testParam = regexMatch.Groups["TestParam"].Value;
 
                 receivedMessage.Channel.SendMessageAsync(new SendMessage($"IT'S WORKING!!! You entered {testParam}")).Wait();

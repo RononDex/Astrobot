@@ -1,10 +1,7 @@
-﻿using AwesomeChatBot.ApiWrapper;
-using AwesomeChatBot.DiscordWrapper;
+﻿using AwesomeChatBot.DiscordWrapper;
 using AstroBot.Objects.Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
 using System;
 using System.IO;
 
@@ -41,11 +38,6 @@ namespace AstroBot
         {
             Log<DiscordAstroBot>.Info("Initializing bot...");
 
-            // Set up DI (dependency injection)
-            var services = new ServiceCollection()
-                .AddLogging()
-                .AddOptions();
-
             // Set up configuration laoder
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -63,32 +55,15 @@ namespace AstroBot
             if (!File.Exists(discordSettings.DiscordTokenPath))
                 throw new ArgumentException($"The discord token file {discordSettings.DiscordTokenPath} does not exist!");
 
-            var awesomeChatbotSettings = new AwesomeChatBot.AwesomeChatBotSettings();
-            configuration.GetSection("AwesomeChatBotSettings").Bind(awesomeChatbotSettings);
-
-            var botSettings = new Objects.Config.BotSettings();
-            configuration.GetSection("BotSettings").Bind(botSettings);
-
             NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - DiscordSettings.TokenPath:                 {discordSettings.DiscordTokenPath}");
-            NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - AwesomeChatBotSettings.ConfigFolderPath:   {awesomeChatbotSettings.ConfigFolderPath}");
-            NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - BotSettings.GoogleGeoLocationTokenPath:    {botSettings.GoogleGeoLocationTokenPath}");
-
-            // Create and store a service provider
-            ServiceProvider = services.BuildServiceProvider();
-            var loggerFactoryTmp = ServiceProvider.GetService<ILoggerFactory>();
-            loggerFactoryTmp.AddNLog();
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - AwesomeChatBotSettings.ConfigFolderPath:   {Globals.AwesomeChatBotSettings.ConfigFolderPath}");
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - BotSettings.GoogleGeoLocationTokenPath:    {Globals.BotSettings.GoogleGeoLocationTokenPath}");
 
             var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", "");
 
             // Setup bot framework
-            var discordWrapper = new DiscordWrapper(discordToken, loggerFactoryTmp);
-            var chatbotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, loggerFactoryTmp, awesomeChatbotSettings);
-
-            services.AddSingleton<ApiWrapper>(discordWrapper);
-            services.AddSingleton<AwesomeChatBot.AwesomeChatBot>(chatbotFramework);
-
-            // Create and store a service provider
-            ServiceProvider = services.BuildServiceProvider();
+            var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory);
+            var chatbotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
         }
     }
 }

@@ -3,7 +3,7 @@ namespace AstroBot.Objects.Config
     /// <summary>
     /// Bot wide settings (like API tokens, ...)
     /// </summary>
-    class BotSettings
+    public class BotSettings
     {
         /// <summary>
         /// Path to the file containing the token to access googles GeoLocation API

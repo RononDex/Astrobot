@@ -40,10 +40,14 @@ namespace AstroBot.Commands
                         // Only list commands
                         if (command is AwesomeChatBot.Commands.Command)
                         {
-
                             // Ignore disabled commands
-                            if (!configStore.IsCommandActive(command as AwesomeChatBot.Commands.Command, true, context))
+                            if (!configStore.IsCommandActive(
+                                command as AwesomeChatBot.Commands.Command,
+                                enabledByDefault: Globals.AwesomeChatBotSettings.CommandsEnabledByDefault,
+                                dependencies: context))
+                            {
                                 continue;
+                            }
 
                             // Write help output for the command
                             var formatter = receivedMessage.ApiWrapper.MessageFormatter;

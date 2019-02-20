@@ -20,10 +20,10 @@ namespace AstroBot.Commands
         /// The regex, when matched executes the command
         /// </summary>
         /// <returns></returns>
-        public List<string> Regex => new List<string>(){ @"Where is (?'SearchLocation'.*\w)(\?)?" };
+        public List<string> Regex => new List<string>() { @"Where is (?'SearchLocation'.*\w)(\?)?" };
 
         public string Description => "Gets the Lat / Lng coordinates of a certain location";
-        public string[] ExampleCalls => new [] { "Where is Zurich" };
+        public string[] ExampleCalls => new[] { "Where is Zurich" };
 
         /// <summary>
         /// Execute the command
@@ -33,18 +33,20 @@ namespace AstroBot.Commands
         /// <returns></returns>
         public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {
-            return Task<bool>.Factory.StartNew(() => {
-                var location    = regexMatch.Groups["SearchLocation"].Value;
+            return Task<bool>.Factory.StartNew(() =>
+            {
+                var location = regexMatch.Groups["SearchLocation"].Value;
                 var geoLocation = GeoLocation.GeoLocation.FindLocation(location);
 
-                if (geoLocation == null) {
+                if (geoLocation == null)
+                {
                     receivedMessage.Channel.SendMessageAsync(new SendMessage($"I don't know any place on earth with the name {location}")).Wait();
                     return true;
                 }
 
-                receivedMessage.Channel.SendMessageAsync(new SendMessage(   $"I found the following location for \"{location}\":\r\n" + 
-                                                                            receivedMessage.ApiWrapper.MessageFormatter.Quote( $"Name:   {geoLocation.Name}\r\n" + 
-                                                                            $"Lat:    {geoLocation.Lat}\r\n" + 
+                receivedMessage.Channel.SendMessageAsync(new SendMessage($"I found the following location for \"{location}\":\r\n" +
+                                                                            receivedMessage.ApiWrapper.MessageFormatter.Quote($"Name:   {geoLocation.Name}\r\n" +
+                                                                            $"Lat:    {geoLocation.Lat}\r\n" +
                                                                             $"Lng:    {geoLocation.Lng}")));
 
                 return true;

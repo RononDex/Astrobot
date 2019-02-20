@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Net;
 using Newtonsoft.Json;
-using AstroBot.Objects.Config;
 
 namespace AstroBot.GeoLocation
 {
@@ -24,8 +23,7 @@ namespace AstroBot.GeoLocation
                 // If Api Key was not loaded yet, read it from the settings file
                 if (string.IsNullOrEmpty(_googleApiKey))
                 {
-                    var settings = Globals.ServiceProvider.GetService(typeof(BotSettings)) as BotSettings;
-                    _googleApiKey = File.ReadAllText(settings.GoogleGeoLocationTokenPath);
+                    _googleApiKey = File.ReadAllText(Globals.BotSettings.GoogleGeoLocationTokenPath);
                 }
 
                 return _googleApiKey;

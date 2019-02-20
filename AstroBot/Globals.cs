@@ -1,6 +1,5 @@
 using System.IO;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
@@ -15,23 +14,25 @@ namespace AstroBot
         /// Logger factory used to create logger instances
         /// </summary>
         /// <value></value>
-        public static ILoggerFactory LoggerFactory { get; set; }
+        public static ILoggerFactory LoggerFactory { get; private set; }
 
         /// <summary>
-        /// The DI service provider
+        /// The settings belonging to the AwesomeChatBot framework
         /// </summary>
-        public static ServiceProvider ServiceProvider { get; private set; }
+        /// <value></value>
+        public static AwesomeChatBot.AwesomeChatBotSettings AwesomeChatBotSettings { get; private set; }
+
+        /// <summary>
+        /// The bot wide settings
+        /// </summary>
+        /// <value></value>
+        public static Objects.Config.BotSettings BotSettings { get; private set; }
 
         /// <summary>
         /// Initialize the global variables
         /// </summary>
-        public static void InitGlobals(){
-
-            // Set up DI (dependency injection)
-            var services = new ServiceCollection()
-                .AddLogging()
-                .AddOptions();
-
+        public static void InitGlobals()
+        {
             // Set up configuration laoder
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -41,13 +42,17 @@ namespace AstroBot
             var configuration = builder.Build();
 
             NLog.LogManager.GetLogger("AstroBot.Globals").Info("Reading settings...");
+
             var botSettings = new Objects.Config.BotSettings();
             configuration.GetSection("BotSettings").Bind(botSettings);
-            services.AddSingleton(botSettings);
+            BotSettings = botSettings;
 
-            // Create service provider
-            ServiceProvider = services.BuildServiceProvider();
-            LoggerFactory = ServiceProvider.GetService<ILoggerFactory>();
+            var awesomeChatbotSettings = new AwesomeChatBot.AwesomeChatBotSettings();
+            configuration.GetSection("AwesomeChatBotSettings").Bind(awesomeChatbotSettings);
+            AwesomeChatBotSettings = awesomeChatbotSettings;
+
+            // Create logger factory
+            LoggerFactory = new LoggerFactory();
             LoggerFactory.AddNLog();
         }
     }
