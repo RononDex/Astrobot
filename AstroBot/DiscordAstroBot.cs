@@ -1,7 +1,6 @@
 ﻿using AwesomeChatBot.DiscordWrapper;
 using AstroBot.Objects.Config;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 
@@ -14,10 +13,6 @@ namespace AstroBot
     {
         private AwesomeChatBot.AwesomeChatBot BotFramework { get; set; }
 
-        /// <summary>
-        /// The DI service provider
-        /// </summary>
-        public static ServiceProvider ServiceProvider { get; private set; }
         public void Initialize()
         {
             // Initialize the DI provider, configs and bot framework
