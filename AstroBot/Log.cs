@@ -11,8 +11,18 @@ namespace AstroBot
         /// <summary>
         /// Log as info
         /// </summary>
-        public static void Info(string message){
+        public static void Info(string message)
+        {
             Globals.LoggerFactory.CreateLogger(typeof(T).FullName).LogInformation(message);
+        }
+
+        /// <summary>
+        /// Logs and error message
+        /// </summary>
+        /// <param name="message"></param>
+        public static void Error(string message)
+        {
+            Globals.LoggerFactory.CreateLogger(typeof(T).FullName).LogError(message);
         }
     }
 }
