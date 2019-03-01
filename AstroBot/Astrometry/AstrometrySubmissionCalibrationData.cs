@@ -1,3 +1,5 @@
+using AstroBot.Objects;
+
 namespace AstroBot.Astrometry
 {
     public class AstrometrySubmissionCalibrationData
@@ -14,7 +16,17 @@ namespace AstroBot.Astrometry
         /// Radius of the image in degrees
         /// </summary>
         public float Radius { get; set; }
-        public float RA { get; set; }
-        public float DEC { get; set; }
+
+        /// <summary>
+        /// The RA/DEC coordinates
+        /// </summary>
+        /// <value></value>
+        public RaDecCoordinate Coordinates { get; set; }
+
+        /// <summary>
+        /// The url to the wcs file
+        /// </summary>
+        /// <value></value>
+        public string WCSFileUrl { get; set; }
     }
 }

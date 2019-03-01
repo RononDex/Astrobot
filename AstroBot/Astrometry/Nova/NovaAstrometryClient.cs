@@ -226,12 +226,14 @@ namespace AstroBot.Astrometry.Nova
             var result = new AstrometrySubmissionResult();
             var calibrationData = new AstrometrySubmissionCalibrationData();
 
-            calibrationData.DEC = Convert.ToSingle(jsonResult.calibration.dec);
             calibrationData.Orientation = Convert.ToSingle(jsonResult.calibration.orientation);
             calibrationData.Parity = Convert.ToSingle(jsonResult.calibration.parity);
             calibrationData.PixScale = Convert.ToSingle(jsonResult.calibration.pixscale);
-            calibrationData.RA = Convert.ToSingle(jsonResult.calibration.ra);
             calibrationData.Radius = Convert.ToSingle(jsonResult.calibration.radius);
+            calibrationData.Coordinates = new Objects.RaDecCoordinate(
+                rightAscension: Convert.ToSingle(jsonResult.calibration.ra),
+                declination: Convert.ToSingle(jsonResult.calibration.dec));
+            calibrationData.WCSFileUrl = GetWCSFileUrl(jobID);
 
             result.CalibrationData = calibrationData;
             result.JobID = jobID;
@@ -266,10 +268,9 @@ namespace AstroBot.Astrometry.Nova
         /// </summary>
         /// <param name="jobID"></param>
         /// <returns></returns>
-        public MemoryStream DownloadWCSFitsFile(string jobID)
+        public string GetWCSFileUrl(string jobID)
         {
-            var wc = new WebClient();
-            return new MemoryStream(wc.DownloadData($"http://nova.astrometry.net/wcs_file/{jobID}"));
+            return $"http://nova.astrometry.net/wcs_file/{jobID}";
         }
 
         /// <summary>
