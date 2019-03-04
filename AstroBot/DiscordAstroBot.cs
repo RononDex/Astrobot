@@ -25,6 +25,7 @@ namespace AstroBot
             botFramework.RegisterCommand(new Commands.LocationCommand());
             botFramework.RegisterCommand(new Commands.HelpCommand());
             botFramework.RegisterCommand(new Commands.WeatherCommand());
+            botFramework.RegisterCommand(new Commands.Astrometry());
             botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
         }
 
@@ -55,6 +56,7 @@ namespace AstroBot
             NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - DiscordSettings.TokenPath:                 {discordSettings.DiscordTokenPath}");
             NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - AwesomeChatBotSettings.ConfigFolderPath:   {Globals.AwesomeChatBotSettings.ConfigFolderPath}");
             NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - BotSettings.GoogleGeoLocationTokenPath:    {Globals.BotSettings.GoogleGeoLocationTokenPath}");
+            NLog.LogManager.GetLogger(this.GetType().FullName).Info($" - BotSettings.NovaAstrometryApiKeyPath:      {Globals.BotSettings.NovaAstrometryApiKeyPath}");
 
             var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", "");
 

@@ -10,5 +10,11 @@ namespace AstroBot.Objects.Config
         /// </summary>
         /// <value></value>
         public string GoogleGeoLocationTokenPath { get; set; }
+
+        /// <summary>
+        /// The api key for nova.astrometry
+        /// </summary>
+        /// <value></value>
+        public string NovaAstrometryApiKeyPath { get; set; }
     }
 }
