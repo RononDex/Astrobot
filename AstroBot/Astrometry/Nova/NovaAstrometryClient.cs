@@ -6,19 +6,38 @@ using Newtonsoft.Json;
 
 namespace AstroBot.Astrometry.Nova
 {
-    public class NovaAstrometryClient
+    class NovaAstrometryClient
     {
+        private static string _apiKey;
+
+        /// <summary>
+        /// Cache the api key from the file to reduce I/O
+        /// </summary>
+        /// <value></value>
+        private static string ApiKey
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_apiKey))
+                {
+                    _apiKey = File.ReadAllText(Globals.BotSettings.NovaAstrometryApiKeyPath);
+                }
+
+                return _apiKey;
+            }
+        }
+
         /// <summary>
         /// Logs into the Astrometry API using a private token, gets a sessionID in return
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public string Login(string token)
+        public string Login()
         {
             Log<DiscordAstroBot>.Info("Login into Astrometry...");
 
             // Setup json payload
-            var json = new { apikey = token };
+            var json = new { apikey = ApiKey };
 
             var webRequest = (HttpWebRequest)WebRequest.Create("http://nova.astrometry.net/api/login");
             webRequest.ContentType = "application/x-www-form-urlencoded";
