@@ -78,7 +78,7 @@ namespace AstroBot.Astrometry.Nova
         /// <param name="contentType"></param>
         /// <param name="nvc"></param>
         /// <returns></returns>
-        public string HttpUploadFile(
+        private string HttpUploadFile(
             string url,
             Stream file,
             string fileName,
@@ -177,6 +177,35 @@ namespace AstroBot.Astrometry.Nova
                 throw new Exception("Submitting your file to Astrometry failed.");
 
             Log<DiscordAstroBot>.Info($"Submission was successfull (SessionID: {jsonResult.session}, File: {fileUrl}, SubmissionID: {jsonResult.subid})");
+
+            return jsonResult.subid;
+        }
+
+        /// <summary>
+        /// Uploads a file from a byte array
+        /// </summary>
+        /// <param name="fileUrl"></param>
+        /// <param name="fileName"></param>
+        /// <param name="sessionID"></param>
+        /// <returns></returns>
+        public string UploadFile(byte[] file, string fileName, string sessionID)
+        {
+            Log<DiscordAstroBot>.Info($"Submitting a file to astrometry (SessionID: {sessionID}, File: {fileName})");
+
+            // Setup json payload
+            var json = new { session = sessionID, allow_commercial_use = "n", allow_modifications = "n", publicly_visible = "y" };
+
+            NameValueCollection nvc = new NameValueCollection();
+            nvc.Add("request-json", JsonConvert.SerializeObject(json));
+
+            // Get answer from server
+            string text = HttpUploadFile("http://nova.astrometry.net/api/upload", new MemoryStream(file), fileName, "file", "application/octet-stream", nvc);
+
+            dynamic jsonResult = JsonConvert.DeserializeObject(text);
+            if (jsonResult.status != "success")
+                throw new Exception("Submission of your file to Astrometry failed.");
+
+            Log<DiscordAstroBot>.Info($"Submission was successfull (SessionID: {jsonResult.session}, File: {fileName}, SubmissionID: {jsonResult.subid})");
 
             return jsonResult.subid;
         }
