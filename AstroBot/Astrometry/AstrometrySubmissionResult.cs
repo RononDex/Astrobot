@@ -14,7 +14,7 @@ namespace AstroBot.Astrometry
 
         public List<string> ObjectsInfField { get; set; } = new List<string>();
 
-        public string JobID { get; set; }
+        public int JobID { get; set; }
 
     }
 }

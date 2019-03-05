@@ -256,11 +256,11 @@ namespace AstroBot.Astrometry.Nova
         /// </summary>
         /// <param name="jobID"></param>
         /// <returns></returns>
-        public AstrometrySubmissionResult GetCalibrationFromFinishedJob(string jobID)
+        public AstrometrySubmissionResult GetCalibrationFromFinishedJob(int jobID)
         {
             Log<DiscordAstroBot>.Info($"Getting job result from astrometry for job {jobID}");
 
-            var webRequest = (HttpWebRequest)WebRequest.Create(string.Format("http://nova.astrometry.net/api/jobs/{0}/info/", jobID));
+            var webRequest = (HttpWebRequest)WebRequest.Create($"http://nova.astrometry.net/api/jobs/{jobID}/info/");
             var response = (HttpWebResponse)webRequest.GetResponse();
 
             // Get answer from server
@@ -272,16 +272,17 @@ namespace AstroBot.Astrometry.Nova
 
             dynamic jsonResult = JsonConvert.DeserializeObject(text);
             var result = new AstrometrySubmissionResult();
-            var calibrationData = new AstrometrySubmissionCalibrationData();
-
-            calibrationData.Orientation = Convert.ToSingle(jsonResult.calibration.orientation);
-            calibrationData.Parity = Convert.ToSingle(jsonResult.calibration.parity);
-            calibrationData.PixScale = Convert.ToSingle(jsonResult.calibration.pixscale);
-            calibrationData.Radius = Convert.ToSingle(jsonResult.calibration.radius);
-            calibrationData.Coordinates = new Objects.RaDecCoordinate(
+            var calibrationData = new AstrometrySubmissionCalibrationData
+            {
+                Orientation = Convert.ToSingle(jsonResult.calibration.orientation),
+                Parity = Convert.ToSingle(jsonResult.calibration.parity),
+                PixScale = Convert.ToSingle(jsonResult.calibration.pixscale),
+                Radius = Convert.ToSingle(jsonResult.calibration.radius),
+                Coordinates = new Objects.RaDecCoordinate(
                 rightAscension: Convert.ToSingle(jsonResult.calibration.ra),
-                declination: Convert.ToSingle(jsonResult.calibration.dec));
-            calibrationData.WCSFileUrl = GetWCSFileUrl(jobID);
+                declination: Convert.ToSingle(jsonResult.calibration.dec)),
+                WCSFileUrl = GetWCSFileUrl(jobID)
+            };
 
             result.CalibrationData = calibrationData;
             result.JobID = jobID;
@@ -305,10 +306,10 @@ namespace AstroBot.Astrometry.Nova
         /// </summary>
         /// <param name="jobID"></param>
         /// <returns></returns>
-        public MemoryStream DownlaodAnnotatedImage(string jobID)
+        public byte[] DownloadAnnotatedImage(int jobID)
         {
             var wc = new WebClient();
-            return new MemoryStream(wc.DownloadData(GetAnnotatedImageURL(jobID)));
+            return wc.DownloadData(GetAnnotatedImageURL(jobID));
         }
 
         /// <summary>
@@ -316,7 +317,7 @@ namespace AstroBot.Astrometry.Nova
         /// </summary>
         /// <param name="jobID"></param>
         /// <returns></returns>
-        public string GetWCSFileUrl(string jobID)
+        public string GetWCSFileUrl(int jobID)
         {
             return $"http://nova.astrometry.net/wcs_file/{jobID}";
         }
@@ -326,7 +327,7 @@ namespace AstroBot.Astrometry.Nova
         /// </summary>
         /// <param name="jobID"></param>
         /// <returns></returns>
-        public string GetAnnotatedImageURL(string jobID)
+        public string GetAnnotatedImageURL(int jobID)
         {
             return $"http://nova.astrometry.net/annotated_display/{jobID}";
         }

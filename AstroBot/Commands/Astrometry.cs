@@ -76,6 +76,30 @@ namespace AstroBot.Commands
                     return true;
                 }
 
+                var calibrationData = novaAstrometryClient.GetCalibrationFromFinishedJob(jobId);
+                var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
+                var tags = string.Join(", ", calibrationData.Tags);
+
+                receivedMessage.Channel.SendMessageAsync($"Image analysis for submission {submissionId} completed. Here is the result:").Wait();
+
+                var msg = formatter.CodeBlock($"RA:             {calibrationData.CalibrationData.Coordinates.RightAscension}\r\n" +
+                                              $"DEC:            {calibrationData.CalibrationData.Coordinates.Declination}\r\n" +
+                                              $"Orientation:    up is {calibrationData.CalibrationData.Orientation} deg\r\n" +
+                                              $"Radius:         {calibrationData.CalibrationData.Radius} deg\r\n" +
+                                              $"PixelScale:     {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\n" +
+                                              $"ObjectsInImage: {objectsInImage}", "css");
+
+
+                receivedMessage.Channel.SendMessageAsync(msg).Wait();
+                var annotatedImage = novaAstrometryClient.DownloadAnnotatedImage(jobId);
+
+                receivedMessage.Channel.SendMessageAsync(new SendMessage(string.Empty, new List<Attachment> { new SendAttachment() {
+                    Name = $"annotated_{calibrationData.FileName}",
+                    Content = annotatedImage
+                }})).Wait();
+
+                receivedMessage.Channel.SendMessageAsync($"Link to astrometry job result: http://nova.astrometry.net/status/{submissionId}").Wait();
+
                 return true;
             });
         }
