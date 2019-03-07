@@ -32,7 +32,7 @@ namespace AstroBot.Simbad
 
             var rows = tapResultText.Replace("\n", "").Split("\r");
 
-            // If less than 3 rows --> no rows in the result
+            // If less than 3 rows --> no rows in the result (since header has 2 rows)
             if (rows.Length < 3)
                 return;
 
@@ -52,8 +52,30 @@ namespace AstroBot.Simbad
 
         private Dictionary<string, object> ParseProperties(string[] columnNames, string[] values)
         {
-            // TODO
-            return null;
+            var properties = new Dictionary<string, object>();
+
+            for (var i = 0; i < columnNames.Length; i++)
+            {
+                var column = columnNames[i];
+                var value = values[i];
+
+                // strings are contained within quotes ""
+                if (value.StartsWith("\"") && value.EndsWith("\""))
+                {
+                    properties.Add(
+                        key: column,
+                        value: value.Substring(1, value.Length - 2));
+                }
+                // Else its a number (double)
+                else if (double.TryParse(value, out double parsedDouble))
+                {
+                    properties.Add(
+                        key: column,
+                        value: parsedDouble);
+                }
+            }
+
+            return properties;
         }
     }
 }
