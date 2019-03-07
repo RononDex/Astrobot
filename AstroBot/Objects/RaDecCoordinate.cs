@@ -2,7 +2,7 @@ namespace AstroBot.Objects
 {
     public class RaDecCoordinate
     {
-        public RaDecCoordinate(float rightAscension, float declination)
+        public RaDecCoordinate(double rightAscension, double declination)
         {
             this.RightAscension = rightAscension;
             this.Declination = declination;
@@ -13,12 +13,12 @@ namespace AstroBot.Objects
         /// Right ascension component of the coordinate
         /// </summary>
         /// <value></value>
-        public float RightAscension { get; set; }
+        public double RightAscension { get; set; }
 
         /// <summary>
         /// The declination component of the coordinate
         /// </summary>
         /// <value></value>
-        public float Declination { get; set; }
+        public double Declination { get; set; }
     }
 }

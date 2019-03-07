@@ -36,5 +36,28 @@ namespace AstroBot.Objects
         {
             return (T)this[property];
         }
+
+        /// <summary>
+        /// The main name of the object
+        /// </summary>
+        /// <returns></returns>
+        public string Name => Properties.ContainsKey("NAME") ? (string)this["NAME"] : null;
+
+        /// <summary>
+        /// Every astronomical object should have RA and DEC coordinates
+        /// </summary>
+        /// <returns></returns>
+        public RaDecCoordinate RaDecCoordinate => Properties.ContainsKey("RA") && Properties.ContainsKey("DEC") ?
+            new RaDecCoordinate(rightAscension: (double)this["RA"], declination: (double)this["DEC"]) :
+            null;
+
+        /// <summary>
+        /// Override ToString to return objects name
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -1,0 +1,14 @@
+-- Basic data from an object given one of its identifiers.
+SELECT basic.OID,
+       RA,
+       DEC,
+       main_id AS "Name",
+       coo_bibcode AS "Coord Reference",
+       nbref AS "NbReferences",
+       plx_value as "Parallax",
+       rvz_radvel as "Radial velocity",
+       galdim_majaxis,
+       galdim_minaxis,
+       galdim_angle AS "Galaxy ellipse angle"
+FROM basic JOIN ident ON oidref = oid
+WHERE id = '{{name}}';
