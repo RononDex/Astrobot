@@ -1,6 +1,8 @@
+using System.Linq;
 using System.IO;
-using System.Net;
-using System.Web;
+using AstroBot.Objects;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace AstroBot.Simbad
 {
@@ -9,7 +11,7 @@ namespace AstroBot.Simbad
     /// </summary>
     public class SimbadClient
     {
-        const string TAP_QUERY_ENDPOINT = "http://simbad.u-strasbg.fr/simbad/sim-tap/sync?request=doQuery&lang=en&format=text&query={{QUERY}};";
+        const string TAP_QUERY_ENDPOINT = "http://simbad.u-strasbg.fr/simbad/sim-tap/sync";
 
         /// <summary>
         /// Query SIMBAD with the given TAP query
@@ -18,17 +20,33 @@ namespace AstroBot.Simbad
         /// <returns></returns>
         public SimbadTAPQueryResult QuerySimbad(SimbadTAPQuery simbadTAPQuery)
         {
-            var requestUrl = TAP_QUERY_ENDPOINT.Replace("{{QUERY}}", HttpUtility.UrlEncode(simbadTAPQuery.Query));
+            var client = new HttpClient();
+            var values = new Dictionary<string, string>
+            {
+                { "request", "doQuery" },
+                { "lang", "adql" },
+                { "format", "text" },
+                { "query", simbadTAPQuery.Query }
+            };
 
-            var request = WebRequest.Create(requestUrl);
-            var response = request.GetResponse();
+            var content = new FormUrlEncodedContent(values);
+            var response = client.PostAsync(TAP_QUERY_ENDPOINT, content).Result;
+            var text = response.Content.ReadAsStringAsync().Result;
 
-            var responseStream = response.GetResponseStream();
-            var streamReader = new StreamReader(responseStream);
+            return new SimbadTAPQueryResult(text);
+        }
 
-            var textContent = streamReader.ReadToEnd();
-
-            return new SimbadTAPQueryResult(textContent);
+        /// <summary>
+        /// Tries to find an object of the given name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public AstronomicalObject FindObjectByName(string name)
+        {
+            var query = File.ReadAllText("Simbad/Queries/FindByName.adql");
+            query = query.Replace("{{name}}", name);
+            var result = QuerySimbad(new SimbadTAPQuery(query));
+            return result.AstronomicalObjects.FirstOrDefault();
         }
     }
 }

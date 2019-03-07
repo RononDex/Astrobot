@@ -1,3 +1,4 @@
+using System.IO;
 using AstroBot.Simbad;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -6,11 +7,18 @@ namespace AstroBot.Test
     [TestClass]
     public class SimbadTests
     {
+        [TestInitialize]
+        public void Setup()
+        {
+            Directory.SetCurrentDirectory("../../../../AstroBot/Bin/Debug/netcoreapp2.2/");
+        }
+
         [TestMethod]
         public void TestBasicTapQuery()
         {
             var simbadClient = new SimbadClient();
             var testQuery = @"
+                -- Basic data from an object given one of its identifiers.
                 SELECT basic.OID,
                     RA,
                     DEC,
@@ -28,6 +36,14 @@ namespace AstroBot.Test
                 ORDER BY ""Name""; ";
 
             var result = simbadClient.QuerySimbad(new SimbadTAPQuery(testQuery));
+        }
+
+        [TestMethod]
+        public void TestFindObjectByName()
+        {
+            var objName = "M78";
+            var simbadClient = new SimbadClient();
+            var foundObject = simbadClient.FindObjectByName(objName);
         }
     }
 }
