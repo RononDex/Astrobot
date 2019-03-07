@@ -1,4 +1,4 @@
--- Basic data from an object given one of its identifiers.
+-- Display basic data about objects contained in a given circle
 SELECT basic.OID,
        RA,
        DEC,
@@ -12,6 +12,7 @@ SELECT basic.OID,
        galdim_majaxis,
        galdim_minaxis,
        galdim_angle AS "Galaxy ellipse angle"
-FROM basic JOIN ident ON oidref = oid
+FROM basic
 LEFT JOIN OTYPEDEF ON OTYPEDEF.otype = basic.otype
-WHERE id = '{{name}}';
+WHERE CONTAINS(POINT('ICRS', RA, DEC), CIRCLE('ICRS', {{RACenter}}, {{DECCenter}}, {{RadiusInDegrees}})) = 1
+ORDER BY "Name";

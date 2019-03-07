@@ -4,9 +4,8 @@ namespace AstroBot.Objects
     {
         public RaDecCoordinate(double rightAscension, double declination)
         {
-            this.RightAscension = rightAscension;
-            this.Declination = declination;
-
+            RightAscension = rightAscension;
+            Declination = declination;
         }
 
         /// <summary>
@@ -20,5 +19,14 @@ namespace AstroBot.Objects
         /// </summary>
         /// <value></value>
         public double Declination { get; set; }
+
+        /// <summary>
+        /// Return a more meaningful string
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"RA: {RightAscension}, DEC: {Declination}";
+        }
     }
 }

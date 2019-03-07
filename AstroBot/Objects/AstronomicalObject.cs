@@ -44,6 +44,18 @@ namespace AstroBot.Objects
         public string Name => Properties.ContainsKey("NAME") ? (string)this["NAME"] : null;
 
         /// <summary>
+        /// The type of the object
+        /// </summary>
+        /// <returns></returns>
+        public string Type => Properties.ContainsKey("TYPE") ? (string)this["TYPE"] : null;
+
+        /// <summary>
+        /// A short code describing the type
+        /// </summary>
+        /// <returns></returns>
+        public string ShortType => Properties.ContainsKey("TYPESHORT") ? (string)this["TYPESHORT"] : null;
+
+        /// <summary>
         /// Every astronomical object should have RA and DEC coordinates
         /// </summary>
         /// <returns></returns>

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using AstroBot.Objects;
+using AstroBot.Objects.AstronomicalObjects;
 
 namespace AstroBot.Simbad
 {
@@ -47,7 +48,17 @@ namespace AstroBot.Simbad
                 var curRowColumns = row.Split("|", StringSplitOptions.None).Select(x => x.Trim());
 
                 var properties = ParseProperties(columnNames.ToArray(), curRowColumns.ToArray());
-                astronomicalObjects.Add(new AstronomicalObject(properties));
+                var shortType = properties.ContainsKey("TYPESHORT") ? Convert.ToString(properties["TYPESHORT"]) : string.Empty;
+
+                // Depending on the type, create objects of different types
+                if (shortType.Contains('*'))
+                {
+                    astronomicalObjects.Add(new Star(properties));
+                }
+                else
+                {
+                    astronomicalObjects.Add(new AstronomicalObject(properties));
+                }
             }
 
             AstronomicalObjects = astronomicalObjects;

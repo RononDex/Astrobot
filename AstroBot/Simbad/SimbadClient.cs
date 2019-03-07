@@ -1,8 +1,10 @@
+using System.Globalization;
 using System.Linq;
 using System.IO;
 using AstroBot.Objects;
 using System.Collections.Generic;
 using System.Net.Http;
+using System;
 
 namespace AstroBot.Simbad
 {
@@ -47,6 +49,23 @@ namespace AstroBot.Simbad
             query = query.Replace("{{name}}", name);
             var result = QuerySimbad(new SimbadTAPQuery(query));
             return result.AstronomicalObjects.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Tries to find an object of the given name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IReadOnlyList<AstronomicalObject> QueryAround(RaDecCoordinate raDecCoordinate, float radiusInDegrees)
+        {
+            var query = File.ReadAllText("Simbad/Queries/QueryAroundRaDecCoordinates.adql");
+            query = query
+                .Replace("{{RACenter}}", Convert.ToString(raDecCoordinate.RightAscension, CultureInfo.InvariantCulture))
+                .Replace("{{DECCenter}}", Convert.ToString(raDecCoordinate.Declination, CultureInfo.InvariantCulture))
+                .Replace("{{RadiusInDegrees}}", Convert.ToString(radiusInDegrees, CultureInfo.InvariantCulture));
+
+            var result = QuerySimbad(new SimbadTAPQuery(query));
+            return result.AstronomicalObjects;
         }
     }
 }

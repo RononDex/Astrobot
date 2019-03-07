@@ -45,5 +45,14 @@ namespace AstroBot.Test
             var simbadClient = new SimbadClient();
             var foundObject = simbadClient.FindObjectByName(objName);
         }
+
+        [TestMethod]
+        public void TestQueryAround()
+        {
+            var simbadClient = new SimbadClient();
+            var objects = simbadClient.QueryAround(
+                new Objects.RaDecCoordinate(rightAscension: 20, declination: 10),
+                radiusInDegrees: 1.5f);
+        }
     }
 }
