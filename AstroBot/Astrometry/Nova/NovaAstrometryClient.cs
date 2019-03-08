@@ -2,6 +2,7 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using Newtonsoft.Json;
 
 namespace AstroBot.Astrometry.Nova
@@ -69,119 +70,6 @@ namespace AstroBot.Astrometry.Nova
         }
 
         /// <summary>
-        /// Upload a file for plate solving
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="file"></param>
-        /// <param name="fileName"></param>
-        /// <param name="paramName"></param>
-        /// <param name="contentType"></param>
-        /// <param name="nvc"></param>
-        /// <returns></returns>
-        private string HttpUploadFile(
-            string url,
-            Stream file,
-            string fileName,
-            string paramName,
-            string contentType,
-            NameValueCollection nvc)
-        {
-            string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-            byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-
-            HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(url);
-            wr.ContentType = "multipart/form-data; boundary=" + boundary;
-            wr.Method = "POST";
-            wr.KeepAlive = true;
-            wr.Credentials = CredentialCache.DefaultCredentials;
-
-            Stream rs = wr.GetRequestStream();
-
-            string formdataTemplate = "Content-disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
-            foreach (string key in nvc.Keys)
-            {
-                rs.Write(boundarybytes, 0, boundarybytes.Length);
-                string formitem = string.Format(formdataTemplate, key, nvc[key]);
-                byte[] formitembytes = System.Text.Encoding.UTF8.GetBytes(formitem);
-                rs.Write(formitembytes, 0, formitembytes.Length);
-            }
-            rs.Write(boundarybytes, 0, boundarybytes.Length);
-
-            string headerTemplate = "Content-disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n";
-            string header = string.Format(headerTemplate, paramName, fileName, contentType);
-            byte[] headerbytes = System.Text.Encoding.UTF8.GetBytes(header);
-            rs.Write(headerbytes, 0, headerbytes.Length);
-
-            Stream fileStream = file;
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
-            {
-                rs.Write(buffer, 0, bytesRead);
-            }
-            fileStream.Close();
-
-            byte[] trailer = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-            rs.Write(trailer, 0, trailer.Length);
-            rs.Close();
-
-            WebResponse wresp = null;
-            try
-            {
-                wresp = wr.GetResponse();
-                Stream stream2 = wresp.GetResponseStream();
-                StreamReader reader2 = new StreamReader(stream2);
-                return reader2.ReadToEnd();
-            }
-            catch (Exception)
-            {
-                if (wresp != null)
-                {
-                    wresp.Close();
-                    wresp = null;
-                }
-            }
-            finally
-            {
-                wr = null;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Uploads a file from an url
-        /// </summary>
-        /// <param name="fileUrl"></param>
-        /// <param name="fileName"></param>
-        /// <param name="sessionID"></param>
-        /// <returns></returns>
-        public string UploadFile(string fileUrl, string fileName, string sessionID)
-        {
-            Log<DiscordAstroBot>.Info($"Submitting a file to astrometry (SessionID: {sessionID}, File: {fileUrl})");
-
-            // Setup json payload
-            var json = new { session = sessionID, allow_commercial_use = "n", allow_modifications = "n", publicly_visible = "y" };
-
-            var wc = new WebClient();
-            var memstream = new MemoryStream(wc.DownloadData(fileUrl));
-
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add("request-json", JsonConvert.SerializeObject(json));
-
-            // Get answer from server
-            string text = HttpUploadFile("http://nova.astrometry.net/api/upload", memstream, fileName, "file", "application/octet-stream", nvc);
-
-            dynamic jsonResult = JsonConvert.DeserializeObject(text);
-            if (jsonResult.status != "success")
-                throw new Exception("Submitting your file to Astrometry failed.");
-
-            Log<DiscordAstroBot>.Info($"Submission was successfull (SessionID: {jsonResult.session}, File: {fileUrl}, SubmissionID: {jsonResult.subid})");
-
-            return jsonResult.subid;
-        }
-
-        /// <summary>
         /// Uploads a file from a byte array
         /// </summary>
         /// <param name="fileUrl"></param>
@@ -192,14 +80,8 @@ namespace AstroBot.Astrometry.Nova
         {
             Log<DiscordAstroBot>.Info($"Submitting a file to astrometry (SessionID: {sessionID}, File: {fileName})");
 
-            // Setup json payload
-            var json = new { session = sessionID, allow_commercial_use = "n", allow_modifications = "n", publicly_visible = "y" };
-
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add("request-json", JsonConvert.SerializeObject(json));
-
             // Get answer from server
-            string text = HttpUploadFile("http://nova.astrometry.net/api/upload", new MemoryStream(file), fileName, "file", "application/octet-stream", nvc);
+            string text = UploadFile(sessionID, file, fileName);
 
             dynamic jsonResult = JsonConvert.DeserializeObject(text);
             if (jsonResult.status != "success")
@@ -251,6 +133,30 @@ namespace AstroBot.Astrometry.Nova
             return status;
         }
 
+
+        /// <summary>
+        /// Query SIMBAD with the given TAP query
+        /// </summary>
+        /// <param name="simbadTAPQuery"></param>
+        /// <returns></returns>
+        public string UploadFile(string sessionID, byte[] file, string fileName)
+        {
+            var client = new HttpClient();
+            var url = "http://nova.astrometry.net/api/upload";
+
+            // Setup json payload
+            var json = new { session = sessionID, allow_commercial_use = "n", allow_modifications = "n", publicly_visible = "y" };
+
+            var content = new MultipartFormDataContent();
+            content.Add(new ByteArrayContent(file, 0, file.Length), "file", fileName);
+            content.Add(new StringContent(JsonConvert.SerializeObject(json)), "request-json");
+
+            var response = client.PostAsync(url, content).Result;
+            var text = response.Content.ReadAsStringAsync().Result;
+
+            return text;
+        }
+
         /// <summary>
         /// Gets determined calibration data from a finished plate solving job
         /// </summary>
@@ -279,8 +185,8 @@ namespace AstroBot.Astrometry.Nova
                 PixScale = Convert.ToSingle(jsonResult.calibration.pixscale),
                 Radius = Convert.ToSingle(jsonResult.calibration.radius),
                 Coordinates = new Objects.RaDecCoordinate(
-                rightAscension: Convert.ToSingle(jsonResult.calibration.ra),
-                declination: Convert.ToSingle(jsonResult.calibration.dec)),
+                    rightAscension: Convert.ToSingle(jsonResult.calibration.ra),
+                    declination: Convert.ToSingle(jsonResult.calibration.dec)),
                 WCSFileUrl = GetWCSFileUrl(jobID)
             };
 
