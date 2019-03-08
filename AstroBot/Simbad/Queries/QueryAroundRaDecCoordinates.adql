@@ -11,8 +11,10 @@ SELECT basic.OID,
        rvz_radvel as "Radial velocity",
        galdim_majaxis,
        galdim_minaxis,
-       galdim_angle AS "Galaxy ellipse angle"
-FROM basic
+       galdim_angle AS "Galaxy ellipse angle",
+       "public".ids.ids AS "OtherNames"
+FROM basic JOIN ident ON ident.oidref = oid
 LEFT JOIN OTYPEDEF ON OTYPEDEF.otype = basic.otype
+JOIN "public".ids ON "public".basic.oid = "public".ids.oidref
 WHERE CONTAINS(POINT('ICRS', RA, DEC), CIRCLE('ICRS', {{RACenter}}, {{DECCenter}}, {{RadiusInDegrees}})) = 1
 ORDER BY "Name";
