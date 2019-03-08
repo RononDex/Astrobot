@@ -27,8 +27,8 @@
 </Target>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="AwesomeChatBot" Version="1.2.0" />
-    <PackageReference Include="AwesomeChatBot.Discord" Version="1.2.0" />
+    <PackageReference Include="AwesomeChatBot" Version="1.2.1" />
+    <PackageReference Include="AwesomeChatBot.Discord" Version="1.2.1" />
   </ItemGroup>
 
 
