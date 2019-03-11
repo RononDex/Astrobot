@@ -11,7 +11,9 @@ SELECT basic.OID,
        rvz_radvel as "Radial velocity",
        galdim_majaxis,
        galdim_minaxis,
-       galdim_angle AS "Galaxy ellipse angle"
-FROM basic JOIN ident ON oidref = oid
+       galdim_angle AS "Galaxy ellipse angle",
+       "public".ids.ids AS "OtherNames"
+FROM basic JOIN ident ON ident.oidref = oid
 LEFT JOIN OTYPEDEF ON OTYPEDEF.otype = basic.otype
+JOIN "public".ids ON "public".basic.oid = "public".ids.oidref
 WHERE id = '{{name}}';
