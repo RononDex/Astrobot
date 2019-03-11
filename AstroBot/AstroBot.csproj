@@ -19,12 +19,11 @@
     <PackageReference Include="SkiaSharp" Version="1.68.0" />
   </ItemGroup>
 
-<Target Name="CopyCustomContent" AfterTargets="AfterBuild">
   <ItemGroup>
-        <SimbadADQL Include="Simbad/Queries/*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(SimbadADQL)" DestinationFolder="$(TargetDir)/Simbad/Queries/" SkipUnchangedFiles="true" />
-</Target>
+    <Content Include="Simbad/Queries/*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
     <PackageReference Include="AwesomeChatBot" Version="1.2.1" />
