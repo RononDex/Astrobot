@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 
 namespace AstroBot.Objects
@@ -54,6 +55,12 @@ namespace AstroBot.Objects
         /// </summary>
         /// <returns></returns>
         public string ShortType => Properties.ContainsKey("TYPESHORT") ? (string)this["TYPESHORT"] : null;
+
+        /// <summary>
+        /// A list of alternative names for this object
+        /// </summary>
+        /// <returns></returns>
+        public List<string> OtherNames => Properties.ContainsKey("OTHERNAMES") ? ((string)this["OTHERNAMES"]).Split('|').ToList() : null;
 
         /// <summary>
         /// Every astronomical object should have RA and DEC coordinates
