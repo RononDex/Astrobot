@@ -5,6 +5,7 @@ using AstroBot.Objects;
 using System.Collections.Generic;
 using System.Net.Http;
 using System;
+using AstroBot.Objects.AstronomicalObjects;
 
 namespace AstroBot.Simbad
 {

@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace AstroBot.Objects
+namespace AstroBot.Objects.AstronomicalObjects
 {
     /// <summary>
     /// Represents an astronomical object (galaxy, star, ...)
@@ -61,6 +61,33 @@ namespace AstroBot.Objects
         /// </summary>
         /// <returns></returns>
         public List<string> OtherNames => Properties.ContainsKey("OTHERNAMES") ? ((string)this["OTHERNAMES"]).Split('|').ToList() : null;
+
+        /// <summary>
+        /// Relative velocity measurement of the object
+        /// </summary>
+        /// <returns></returns>
+        public MeasurementWithError RelativeVelocity => Properties.ContainsKey("RELATIVEVELOCITY") ?
+            new MeasurementWithError
+            {
+                Value = (double)this["RELATIVEVELOCITY"],
+                Error = Properties.ContainsKey("RELATIVEVELOCITYERROR") ?
+                    Get<double>("RELATIVEVELOCITYERROR") :
+                    new double?()
+            }
+            : null;
+
+        /// <summary>
+        /// Angular dimensions of the object
+        /// </summary>
+        /// <returns></returns>
+        public DimensionsWithAngle AngularDimensions => Properties.ContainsKey("MAJORAXISDIMENSION") ?
+            new DimensionsWithAngle()
+            {
+                MajorAxis = Get<double>("MAJORAXISDIMENSION"),
+                MinorAxis = Get<double>("MINORAXISDIMENSION"),
+                MajorAxisAngle = Get<double>("MAJORAXISANGLE")
+            }
+            : null;
 
         /// <summary>
         /// Every astronomical object should have RA and DEC coordinates
