@@ -11,8 +11,10 @@ SELECT basic.OID,
        galdim_majaxis AS "MajorAxisDimension",
        galdim_minaxis AS "MinorAxisDimension",
        galdim_angle AS "MajorAxisAngle",
-       "public".ids.ids AS "OtherNames"
+       ids.ids AS "OtherNames",
+       alltypes.otypes AS "OtherTypes"
 FROM basic JOIN ident ON ident.oidref = oid
 LEFT JOIN OTYPEDEF ON OTYPEDEF.otype = basic.otype
-JOIN "public".ids ON "public".basic.oid = "public".ids.oidref
+JOIN ids ON "public".basic.oid = "public".ids.oidref
+JOIN alltypes ON basic.oid = alltypes.oidref
 WHERE id = '{{name}}';

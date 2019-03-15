@@ -101,9 +101,23 @@ namespace AstroBot.Simbad
                 // strings are contained within quotes ""
                 if (value.StartsWith("\"") && value.EndsWith("\""))
                 {
-                    properties.Add(
-                        key: column,
-                        value: value.Substring(1, value.Length - 2));
+                    // If the field name is "OtherTypes", then we have to translate the short codes into human readable values
+                    if (column == "OtherTypes")
+                    {
+                        var types = value.Split("|", StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => x.Trim())
+                            .Select(x => SimbadClient.ShortTypeNameCache.ContainsKey(x) ? SimbadClient.ShortTypeNameCache[x] : x);
+
+                        properties.Add(
+                            key: column,
+                            value: string.Join('|', types));
+                    }
+                    else
+                    {
+                        properties.Add(
+                            key: column,
+                            value: value.Substring(1, value.Length - 2));
+                    }
                 }
                 // Else its a number (double)
                 else if (double.TryParse(value, out double parsedDouble))
