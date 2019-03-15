@@ -14,7 +14,41 @@ namespace AstroBot.Simbad
     /// </summary>
     public class SimbadClient
     {
+        /// <summary>
+        /// Internal cache for lookup of long type names from short type names
+        /// </summary>
+        /// <value></value>
+        internal static IReadOnlyDictionary<string, string> ShortTypeNameCache { get; private set; }
+
         const string TAP_QUERY_ENDPOINT = "http://simbad.u-strasbg.fr/simbad/sim-tap/sync";
+
+        public SimbadClient()
+        {
+            // Make sure that the type cache is initialized
+            if (ShortTypeNameCache == null)
+            {
+                InitShortTypeCache();
+            }
+        }
+
+        /// <summary>
+        /// Setup the internal short name to long name of object types
+        /// </summary>
+        private void InitShortTypeCache()
+        {
+            var query = File.ReadAllText("Simbad/Queries/LoadAllTypes.adql");
+
+            var result = QuerySimbad(new SimbadTAPQuery(query));
+
+            var cache = new Dictionary<string, string>();
+
+            foreach (var type in result.ResultDataSet)
+            {
+                cache.Add(type["ShortName"], type["LongName"]);
+            }
+
+            ShortTypeNameCache = cache;
+        }
 
         /// <summary>
         /// Query SIMBAD with the given TAP query
@@ -49,7 +83,7 @@ namespace AstroBot.Simbad
             var query = File.ReadAllText("Simbad/Queries/FindByName.adql");
             query = query.Replace("{{name}}", name);
             var result = QuerySimbad(new SimbadTAPQuery(query));
-            return result.AstronomicalObjects.FirstOrDefault();
+            return result.ToAstronomicalObjects().FirstOrDefault();
         }
 
         /// <summary>
@@ -66,7 +100,7 @@ namespace AstroBot.Simbad
                 .Replace("{{RadiusInDegrees}}", Convert.ToString(radiusInDegrees, CultureInfo.InvariantCulture));
 
             var result = QuerySimbad(new SimbadTAPQuery(query));
-            return result.AstronomicalObjects;
+            return result.ToAstronomicalObjects();
         }
     }
 }

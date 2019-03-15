@@ -1,0 +1,4 @@
+SELECT
+    otype_shortname AS "ShortName",
+    otype_longname AS "LongName"
+FROM OTYPEDEF

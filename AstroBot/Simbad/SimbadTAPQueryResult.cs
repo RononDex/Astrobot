@@ -11,7 +11,8 @@ namespace AstroBot.Simbad
     /// </summary>
     public class SimbadTAPQueryResult
     {
-        public IReadOnlyList<AstronomicalObject> AstronomicalObjects { get; private set; }
+
+        public IReadOnlyList<Dictionary<string, string>> ResultDataSet { get; private set; }
 
         /// <summary>
         /// Initializes the result from the result of a TAP query
@@ -20,17 +21,16 @@ namespace AstroBot.Simbad
         /// <param name="tapResultText"></param>
         public SimbadTAPQueryResult(string tapResultText)
         {
-            InitializeFromTapResultText(tapResultText);
+            ParseResultIntoDataset(tapResultText);
         }
 
         /// <summary>
-        /// Parse the result text and create the astronomical objects
+        /// Parses the results into the internal dataset storage
         /// </summary>
         /// <param name="tapResultText"></param>
-        private void InitializeFromTapResultText(string tapResultText)
+        private void ParseResultIntoDataset(string tapResultText)
         {
-            var astronomicalObjects = new List<AstronomicalObject>();
-
+            var resultDataSet = new List<Dictionary<string, string>>();
             var rows = tapResultText.Replace("\r", "").Split("\n");
 
             // If less than 3 rows --> no rows in the result (since header has 2 rows)
@@ -38,16 +38,35 @@ namespace AstroBot.Simbad
                 return;
 
             var headerRow = rows.First().ToUpper();
-            var columnNames = headerRow.Split("|", StringSplitOptions.None).Select(x => x.Trim());
+            var columnNames = headerRow.Split("|", StringSplitOptions.None).Select(x => x.Trim()).ToArray();
 
             foreach (var row in rows.Skip(2))
             {
                 if (string.IsNullOrWhiteSpace(row))
                     continue;
 
-                var curRowColumns = row.Split("|", StringSplitOptions.None).Select(x => x.Trim());
+                var curRowColumns = row.Split("|", StringSplitOptions.None).Select(x => x.Trim()).ToArray();
+                var dictionaryRow = new Dictionary<string, string>();
+                for (var i = 0; i < curRowColumns.Length; i++)
+                {
+                    dictionaryRow.Add(columnNames[i], curRowColumns[i]);
+                }
 
-                var properties = ParseProperties(columnNames.ToArray(), curRowColumns.ToArray());
+                ResultDataSet = resultDataSet;
+            }
+        }
+
+        /// <summary>
+        /// Parse the result text and create the astronomical objects
+        /// </summary>
+        /// <param name="tapResultText"></param>
+        public IReadOnlyList<AstronomicalObject> ToAstronomicalObjects()
+        {
+            var astronomicalObjects = new List<AstronomicalObject>();
+
+            foreach (var entity in ResultDataSet)
+            {
+                var properties = ParseProperties(entity.Select(x => x.Key).ToArray(), entity.Select(x => x.Value).ToArray());
                 var shortType = properties.ContainsKey("TYPESHORT") ? Convert.ToString(properties["TYPESHORT"]) : string.Empty;
 
                 // Depending on the type, create objects of different types
@@ -61,7 +80,7 @@ namespace AstroBot.Simbad
                 }
             }
 
-            AstronomicalObjects = astronomicalObjects;
+            return astronomicalObjects;
         }
 
         /// <summary>
