@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using AstroBot.Objects;
 using AstroBot.Objects.AstronomicalObjects;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AstroBot.Simbad
 {
@@ -30,6 +32,9 @@ namespace AstroBot.Simbad
         /// <param name="tapResultText"></param>
         private void ParseResultIntoDataset(string tapResultText)
         {
+            var parsed = JObject.Parse(tapResultText);
+            var header = parsed["metadata"];
+
             var resultDataSet = new List<Dictionary<string, string>>();
             var rows = tapResultText.Replace("\r", "").Split("\n");
 
@@ -40,12 +45,23 @@ namespace AstroBot.Simbad
             var headerRow = rows.First().ToUpper();
             var columnNames = headerRow.Split("|", StringSplitOptions.None).Select(x => x.Trim()).ToArray();
 
+
             foreach (var row in rows.Skip(2))
             {
                 if (string.IsNullOrWhiteSpace(row))
                     continue;
 
-                var curRowColumns = row.Split("|", StringSplitOptions.None).Select(x => x.Trim()).ToArray();
+                var curRowColumns = row.Split('"')
+                    .Select((element, index) => index % 2 == 0  // If even index
+                                           ? element.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)  // Split the item
+                                           : new string[] { element.Trim() })  // Keep the entire item
+                    .SelectMany(element => element)
+                    .Where(s => !string.IsNullOrEmpty(s))
+                    .Select(s => s.Trim())
+                    .ToArray();
+
+
+                // var curRowColumns = row.Split("|", StringSplitOptions.None).Select(x => x.Trim()).ToArray();
                 var dictionaryRow = new Dictionary<string, string>();
                 for (var i = 0; i < curRowColumns.Length; i++)
                 {

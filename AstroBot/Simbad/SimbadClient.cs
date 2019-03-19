@@ -62,7 +62,7 @@ namespace AstroBot.Simbad
             {
                 { "request", "doQuery" },
                 { "lang", "adql" },
-                { "format", "text" },
+                { "format", "json" },
                 { "query", simbadTAPQuery.Query }
             };
 
