@@ -1,7 +1,7 @@
 -- Basic data from an object given one of its identifiers.
 SELECT basic.OID,
-       RA,
-       DEC,
+       RA AS "Ra",
+       DEC AS "Dec",
        main_id AS "Name",
        OTYPEDEF.otype_longname AS "Type",
        OTYPEDEF.otype_shortname AS "TypeShort",

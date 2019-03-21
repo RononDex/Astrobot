@@ -41,7 +41,7 @@ namespace AstroBot.Test
         [TestMethod]
         public void TestFindObjectByName()
         {
-            var objName = "M78";
+            var objName = "M31";
             var simbadClient = new SimbadClient();
             var foundObject = simbadClient.FindObjectByName(objName);
         }

@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -35,43 +37,43 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// <returns></returns>
         public T Get<T>(string property)
         {
-            return (T)this[property];
+            return Properties.ContainsKey(property) ? (T)Convert.ChangeType(this[property], typeof(T)) : default(T);
         }
 
         /// <summary>
         /// The main name of the object
         /// </summary>
         /// <returns></returns>
-        public string Name => Properties.ContainsKey("NAME") ? (string)this["NAME"] : null;
+        public string Name => Get<string>("Name");
 
         /// <summary>
         /// The type of the object
         /// </summary>
         /// <returns></returns>
-        public string Type => Properties.ContainsKey("TYPE") ? (string)this["TYPE"] : null;
+        public string Type => Get<string>("Type");
 
         /// <summary>
         /// A short code describing the type
         /// </summary>
         /// <returns></returns>
-        public string ShortType => Properties.ContainsKey("TYPESHORT") ? (string)this["TYPESHORT"] : null;
+        public string ShortType => Get<string>("TypeShort");
 
         /// <summary>
         /// A list of alternative names for this object
         /// </summary>
         /// <returns></returns>
-        public List<string> OtherNames => Properties.ContainsKey("OTHERNAMES") ? ((string)this["OTHERNAMES"]).Split('|').ToList() : null;
+        public List<string> OtherNames => Properties.ContainsKey("OtherNames") ? Get<string>("OtherNames")?.Split('|').ToList() : null;
 
         /// <summary>
         /// Relative velocity measurement of the object
         /// </summary>
         /// <returns></returns>
-        public MeasurementWithError RelativeVelocity => Properties.ContainsKey("RELATIVEVELOCITY") ?
+        public MeasurementWithError RelativeVelocity => Properties.ContainsKey("RelativeVelocity") ?
             new MeasurementWithError
             {
-                Value = (double)this["RELATIVEVELOCITY"],
-                Error = Properties.ContainsKey("RELATIVEVELOCITYERROR") ?
-                    Get<double>("RELATIVEVELOCITYERROR") :
+                Value = Get<double>("RelativeVelocity"),
+                Error = Properties.ContainsKey("RelativeVelocityError") ?
+                    Get<double>("RelativeVelocityError") :
                     new double?()
             }
             : null;
@@ -80,12 +82,12 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// Angular dimensions of the object
         /// </summary>
         /// <returns></returns>
-        public DimensionsWithAngle AngularDimensions => Properties.ContainsKey("MAJORAXISDIMENSION") ?
+        public DimensionsWithAngle AngularDimensions => Properties.ContainsKey("MajorAxisDimension") ?
             new DimensionsWithAngle()
             {
-                MajorAxis = Get<double>("MAJORAXISDIMENSION"),
-                MinorAxis = Get<double>("MINORAXISDIMENSION"),
-                MajorAxisAngle = Get<double>("MAJORAXISANGLE")
+                MajorAxis = Get<double>("MajorAxisDimension"),
+                MinorAxis = Get<double>("MinorAxisDimension"),
+                MajorAxisAngle = Get<double>("MajorAxisAngle")
             }
             : null;
 
@@ -93,8 +95,8 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// Every astronomical object should have RA and DEC coordinates
         /// </summary>
         /// <returns></returns>
-        public RaDecCoordinate RaDecCoordinate => Properties.ContainsKey("RA") && Properties.ContainsKey("DEC") ?
-            new RaDecCoordinate(rightAscension: (double)this["RA"], declination: (double)this["DEC"]) :
+        public RaDecCoordinate RaDecCoordinate => Properties.ContainsKey("Ra") && Properties.ContainsKey("Dec") ?
+            new RaDecCoordinate(rightAscension: Get<double>("Ra"), declination: Get<double>("Dec")) :
             null;
 
         /// <summary>

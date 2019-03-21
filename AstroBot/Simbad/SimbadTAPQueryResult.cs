@@ -14,7 +14,7 @@ namespace AstroBot.Simbad
     public class SimbadTAPQueryResult
     {
 
-        public IReadOnlyList<Dictionary<string, string>> ResultDataSet { get; private set; }
+        public IReadOnlyList<Dictionary<string, object>> ResultDataSet { get; private set; }
 
         /// <summary>
         /// Initializes the result from the result of a TAP query
@@ -34,42 +34,21 @@ namespace AstroBot.Simbad
         {
             var parsed = JObject.Parse(tapResultText);
             var header = parsed["metadata"];
+            var columnNames = header.Select(x => (string)x["name"]).ToArray();
 
-            var resultDataSet = new List<Dictionary<string, string>>();
-            var rows = tapResultText.Replace("\r", "").Split("\n");
+            var resultDataSet = new List<Dictionary<string, object>>();
 
-            // If less than 3 rows --> no rows in the result (since header has 2 rows)
-            if (rows.Length < 3)
-                return;
-
-            var headerRow = rows.First().ToUpper();
-            var columnNames = headerRow.Split("|", StringSplitOptions.None).Select(x => x.Trim()).ToArray();
-
-
-            foreach (var row in rows.Skip(2))
+            foreach (var row in parsed["data"])
             {
-                if (string.IsNullOrWhiteSpace(row))
-                    continue;
-
-                var curRowColumns = row.Split('"')
-                    .Select((element, index) => index % 2 == 0  // If even index
-                                           ? element.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)  // Split the item
-                                           : new string[] { element.Trim() })  // Keep the entire item
-                    .SelectMany(element => element)
-                    .Where(s => !string.IsNullOrEmpty(s))
-                    .Select(s => s.Trim())
-                    .ToArray();
-
-
-                // var curRowColumns = row.Split("|", StringSplitOptions.None).Select(x => x.Trim()).ToArray();
-                var dictionaryRow = new Dictionary<string, string>();
-                for (var i = 0; i < curRowColumns.Length; i++)
+                var dictionaryRow = new Dictionary<string, object>();
+                for (var i = 0; i < row.Count(); i++)
                 {
-                    dictionaryRow.Add(columnNames[i], curRowColumns[i]);
+                    dictionaryRow.Add(columnNames[i], (row[i] as JValue).Value);
                 }
 
-                ResultDataSet = resultDataSet;
+                resultDataSet.Add(dictionaryRow);
             }
+            ResultDataSet = resultDataSet;
         }
 
         /// <summary>
@@ -105,7 +84,7 @@ namespace AstroBot.Simbad
         /// <param name="columnNames"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        private Dictionary<string, object> ParseProperties(string[] columnNames, string[] values)
+        private Dictionary<string, object> ParseProperties(string[] columnNames, object[] values)
         {
             var properties = new Dictionary<string, object>();
 
@@ -115,12 +94,12 @@ namespace AstroBot.Simbad
                 var value = values[i];
 
                 // strings are contained within quotes ""
-                if (value.StartsWith("\"") && value.EndsWith("\""))
+                if (value is string)
                 {
                     // If the field name is "OtherTypes", then we have to translate the short codes into human readable values
                     if (column == "OtherTypes")
                     {
-                        var types = value.Split("|", StringSplitOptions.RemoveEmptyEntries)
+                        var types = ((string)value).Split("|", StringSplitOptions.RemoveEmptyEntries)
                             .Select(x => x.Trim())
                             .Select(x => SimbadClient.ShortTypeNameCache.ContainsKey(x) ? SimbadClient.ShortTypeNameCache[x] : x);
 
@@ -132,15 +111,39 @@ namespace AstroBot.Simbad
                     {
                         properties.Add(
                             key: column,
-                            value: value.Substring(1, value.Length - 2));
+                            value: (value as string));
                     }
                 }
                 // Else its a number (double)
-                else if (double.TryParse(value, out double parsedDouble))
+                else if (value is int)
                 {
                     properties.Add(
                         key: column,
-                        value: parsedDouble);
+                        value: (value as int?));
+                }
+                else if (value is long)
+                {
+                    properties.Add(
+                        key: column,
+                        value: (value as long?));
+                }
+                else if (value is decimal)
+                {
+                    properties.Add(
+                        key: column,
+                        value: (value as decimal?));
+                }
+                else if (value is double)
+                {
+                    properties.Add(
+                        key: column,
+                        value: (value as double?));
+                }
+                else if (value is float)
+                {
+                    properties.Add(
+                        key: column,
+                        value: (value as float?));
                 }
             }
 
