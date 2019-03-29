@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace AstroBot.Commands
 {
-    public class Astrometry : AwesomeChatBot.Commands.Command, IRegexCommand, ICommandDescription
+    public class AstrometryCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ICommandDescription
     {
         public List<string> Regex => new List<string> {
             @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo)(\?)?",
