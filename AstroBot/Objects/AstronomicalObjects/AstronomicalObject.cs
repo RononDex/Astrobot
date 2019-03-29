@@ -58,6 +58,13 @@ namespace AstroBot.Objects.AstronomicalObjects
         public string ShortType => Get<string>("TypeShort");
 
         /// <summary>
+        /// Other types of the object
+        /// </summary>
+        /// <typeparam name="string"></typeparam>
+        /// <returns></returns>
+        public List<string> OtherTypes => Properties.ContainsKey("OtherTypes") ? Get<string>("OtherTypes")?.Split('|').ToList() : null;
+
+        /// <summary>
         /// A list of alternative names for this object
         /// </summary>
         /// <returns></returns>

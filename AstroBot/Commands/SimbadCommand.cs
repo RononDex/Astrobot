@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AstroBot.Simbad;
+using AstroBot.Objects.AstronomicalObjects;
 using AwesomeChatBot.ApiWrapper;
 using AwesomeChatBot.Commands.Handlers;
 
@@ -45,6 +46,7 @@ namespace AstroBot.Commands
                         return true;
                     }
 
+                    WriteObjectDetails(receivedMessage, foundObject);
                 }
                 return true;
             });
@@ -53,6 +55,21 @@ namespace AstroBot.Commands
         private Task WriteObjectNotFound(ReceivedMessage receivedMessage, string objectName)
         {
             return receivedMessage.Channel.SendMessageAsync($"No astronomical object found for \"{objectName}\"");
+        }
+
+        private Task WriteObjectDetails(ReceivedMessage receivedMessage, AstronomicalObject astronomicalObject)
+        {
+            var columnSize = 12;
+
+            return receivedMessage.Channel.SendMessageAsync(
+                receivedMessage.ApiWrapper.MessageFormatter.CodeBlock(
+                    $"{"Name:".PadRight(columnSize)} {astronomicalObject.Name}\r\n" +
+                    $"{"Type:".PadRight(columnSize)} {astronomicalObject.Type}\r\n" +
+                    $"\r\n" +
+                    $"Secondary types:\r\n{string.Join(',', astronomicalObject.OtherTypes)}\r\n" +
+                    $"\r\n" +
+                    $"OtherNames:\r\n{string.Join(',', astronomicalObject.OtherNames)}\r\n"
+                ));
         }
     }
 }
