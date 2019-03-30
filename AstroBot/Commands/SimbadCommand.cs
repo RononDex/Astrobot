@@ -59,12 +59,16 @@ namespace AstroBot.Commands
 
         private Task WriteObjectDetails(ReceivedMessage receivedMessage, AstronomicalObject astronomicalObject)
         {
-            var columnSize = 12;
+            var columnSize = 24;
 
             return receivedMessage.Channel.SendMessageAsync(
                 receivedMessage.ApiWrapper.MessageFormatter.CodeBlock(
                     $"{"Name:".PadRight(columnSize)} {astronomicalObject.Name}\r\n" +
                     $"{"Type:".PadRight(columnSize)} {astronomicalObject.Type}\r\n" +
+                    $"{"Relative velocity:".PadRight(columnSize)} {astronomicalObject.RelativeVelocity}\r\n" +
+                    $"\r\n" +
+                    $"{"Coordinates:".PadRight(columnSize)} RA: {astronomicalObject.RaDecCoordinate.RightAscension}\r\n" +
+                    $"{"            ".PadRight(columnSize)} DEC: {astronomicalObject.RaDecCoordinate.Declination}\r\n" +
                     $"\r\n" +
                     $"Secondary types:\r\n{string.Join(',', astronomicalObject.OtherTypes)}\r\n" +
                     $"\r\n" +
