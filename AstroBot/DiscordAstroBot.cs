@@ -3,6 +3,8 @@ using AstroBot.Objects.Config;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using AwesomeChatBot.ApiWrapper;
+using System.Collections.Generic;
 
 namespace AstroBot
 {
@@ -63,7 +65,8 @@ namespace AstroBot
 
             // Setup bot framework
             var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory);
-            BotFramework = new AwesomeChatBot.AwesomeChatBot(discordWrapper, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
+            var wrappers = new List<ApiWrapper>();
+            BotFramework = new AwesomeChatBot.AwesomeChatBot(wrappers, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
         }
     }
 }
