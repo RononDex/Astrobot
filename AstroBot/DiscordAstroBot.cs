@@ -30,6 +30,9 @@ namespace AstroBot
             botFramework.RegisterCommand(new Commands.AstrometryCommand());
             botFramework.RegisterCommand(new Commands.SimbadCommand());
             botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
+
+            // Register events
+            botFramework.NewUserJoinedServer += Events.UserServerEvents.UserJoinedServer;
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace AstroBot
 
             // Setup bot framework
             var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory);
-            var wrappers = new List<ApiWrapper>();
+            var wrappers = new List<ApiWrapper>() { discordWrapper };
             BotFramework = new AwesomeChatBot.AwesomeChatBot(wrappers, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
         }
     }
