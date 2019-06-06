@@ -29,6 +29,12 @@ namespace AstroBot
         public static Objects.Config.BotSettings BotSettings { get; private set; }
 
         /// <summary>
+        /// Globally stored BotFramework instance for easy access
+        /// </summary>
+        /// <value></value>
+        public static AwesomeChatBot.AwesomeChatBot BotFramework { get; set; }
+
+        /// <summary>
         /// Initialize the global variables
         /// </summary>
         public static void InitGlobals()

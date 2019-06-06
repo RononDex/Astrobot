@@ -11,7 +11,7 @@ namespace AstroBot
     /// <summary>
     /// The main class controlling / starting the bot
     /// </summary>
-    public class DiscordAstroBot
+    public class AstroBot
     {
         private AwesomeChatBot.AwesomeChatBot BotFramework { get; set; }
 
@@ -21,7 +21,7 @@ namespace AstroBot
             InitializeFramework();
 
             // Register commands
-            var botFramework = this.BotFramework;
+            var botFramework = BotFramework;
 
             botFramework.RegisterCommand(new Commands.TestCommand());
             botFramework.RegisterCommand(new Commands.LocationCommand());
@@ -40,7 +40,7 @@ namespace AstroBot
         /// </summary>
         private void InitializeFramework()
         {
-            Log<DiscordAstroBot>.Info("Initializing bot...");
+            Log<AstroBot>.Info("Initializing bot...");
 
             // Set up configuration laoder
             var builder = new ConfigurationBuilder()
@@ -70,6 +70,8 @@ namespace AstroBot
             var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory);
             var wrappers = new List<ApiWrapper>() { discordWrapper };
             BotFramework = new AwesomeChatBot.AwesomeChatBot(wrappers, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
+
+            Globals.BotFramework = BotFramework;
         }
     }
 }
