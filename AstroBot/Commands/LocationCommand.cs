@@ -44,7 +44,7 @@ namespace AstroBot.Commands
                     return true;
                 }
 
-                receivedMessage.Channel.SendMessageAsync(new SendMessage($"I found the following location for \"{location}\":\r\n" +
+                _ = receivedMessage.Channel.SendMessageAsync(new SendMessage($"I found the following location for \"{location}\":\r\n" +
                                                                             receivedMessage.ApiWrapper.MessageFormatter.Quote($"Name:   {geoLocation.Name}\r\n" +
                                                                             $"Lat:    {geoLocation.Lat}\r\n" +
                                                                             $"Lng:    {geoLocation.Lng}")));

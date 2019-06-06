@@ -35,7 +35,7 @@ namespace AstroBot.Astrometry.Nova
         /// <returns></returns>
         public string Login()
         {
-            Log<DiscordAstroBot>.Info("Login into Astrometry...");
+            Log<AstroBot>.Info("Login into Astrometry...");
 
             // Setup json payload
             var json = new { apikey = ApiKey };
@@ -64,7 +64,7 @@ namespace AstroBot.Astrometry.Nova
             if (jsonResult.status != "success")
                 throw new Exception("Login was refused by Astrometry API");
 
-            Log<DiscordAstroBot>.Info($"Login into Astrometry successfull. SessionKey: {jsonResult.session}");
+            Log<AstroBot>.Info($"Login into Astrometry successfull. SessionKey: {jsonResult.session}");
 
             return jsonResult.session;
         }
@@ -78,7 +78,7 @@ namespace AstroBot.Astrometry.Nova
         /// <returns></returns>
         public string UploadFile(byte[] file, string fileName, string sessionID)
         {
-            Log<DiscordAstroBot>.Info($"Submitting a file to astrometry (SessionID: {sessionID}, File: {fileName})");
+            Log<AstroBot>.Info($"Submitting a file to astrometry (SessionID: {sessionID}, File: {fileName})");
 
             // Get answer from server
             string text = UploadFile(sessionID, file, fileName);
@@ -87,7 +87,7 @@ namespace AstroBot.Astrometry.Nova
             if (jsonResult.status != "success")
                 throw new Exception("Submission of your file to Astrometry failed.");
 
-            Log<DiscordAstroBot>.Info($"Submission was successfull (SessionID: {jsonResult.session}, File: {fileName}, SubmissionID: {jsonResult.subid})");
+            Log<AstroBot>.Info($"Submission was successfull (SessionID: {jsonResult.session}, File: {fileName}, SubmissionID: {jsonResult.subid})");
 
             return jsonResult.subid;
         }
@@ -99,7 +99,7 @@ namespace AstroBot.Astrometry.Nova
         /// <returns></returns>
         public AstrometrySubmissionStatus GetSubmissionStatus(string submissionID)
         {
-            Log<DiscordAstroBot>.Info($"Getting submission status from astrometry for submission {submissionID}");
+            Log<AstroBot>.Info($"Getting submission status from astrometry for submission {submissionID}");
 
             var webRequest = (HttpWebRequest)WebRequest.Create(string.Format("http://nova.astrometry.net/api/submissions/{0}", submissionID));
             var response = (HttpWebResponse)webRequest.GetResponse();
@@ -164,7 +164,7 @@ namespace AstroBot.Astrometry.Nova
         /// <returns></returns>
         public AstrometrySubmissionResult GetCalibrationFromFinishedJob(int jobID)
         {
-            Log<DiscordAstroBot>.Info($"Getting job result from astrometry for job {jobID}");
+            Log<AstroBot>.Info($"Getting job result from astrometry for job {jobID}");
 
             var webRequest = (HttpWebRequest)WebRequest.Create($"http://nova.astrometry.net/api/jobs/{jobID}/info/");
             var response = (HttpWebResponse)webRequest.GetResponse();

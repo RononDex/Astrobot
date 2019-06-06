@@ -38,7 +38,7 @@ namespace AstroBot.GeoLocation
         /// <returns></returns>
         public static Objects.LatLngLocation FindLocation(string address)
         {
-            Log<DiscordAstroBot>.Info($"Requesting GeoLocation for {address}");
+            Log<AstroBot>.Info($"Requesting GeoLocation for {address}");
 
             var webRequest = WebRequest.Create(string.Format("https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}", WebUtility.UrlEncode(address), GoogleApiKey));
             var response = (HttpWebResponse)webRequest.GetResponse();

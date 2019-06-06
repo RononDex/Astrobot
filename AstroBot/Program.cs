@@ -39,7 +39,7 @@ namespace AstroBot
             // Initialize globals
             Globals.InitGlobals();
 
-            new DiscordAstroBot().Initialize();
+            new AstroBot().Initialize();
 
             // Wait indefinitely so the bot can run in the background
             await Task.Delay(-1);
