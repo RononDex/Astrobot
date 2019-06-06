@@ -33,6 +33,7 @@ namespace AstroBot
 
             // Register events
             botFramework.NewUserJoinedServer += Events.UserServerEvents.UserJoinedServer;
+            botFramework.ServerAvailable += Events.ServerEvents.ServerAvailable;
         }
 
         /// <summary>
