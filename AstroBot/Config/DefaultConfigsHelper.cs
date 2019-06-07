@@ -22,10 +22,10 @@ namespace AstroBot.Config
 
             foreach (var defaultConfigValue in DefaultServerConfig)
             {
-                if (!existingEntries.Any(x => x.Key == defaultConfigValue.Key))
+                if (existingEntries.Any(x => x.Key == defaultConfigValue.Key))
                     continue;
 
-                Globals.BotFramework.ConfigStore.SetConfigValue(defaultConfigValue.Key, defaultConfigValue.Value);
+                Globals.BotFramework.ConfigStore.SetConfigValue(defaultConfigValue.Key, defaultConfigValue.Value, server);
             }
         }
     }

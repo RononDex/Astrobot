@@ -29,6 +29,7 @@ namespace AstroBot
             botFramework.RegisterCommand(new Commands.WeatherCommand());
             botFramework.RegisterCommand(new Commands.AstrometryCommand());
             botFramework.RegisterCommand(new Commands.SimbadCommand());
+            botFramework.RegisterCommand(new Commands.AdminCommand());
             botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
 
             // Register events

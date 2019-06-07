@@ -22,7 +22,6 @@ namespace AstroBot.Commands
 
         public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {
-
             return Task.Factory.StartNew(() =>
             {
                 if (receivedMessage.Channel.ParentServer == null)
@@ -33,8 +32,7 @@ namespace AstroBot.Commands
 
                 if (regexMatch.Groups["ListServerSettings"].Success)
                 {
-                    if (receivedMessage.Author.Roles != null
-                        && !receivedMessage.Author.Roles.Any(x => x.IsAdmin))
+                    if (receivedMessage.Author.Roles?.Any(x => x.IsAdmin) == false)
                     {
                         _ = receivedMessage.Channel.SendMessageAsync("Access denied! You don't have the permission to use this command!");
                         return true;
