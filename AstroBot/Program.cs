@@ -13,10 +13,13 @@ namespace AstroBot
                 // Set console width
                 Console.WindowWidth = 190;
             }
-            catch { }
+            catch (Exception)
+            {
+                Console.WriteLine("Your terminal / consoel does not support setting window width!");
+            }
 
             // Register a global exception handler
-            System.AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
 
             // Async wrapper of Main method
             new Program().MainAsync().GetAwaiter().GetResult();
@@ -30,11 +33,11 @@ namespace AstroBot
         {
             NLog.LogManager.LoadConfiguration("nlog.config");
 
-            NLog.LogManager.GetLogger(this.GetType().FullName).Info("---------------------------------------------------------");
-            NLog.LogManager.GetLogger(this.GetType().FullName).Info("----------------- Launching Astro bot -------------------");
-            NLog.LogManager.GetLogger(this.GetType().FullName).Info("---------------------------------------------------------");
-            NLog.LogManager.GetLogger(this.GetType().FullName).Info("");
-            NLog.LogManager.GetLogger(this.GetType().FullName).Info("NLog logging system loaded");
+            NLog.LogManager.GetLogger(GetType().FullName).Info("---------------------------------------------------------");
+            NLog.LogManager.GetLogger(GetType().FullName).Info("----------------- Launching Astro bot -------------------");
+            NLog.LogManager.GetLogger(GetType().FullName).Info("---------------------------------------------------------");
+            NLog.LogManager.GetLogger(GetType().FullName).Info("");
+            NLog.LogManager.GetLogger(GetType().FullName).Info("NLog logging system loaded");
 
             // Initialize globals
             Globals.InitGlobals();
@@ -50,9 +53,9 @@ namespace AstroBot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
+        private static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
         {
-            NLog.LogManager.GetLogger("AstroBot").Fatal($"Unhandled exception caught by global handler: {e.ExceptionObject.ToString()}");
+            NLog.LogManager.GetLogger(nameof(AstroBot)).Fatal($"Unhandled exception caught by global handler: {e.ExceptionObject}");
         }
     }
 }
