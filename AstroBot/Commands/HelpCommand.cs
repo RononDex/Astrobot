@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AwesomeChatBot.ApiWrapper;
 using AwesomeChatBot.Commands.Handlers;
 using AwesomeChatBot.Config;
+using System.Reflection;
 
 namespace AstroBot.Commands
 {
@@ -25,13 +26,13 @@ namespace AstroBot.Commands
         {
             return Task.Factory.StartNew(() =>
             {
-                System.Reflection.Assembly ass = System.Reflection.Assembly.GetEntryAssembly();
+                var ass = Assembly.GetEntryAssembly();
 
                 receivedMessage.Channel.SendMessageAsync("Following commands are available in this server:").Wait();
                 var configStore = receivedMessage.ApiWrapper.ConfigStore;
                 var context = new IConfigurationDependency[] { receivedMessage.Channel.ParentServer };
 
-                foreach (System.Reflection.TypeInfo ti in ass.DefinedTypes)
+                foreach (TypeInfo ti in ass.DefinedTypes)
                 {
                     if (ti.ImplementedInterfaces.Contains(typeof(ICommandDescription)))
                     {
