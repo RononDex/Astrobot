@@ -45,8 +45,7 @@ namespace AstroBot.Commands
                     var key = regexMatch.Groups["SetServerConfigKey"].Value;
                     var value = regexMatch.Groups["SetServerConfigValue"].Value;
 
-                    var existingEntry = receivedMessage.ApiWrapper.ConfigStore.GetConfigValue<string>(key, null, receivedMessage.Channel.ParentServer);
-                    if (existingEntry != null)
+                    if (!Globals.BotFramework.ConfigStore.DoesConfigEntryWithKeyExist(key, receivedMessage.Channel.ParentServer))
                     {
                         _ = receivedMessage.Channel.SendMessageAsync($"Unknown configuration key \"{key}\"");
                         return true;
