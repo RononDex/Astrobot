@@ -19,7 +19,11 @@ namespace AstroBot.Commands
 
         public string Description => "Administrative commands";
 
-        public string[] ExampleCalls => new[] { "show server config" };
+        public string[] ExampleCalls => new[]
+        {
+            "show server config",
+            "set server config <key> <value>"
+        };
 
         public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {

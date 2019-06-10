@@ -42,22 +42,22 @@ namespace AstroBot.Commands
                     var foundObject = simbadClient.FindObjectByName(objectName);
                     if (foundObject == null)
                     {
-                        WriteObjectNotFound(receivedMessage, objectName).Wait();
+                        WriteObjectNotFoundAsync(receivedMessage, objectName).Wait();
                         return true;
                     }
 
-                    WriteObjectDetails(receivedMessage, foundObject);
+                    WriteObjectDetailsAsync(receivedMessage, foundObject);
                 }
                 return true;
             });
         }
 
-        private Task WriteObjectNotFound(ReceivedMessage receivedMessage, string objectName)
+        private static Task WriteObjectNotFoundAsync(ReceivedMessage receivedMessage, string objectName)
         {
             return receivedMessage.Channel.SendMessageAsync($"No astronomical object found for \"{objectName}\"");
         }
 
-        private Task WriteObjectDetails(ReceivedMessage receivedMessage, AstronomicalObject astronomicalObject)
+        private static Task WriteObjectDetailsAsync(ReceivedMessage receivedMessage, AstronomicalObject astronomicalObject)
         {
             var columnSize = 24;
 
