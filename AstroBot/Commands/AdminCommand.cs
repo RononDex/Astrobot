@@ -14,7 +14,7 @@ namespace AstroBot.Commands
         public List<string> Regex => new List<string>
         {
             "(?'ListServerSettings'show server config)",
-            "set server config (?'SetServerConfigKey'.*\\w) (?'SetServerConfigValue'.*\\w)",
+            "set server config (?'SetServerConfigKey'\\w*) (?'SetServerConfigValue'.*\\w)",
         };
 
         public string Description => "Administrative commands";
