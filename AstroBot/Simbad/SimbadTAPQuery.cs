@@ -9,7 +9,7 @@ namespace AstroBot.Simbad
         /// The ADQL query
         /// </summary>
         /// <value></value>
-        public string Query { get; private set; }
+        public string Query { get; }
 
         /// <summary>
         ///

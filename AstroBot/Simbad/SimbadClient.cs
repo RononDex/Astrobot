@@ -89,7 +89,8 @@ namespace AstroBot.Simbad
         /// <summary>
         /// Tries to find an object of the given name
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="raDecCoordinate"></param>
+        /// <param name="radiusInDegrees"></param>
         /// <returns></returns>
         public IReadOnlyList<AstronomicalObject> QueryAround(RaDecCoordinate raDecCoordinate, float radiusInDegrees)
         {

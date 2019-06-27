@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using AstroBot.Objects;
 using AstroBot.Objects.AstronomicalObjects;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AstroBot.Simbad
@@ -54,7 +52,6 @@ namespace AstroBot.Simbad
         /// <summary>
         /// Parse the result text and create the astronomical objects
         /// </summary>
-        /// <param name="tapResultText"></param>
         public IReadOnlyList<AstronomicalObject> ToAstronomicalObjects()
         {
             var astronomicalObjects = new List<AstronomicalObject>();

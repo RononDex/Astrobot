@@ -38,7 +38,7 @@ namespace AstroBot.Commands
 
                 if (regexMatch.Groups["AstroObject"].Success)
                 {
-                    string objectName = regexMatch.Groups["AstroObject"].Value;
+                    var objectName = regexMatch.Groups["AstroObject"].Value;
                     var foundObject = simbadClient.FindObjectByName(objectName);
                     if (foundObject == null)
                     {
@@ -59,7 +59,7 @@ namespace AstroBot.Commands
 
         private static Task WriteObjectDetailsAsync(ReceivedMessage receivedMessage, AstronomicalObject astronomicalObject)
         {
-            var columnSize = 24;
+            const int columnSize = 24;
 
             return receivedMessage.Channel.SendMessageAsync(
                 receivedMessage.ApiWrapper.MessageFormatter.CodeBlock(
