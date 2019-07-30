@@ -5,7 +5,7 @@
   </PropertyGroup>
 
    <PropertyGroup>
-    <NoWarn>CSE0003;CC0038;IDE0008;CC0035;CC0045;CC0042;CC0076</NoWarn>
+    <NoWarn>CSE0003;CC0038;IDE0008;CC0035;CC0045;CC0042;CC0076;MA0007</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

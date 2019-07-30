@@ -18,9 +18,7 @@ namespace AstroBot.Commands
 
         public string[] ExampleCalls => new[] { "Help" };
 
-        public List<string> Regex => new List<string>() {
-            "help"
-        };
+        public List<string> Regex => new List<string> { "help" };
 
         public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {
