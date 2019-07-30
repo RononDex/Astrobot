@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using NLog;
 
 namespace AstroBot
 {
@@ -15,7 +16,7 @@ namespace AstroBot
             }
             catch (Exception)
             {
-                Console.WriteLine("Your terminal / consoel does not support setting window width!");
+                Console.WriteLine("Your terminal / console does not support setting window width!");
             }
 
             // Register a global exception handler
@@ -29,15 +30,15 @@ namespace AstroBot
         /// Async main function serves as entry point of the app
         /// </summary>
         /// <returns></returns>
-        public async Task MainAsync()
+        public Task MainAsync()
         {
-            NLog.LogManager.LoadConfiguration("nlog.config");
+            LogManager.LoadConfiguration("nlog.config");
 
-            NLog.LogManager.GetLogger(GetType().FullName).Info("---------------------------------------------------------");
-            NLog.LogManager.GetLogger(GetType().FullName).Info("----------------- Launching Astro bot -------------------");
-            NLog.LogManager.GetLogger(GetType().FullName).Info("---------------------------------------------------------");
-            NLog.LogManager.GetLogger(GetType().FullName).Info("");
-            NLog.LogManager.GetLogger(GetType().FullName).Info("NLog logging system loaded");
+            LogManager.GetLogger(GetType().FullName).Info("---------------------------------------------------------");
+            LogManager.GetLogger(GetType().FullName).Info("----------------- Launching Astro bot -------------------");
+            LogManager.GetLogger(GetType().FullName).Info("---------------------------------------------------------");
+            LogManager.GetLogger(GetType().FullName).Info("");
+            LogManager.GetLogger(GetType().FullName).Info("NLog logging system loaded");
 
             // Initialize globals
             Globals.InitGlobals();
@@ -45,7 +46,7 @@ namespace AstroBot
             new AstroBot().Initialize();
 
             // Wait indefinitely so the bot can run in the background
-            await Task.Delay(-1);
+            return Task.Delay(-1);
         }
 
         /// <summary>

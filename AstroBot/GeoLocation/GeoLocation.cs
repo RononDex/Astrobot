@@ -8,7 +8,7 @@ namespace AstroBot.GeoLocation
     /// <summary>
     /// Used to determine Lat/Lng coordinates for places on earth
     /// </summary>
-    static class GeoLocation
+    internal static class GeoLocation
     {
         private static string _googleApiKey;
 
@@ -40,7 +40,7 @@ namespace AstroBot.GeoLocation
         {
             Log<AstroBot>.Info($"Requesting GeoLocation for {address}");
 
-            var webRequest = WebRequest.Create(string.Format("https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}", WebUtility.UrlEncode(address), GoogleApiKey));
+            var webRequest = WebRequest.Create($"https://maps.googleapis.com/maps/api/geocode/json?address={WebUtility.UrlEncode(address)}&key={GoogleApiKey}");
             var response = (HttpWebResponse)webRequest.GetResponse();
 
             string text;
