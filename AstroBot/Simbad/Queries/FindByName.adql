@@ -23,6 +23,6 @@ SELECT TOP 1 basic.OID,
 FROM basic JOIN ident ON ident.oidref = oid
 LEFT JOIN OTYPEDEF ON OTYPEDEF.otype = basic.otype
 JOIN ids ON "public".basic.oid = "public".ids.oidref
-JOIN alltypes ON basic.oid = alltypes.oidref,
+JOIN alltypes ON basic.oid = alltypes.oidref
 LEFT JOIN mesDistance ON basic.oid = mesDistance.oidref
 WHERE id = '{{name}}';
