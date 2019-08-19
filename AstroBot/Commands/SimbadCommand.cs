@@ -70,6 +70,8 @@ namespace AstroBot.Commands
                     $"{"Coordinates:".PadRight(columnSize)} RA: {astronomicalObject.RaDecCoordinate.RightAscension}\r\n" +
                     $"{"            ".PadRight(columnSize)} DEC: {astronomicalObject.RaDecCoordinate.Declination}\r\n" +
                     $"\r\n" +
+                    $"{"Estimated Distance:".PadRight(columnSize)} {astronomicalObject.MeasuredDistance}\r\n" +
+                    $"\r\n" +
                     $"Secondary types:\r\n{string.Join(',', astronomicalObject.OtherTypes)}\r\n" +
                     $"\r\n" +
                     $"OtherNames:\r\n{string.Join(',', astronomicalObject.OtherNames)}\r\n"
