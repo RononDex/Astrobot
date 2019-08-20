@@ -33,17 +33,35 @@ namespace AstroBot.Commands
                 {
                     var roleNameToAdd = regexMatch.Groups["GiveRoleName"].Value;
                     var availableRolesToSelfAssign = receivedMessage.ApiWrapper.ConfigStore
-                        .GetConfigValue<string>("UserSelfAssignableRoles")?
+                        .GetConfigValue<string>("UserSelfAssignableRoles", defaultValue: null, receivedMessage.Channel.ParentServer)?
                         .Split(";");
 
-                    if (!availableRolesToSelfAssign.Contains(roleNameToAdd, System.StringComparer.Ordinal))
+                    if (availableRolesToSelfAssign?.Contains(roleNameToAdd, System.StringComparer.Ordinal) != true)
                     {
-                        receivedMessage.Channel.SendMessageAsync($"The role \"{roleNameToAdd}\" does not exist or I have no perission to assign it to you!");
+                        receivedMessage.Channel.SendMessageAsync($"The role \"{roleNameToAdd}\" does not exist or I have no permission to assign it to you!");
                         return true;
                     }
 
                     receivedMessage.Author.AddRole(roleNameToAdd);
                     receivedMessage.Channel.SendMessageAsync($"Done! You are now assigned the role {roleNameToAdd}").Wait();
+                }
+
+                if (regexMatch.Groups["RemoveRoleName"].Success)
+                {
+                    var roleNameToRemove = regexMatch.Groups["RemoveRoleName"].Value;
+
+                    var availableRolesToSelfAssign = receivedMessage.ApiWrapper.ConfigStore
+                        .GetConfigValue<string>("UserSelfAssignableRoles", defaultValue: null, receivedMessage.Channel.ParentServer)?
+                        .Split(";");
+
+                    if (availableRolesToSelfAssign?.Contains(roleNameToRemove, System.StringComparer.Ordinal) != true)
+                    {
+                        receivedMessage.Channel.SendMessageAsync($"The role \"{roleNameToRemove}\" does not exist or I have no permission to remove it from you!");
+                        return true;
+                    }
+
+                    receivedMessage.Author.RemoveRole(roleNameToRemove);
+                    receivedMessage.Channel.SendMessageAsync($"Done! I have removed the role {roleNameToRemove} from you!").Wait();
                 }
 
                 return true;
