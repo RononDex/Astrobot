@@ -38,7 +38,7 @@ namespace AstroBot.Commands
 
                 if (regexMatch.Groups["AstroObject"].Success)
                 {
-                    string objectName = regexMatch.Groups["AstroObject"].Value;
+                    var objectName = regexMatch.Groups["AstroObject"].Value;
                     var foundObject = simbadClient.FindObjectByName(objectName);
                     if (foundObject == null)
                     {
@@ -59,7 +59,10 @@ namespace AstroBot.Commands
 
         private static Task WriteObjectDetailsAsync(ReceivedMessage receivedMessage, AstronomicalObject astronomicalObject)
         {
-            var columnSize = 24;
+            const int columnSize = 24;
+            var estimatedDistance = astronomicalObject.MeasuredDistance != null
+                ? $"\r\n{"Estimated Distance:".PadRight(columnSize)} {astronomicalObject.MeasuredDistance}\r\n"
+                : string.Empty;
 
             return receivedMessage.Channel.SendMessageAsync(
                 receivedMessage.ApiWrapper.MessageFormatter.CodeBlock(
@@ -69,6 +72,7 @@ namespace AstroBot.Commands
                     $"\r\n" +
                     $"{"Coordinates:".PadRight(columnSize)} RA: {astronomicalObject.RaDecCoordinate.RightAscension}\r\n" +
                     $"{"            ".PadRight(columnSize)} DEC: {astronomicalObject.RaDecCoordinate.Declination}\r\n" +
+                    estimatedDistance +
                     $"\r\n" +
                     $"Secondary types:\r\n{string.Join(',', astronomicalObject.OtherTypes)}\r\n" +
                     $"\r\n" +

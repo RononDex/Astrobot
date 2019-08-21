@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
-   <PropertyGroup>
-    <NoWarn>CSE0003;CC0038;IDE0008;CC0035;CC0045;CC0042;CC0076</NoWarn>
+  <PropertyGroup>
+    <NoWarn>CSE0003;CC0038;IDE0008;CC0035;CC0045;CC0042;CC0076;MA0007</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,16 +31,14 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="AwesomeChatBot" Version="1.3.2" />
-    <PackageReference Include="AwesomeChatBot.Discord" Version="1.3.1" />
+    <PackageReference Include="AwesomeChatBot" Version="1.4.0" />
+    <PackageReference Include="AwesomeChatBot.Discord" Version="1.4.0" />
   </ItemGroup>
 
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <PackageReference Include="AwesomeChatBot" Version="1.3.2" />
-    <PackageReference Include="AwesomeChatBot.Discord" Version="1.3.1" />
-    <!-- <ProjectReference Include="..\..\AwesomeChatBot.Discord\AwesomeChatBot.DiscordWrapper.csproj" />
-    <ProjectReference Include="..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.csproj" /> -->
+    <ProjectReference Include="..\..\AwesomeChatBot.Discord\AwesomeChatBot.DiscordWrapper.csproj" />
+    <ProjectReference Include="..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.csproj" />
   </ItemGroup>
 
   <ItemGroup>

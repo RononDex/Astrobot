@@ -11,7 +11,8 @@ namespace AstroBot.Config
         {
             new ConfigValue { Key = "GreetNewUsersChannel", Value = null },
             new ConfigValue { Key = "GreetNewUsers", Value = "false" },
-            new ConfigValue { Key = "GreetNewUsersMessage", Value = "Welcome @UserMention" }
+            new ConfigValue { Key = "GreetNewUsersMessage", Value = "Welcome @UserMention" },
+            new ConfigValue { Key = "UserSelfAssignableRoles", Value = "" }
         };
 
         /// <summary>
@@ -24,7 +25,7 @@ namespace AstroBot.Config
 
             foreach (var defaultConfigValue in DefaultServerConfig)
             {
-                if (existingEntries.Any(x => x.Key == defaultConfigValue.Key))
+                if (existingEntries.Any(x => string.Equals(x.Key, defaultConfigValue.Key, System.StringComparison.Ordinal)))
                 {
                     continue;
                 }
@@ -33,11 +34,10 @@ namespace AstroBot.Config
             }
 
             // Delete existing entries that are not listed in "DefaultServerConfig"
-            var entriesToDelete = existingEntries.Where(x => !DefaultServerConfig.Any(y => x.Key == y.Key)).ToList();
+            var entriesToDelete = existingEntries.Where(x => !DefaultServerConfig.Any(y => string.Equals(x.Key, y.Key, System.StringComparison.Ordinal))).ToList();
 
-            for (int i = 0; i < entriesToDelete.Count; i++)
+            foreach (var entryToDelete in entriesToDelete)
             {
-                var entryToDelete = entriesToDelete[i];
                 Globals.BotFramework.ConfigStore.DeleteConfigEntry(entryToDelete.Key, server);
             }
         }

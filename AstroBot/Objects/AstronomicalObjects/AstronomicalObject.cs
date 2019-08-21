@@ -36,7 +36,7 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// <returns></returns>
         public T Get<T>(string property)
         {
-            return Properties.ContainsKey(property) ? (T)Convert.ChangeType(this[property], typeof(T)) : default(T);
+            return Properties.ContainsKey(property) ? (T)Convert.ChangeType(this[property], typeof(T)) : default;
         }
 
         /// <summary>
@@ -62,13 +62,17 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// </summary>
         /// <typeparam name="string"></typeparam>
         /// <returns></returns>
-        public List<string> OtherTypes => Properties.ContainsKey("OtherTypes") ? Get<string>("OtherTypes")?.Split('|').ToList() : null;
+        public List<string> OtherTypes => Properties.ContainsKey("OtherTypes")
+            ? Get<string>("OtherTypes")?.Split('|').ToList()
+            : null;
 
         /// <summary>
         /// A list of alternative names for this object
         /// </summary>
         /// <returns></returns>
-        public List<string> OtherNames => Properties.ContainsKey("OtherNames") ? Get<string>("OtherNames")?.Split('|').ToList() : null;
+        public List<string> OtherNames => Properties.ContainsKey("OtherNames")
+            ? Get<string>("OtherNames")?.Split('|').ToList()
+            : null;
 
         /// <summary>
         /// Relative velocity measurement of the object
@@ -82,6 +86,15 @@ namespace AstroBot.Objects.AstronomicalObjects
                 Error = Properties.ContainsKey("RelativeVelocityError") ?
                     Get<double>("RelativeVelocityError") :
                     new double?()
+            }
+            : null;
+
+        public MeasurementWithError MeasuredDistance => Properties.ContainsKey("Distance")
+            ? new MeasurementWithError
+            {
+                Value = Get<double>("Distance"),
+                Unit = Get<string>("DistanceUnit"),
+                Error = Get<double>("DistanceMinusErr")
             }
             : null;
 

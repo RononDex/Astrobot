@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using AstroBot.Objects;
 using AstroBot.Objects.AstronomicalObjects;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AstroBot.Simbad
@@ -54,7 +52,6 @@ namespace AstroBot.Simbad
         /// <summary>
         /// Parse the result text and create the astronomical objects
         /// </summary>
-        /// <param name="tapResultText"></param>
         public IReadOnlyList<AstronomicalObject> ToAstronomicalObjects()
         {
             var astronomicalObjects = new List<AstronomicalObject>();
@@ -84,7 +81,7 @@ namespace AstroBot.Simbad
         /// <param name="columnNames"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        private Dictionary<string, object> ParseProperties(string[] columnNames, object[] values)
+        private static Dictionary<string, object> ParseProperties(string[] columnNames, object[] values)
         {
             var properties = new Dictionary<string, object>();
 
@@ -94,12 +91,12 @@ namespace AstroBot.Simbad
                 var value = values[i];
 
                 // strings are contained within quotes ""
-                if (value is string)
+                if (value is string @string)
                 {
                     // If the field name is "OtherTypes", then we have to translate the short codes into human readable values
                     if (column == "OtherTypes")
                     {
-                        var types = ((string)value).Split("|", StringSplitOptions.RemoveEmptyEntries)
+                        var types = @string.Split("|", StringSplitOptions.RemoveEmptyEntries)
                             .Select(x => x.Trim())
                             .Select(x => SimbadClient.ShortTypeNameCache.ContainsKey(x) ? SimbadClient.ShortTypeNameCache[x] : x);
 

@@ -1,5 +1,5 @@
 -- Basic data from an object given one of its identifiers.
-SELECT basic.OID,
+SELECT TOP 1 basic.OID,
        RA AS "Ra",
        DEC AS "Dec",
        main_id AS "Name",
@@ -13,9 +13,16 @@ SELECT basic.OID,
        galdim_minaxis AS "MinorAxisDimension",
        galdim_angle AS "MajorAxisAngle",
        ids.ids AS "OtherNames",
-       alltypes.otypes AS "OtherTypes"
+       alltypes.otypes AS "OtherTypes",
+       mesDistance.dist AS "Distance",
+       mesDistance.unit AS "DistanceUnit",
+       mesDistance.qual AS "DistanceQual",
+       mesDistance.method AS "DistanceMethod",
+       mesDistance.minus_err AS "DistanceMinusErr",
+       mesDistance.plus_err AS "DistancePlusErr"
 FROM basic JOIN ident ON ident.oidref = oid
 LEFT JOIN OTYPEDEF ON OTYPEDEF.otype = basic.otype
 JOIN ids ON "public".basic.oid = "public".ids.oidref
 JOIN alltypes ON basic.oid = alltypes.oidref
+LEFT JOIN mesDistance ON basic.oid = mesDistance.oidref
 WHERE id = '{{name}}';

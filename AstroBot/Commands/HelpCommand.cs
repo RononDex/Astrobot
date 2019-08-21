@@ -18,9 +18,7 @@ namespace AstroBot.Commands
 
         public string[] ExampleCalls => new[] { "Help" };
 
-        public List<string> Regex => new List<string>() {
-            "help"
-        };
+        public List<string> Regex => new List<string> { "help" };
 
         public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {
@@ -54,10 +52,13 @@ namespace AstroBot.Commands
                             var formatter = receivedMessage.ApiWrapper.MessageFormatter;
                             var message = $"{formatter.Bold(command.Name)}: {command.Description}\r\nExample(s):\r\n";
                             var examples = string.Empty;
+                            var builder = new System.Text.StringBuilder();
+                            builder.Append(examples);
                             foreach (var exampleCall in command.ExampleCalls)
                             {
-                                examples += "@AstroBot " + exampleCall + "\r\n";
+                                builder.Append("@AstroBot ").Append(exampleCall).Append("\r\n");
                             }
+                            examples = builder.ToString();
 
                             message += formatter.Quote(examples);
 

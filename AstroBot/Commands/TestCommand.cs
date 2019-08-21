@@ -14,7 +14,7 @@ namespace AstroBot.Commands
         /// <summary>
         /// A list of regex patterns that trigger the command
         /// </summary>
-        public List<string> Regex => new List<string>() { "test (?'TestParam'.*\\w)" };
+        public List<string> Regex => new List<string> { "test (?'TestParam'.*\\w)" };
 
         /// <summary>
         ///  Unique name of the command
