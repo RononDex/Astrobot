@@ -108,7 +108,7 @@ namespace AstroBot.Simbad
                     {
                         properties.Add(
                             key: column,
-                            value: (value as string));
+                            value: (value as string)?.Trim());
                     }
                 }
                 // Else its a number (double)
