@@ -11,7 +11,6 @@ namespace AstroBot.Simbad
     /// </summary>
     public class SimbadTAPQueryResult
     {
-
         public IReadOnlyList<Dictionary<string, object>> ResultDataSet { get; private set; }
 
         /// <summary>
@@ -61,15 +60,7 @@ namespace AstroBot.Simbad
                 var properties = ParseProperties(entity.Select(x => x.Key).ToArray(), entity.Select(x => x.Value).ToArray());
                 var shortType = properties.ContainsKey("TYPESHORT") ? Convert.ToString(properties["TYPESHORT"]) : string.Empty;
 
-                // Depending on the type, create objects of different types
-                if (shortType.Contains('*'))
-                {
-                    astronomicalObjects.Add(new Star(properties));
-                }
-                else
-                {
-                    astronomicalObjects.Add(new AstronomicalObject(properties));
-                }
+                astronomicalObjects.Add(new AstronomicalObject(properties));
             }
 
             return astronomicalObjects;

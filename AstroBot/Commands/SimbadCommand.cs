@@ -63,6 +63,17 @@ namespace AstroBot.Commands
             var estimatedDistance = astronomicalObject.MeasuredDistance != null
                 ? $"\r\n{"Estimated Distance:".PadRight(columnSize)} {astronomicalObject.MeasuredDistance}\r\n"
                 : string.Empty;
+            if (!string.IsNullOrEmpty(estimatedDistance))
+            {
+                var convertedValue = Utilities.UnitConverters.AstronomicalDistanceUnitConverter.ConvertMeasurementWithErrorTo(
+                    astronomicalObject.MeasuredDistance,
+                    Utilities.UnitConverters.AstronomicalDistanceUnitType.SI);
+
+                if (convertedValue.Value != astronomicalObject.MeasuredDistance.Value)
+                {
+                    estimatedDistance += $"{"".PadLeft(columnSize)} {convertedValue}\r\n";
+                }
+            }
 
             return receivedMessage.Channel.SendMessageAsync(
                 receivedMessage.ApiWrapper.MessageFormatter.CodeBlock(
