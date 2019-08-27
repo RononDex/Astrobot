@@ -120,6 +120,13 @@ namespace AstroBot.Objects.AstronomicalObjects
             null;
 
         /// <summary>
+        /// The morphological type of a galaxy (null if not a galaxy)
+        /// </summary>
+        public string MorphologicalType => Properties.ContainsKey("MorphologicalType")
+            ? Get<string>("MorphologicalType")
+            : null;
+
+        /// <summary>
         /// Override ToString to return objects name
         /// </summary>
         /// <returns></returns>

@@ -89,7 +89,6 @@ namespace AstroBot.Commands
                                               $"PixelScale:     {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\n" +
                                               $"ObjectsInImage: {objectsInImage}", "css");
 
-
                 receivedMessage.Channel.SendMessageAsync(msg).Wait();
                 var annotatedImage = novaAstrometryClient.DownloadAnnotatedImage(jobId);
 

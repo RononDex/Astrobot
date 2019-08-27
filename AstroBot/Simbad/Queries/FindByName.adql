@@ -19,7 +19,8 @@ SELECT TOP 1 basic.OID,
        mesDistance.qual AS "DistanceQual",
        mesDistance.method AS "DistanceMethod",
        mesDistance.minus_err AS "DistanceMinusErr",
-       mesDistance.plus_err AS "DistancePlusErr"
+       mesDistance.plus_err AS "DistancePlusErr",
+       morph_type AS "MorphologicalType"
 FROM basic JOIN ident ON ident.oidref = oid
 LEFT JOIN OTYPEDEF ON OTYPEDEF.otype = basic.otype
 JOIN ids ON "public".basic.oid = "public".ids.oidref

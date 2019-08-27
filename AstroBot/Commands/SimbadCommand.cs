@@ -75,14 +75,21 @@ namespace AstroBot.Commands
                 }
             }
 
+            var morphologicalType = "";
+            if (!string.IsNullOrEmpty(astronomicalObject.MorphologicalType))
+            {
+                morphologicalType = $"{"Morphological type:".PadRight(columnSize)} {astronomicalObject.MorphologicalType}\r\n";
+            }
+
             return receivedMessage.Channel.SendMessageAsync(
                 receivedMessage.ApiWrapper.MessageFormatter.CodeBlock(
                     $"{"Name:".PadRight(columnSize)} {astronomicalObject.Name}\r\n" +
                     $"{"Type:".PadRight(columnSize)} {astronomicalObject.Type}\r\n" +
+                    morphologicalType +
                     $"{"Relative velocity:".PadRight(columnSize)} {astronomicalObject.RelativeVelocity}\r\n" +
                     $"\r\n" +
-                    $"{"Coordinates:".PadRight(columnSize)} RA: {astronomicalObject.RaDecCoordinate.RightAscension}\r\n" +
-                    $"{"            ".PadRight(columnSize)} DEC: {astronomicalObject.RaDecCoordinate.Declination}\r\n" +
+                    $"{"Coordinates:".PadRight(columnSize)} RA: {astronomicalObject.RaDecCoordinate.RightAscension}°\r\n" +
+                    $"{"            ".PadRight(columnSize)} DEC: {astronomicalObject.RaDecCoordinate.Declination}°\r\n" +
                     estimatedDistance +
                     $"\r\n" +
                     $"Secondary types:\r\n{string.Join(',', astronomicalObject.OtherTypes)}\r\n" +
