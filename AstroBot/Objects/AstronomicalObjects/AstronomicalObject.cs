@@ -103,7 +103,7 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// </summary>
         /// <returns></returns>
         public DimensionsWithAngle AngularDimensions => Properties.ContainsKey("MajorAxisDimension") ?
-            new DimensionsWithAngle()
+            new DimensionsWithAngle
             {
                 MajorAxis = Get<double>("MajorAxisDimension"),
                 MinorAxis = Get<double>("MinorAxisDimension"),
