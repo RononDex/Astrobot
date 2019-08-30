@@ -20,10 +20,19 @@ SELECT TOP 1 basic.OID,
        mesDistance.method AS "DistanceMethod",
        mesDistance.minus_err AS "DistanceMinusErr",
        mesDistance.plus_err AS "DistancePlusErr",
-       morph_type AS "MorphologicalType"
+       morph_type AS "MorphologicalType",
+       AllFluxes.U AS "FluxU",
+       AllFluxes.B AS "FluxB",
+       AllFluxes.V AS "FluxV",
+       AllFluxes.R AS "FluxR",
+       AllFluxes.I AS "FluxI",
+       AllFluxes.J AS "FluxJ",
+       AllFluxes.H AS "FluxH",
+       AllFluxes.K AS "FluxK"
 FROM basic JOIN ident ON ident.oidref = oid
 LEFT JOIN OTYPEDEF ON OTYPEDEF.otype = basic.otype
 JOIN ids ON "public".basic.oid = "public".ids.oidref
 JOIN alltypes ON basic.oid = alltypes.oidref
 LEFT JOIN mesDistance ON basic.oid = mesDistance.oidref
-WHERE id = '{{name}}';
+LEFT JOIN AllFluxes ON AllFluxes.oidref = basic.oid
+WHERE id = '{{name}}' OR OTYPEDEF.otype_shortname = '{{name}}' OR OTYPEDEF.otype_longname = '{{name}}';

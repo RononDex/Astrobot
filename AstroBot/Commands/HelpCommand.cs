@@ -20,55 +20,52 @@ namespace AstroBot.Commands
 
         public List<string> Regex => new List<string> { "help" };
 
-        public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
+        public async Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {
-            return Task.Factory.StartNew(() =>
+            var ass = Assembly.GetEntryAssembly();
+
+            await receivedMessage.Channel.SendMessageAsync("Following commands are available in this server:");
+            var configStore = receivedMessage.ApiWrapper.ConfigStore;
+            var context = new IConfigurationDependency[] { receivedMessage.Channel.ParentServer };
+
+            foreach (TypeInfo ti in ass.DefinedTypes)
             {
-                var ass = Assembly.GetEntryAssembly();
-
-                receivedMessage.Channel.SendMessageAsync("Following commands are available in this server:").Wait();
-                var configStore = receivedMessage.ApiWrapper.ConfigStore;
-                var context = new IConfigurationDependency[] { receivedMessage.Channel.ParentServer };
-
-                foreach (TypeInfo ti in ass.DefinedTypes)
+                if (ti.ImplementedInterfaces.Contains(typeof(ICommandDescription)))
                 {
-                    if (ti.ImplementedInterfaces.Contains(typeof(ICommandDescription)))
+                    var command = ass.CreateInstance(ti.FullName) as ICommandDescription;
+
+                    // Only list commands
+                    if (command is AwesomeChatBot.Commands.Command)
                     {
-                        var command = ass.CreateInstance(ti.FullName) as ICommandDescription;
-
-                        // Only list commands
-                        if (command is AwesomeChatBot.Commands.Command)
+                        // Ignore disabled commands
+                        if (!configStore.IsCommandActive(
+                            command as AwesomeChatBot.Commands.Command,
+                            enabledByDefault: Globals.AwesomeChatBotSettings.CommandsEnabledByDefault,
+                            dependencies: context))
                         {
-                            // Ignore disabled commands
-                            if (!configStore.IsCommandActive(
-                                command as AwesomeChatBot.Commands.Command,
-                                enabledByDefault: Globals.AwesomeChatBotSettings.CommandsEnabledByDefault,
-                                dependencies: context))
-                            {
-                                continue;
-                            }
-
-                            // Write help output for the command
-                            var formatter = receivedMessage.ApiWrapper.MessageFormatter;
-                            var message = $"{formatter.Bold(command.Name)}: {command.Description}\r\nExample(s):\r\n";
-                            var examples = string.Empty;
-                            var builder = new System.Text.StringBuilder();
-                            builder.Append(examples);
-                            foreach (var exampleCall in command.ExampleCalls)
-                            {
-                                builder.Append("@AstroBot ").Append(exampleCall).Append("\r\n");
-                            }
-                            examples = builder.ToString();
-
-                            message += formatter.Quote(examples);
-
-                            receivedMessage.Channel.SendMessageAsync(new SendMessage(message)).Wait();
+                            continue;
                         }
+
+                        // Write help output for the command
+                        var formatter = receivedMessage.ApiWrapper.MessageFormatter;
+                        var message = $"{formatter.Bold(command.Name)}: {command.Description}\r\nExample(s):\r\n";
+                        var examples = string.Empty;
+                        var builder = new System.Text.StringBuilder();
+                        builder.Append(examples);
+                        foreach (var exampleCall in command.ExampleCalls)
+                        {
+                            builder.Append("@AstroBot ").Append(exampleCall).Append("\r\n");
+                        }
+                        examples = builder.ToString();
+
+                        message += formatter.Quote(examples);
+
+                        await receivedMessage.Channel.SendMessageAsync(new SendMessage(message));
                     }
                 }
+            }
 
-                return true;
-            });
+            return true;
         }
     }
 }

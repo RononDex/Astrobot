@@ -127,6 +127,14 @@ namespace AstroBot.Objects.AstronomicalObjects
             : null;
 
         /// <summary>
+        /// A list of known fluxes of the object
+        /// </summary>
+        public IList<Flux> Fluxes => Flux.FluxRangesLookup
+            .Where(range => Properties.ContainsKey($"Flux{range.Key.ToString()}"))
+            .Select(range => new Flux { FluxType = range.Key, Value = Get<float>($"Flux{range.Key.ToString()}") })
+            .ToList();
+
+        /// <summary>
         /// Override ToString to return objects name
         /// </summary>
         /// <returns></returns>

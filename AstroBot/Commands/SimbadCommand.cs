@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using AwesomeChatBot.ApiWrapper;
 using AwesomeChatBot.Commands.Handlers;
 using System;
 using AstroBot.Utilities.UnitConverters;
+using AstroBot.Objects;
 
 namespace AstroBot.Commands
 {
@@ -34,7 +36,6 @@ namespace AstroBot.Commands
 
         public async Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {
-
             var simbadClient = new SimbadClient();
 
             if (regexMatch.Groups["AstroObject"].Success)
@@ -84,10 +85,16 @@ namespace AstroBot.Commands
 
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Estimated Distance:", estimatedDistance, inline: true);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Angular size:", foundObject.AngularDimensions?.ToString(), inline: true);
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Fluxes:", FormatFluxes(foundObject), inline: false);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Secondary types:", string.Join(", ", foundObject.OtherTypes), inline: false);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Also known as:", string.Join(", ", foundObject.OtherNames), inline: false);
 
             return receivedMessage.Channel.SendMessageAsync(new SendMessage(embeddedMessage));
+        }
+
+        private static string FormatFluxes(AstronomicalObject foundObject)
+        {
+            return string.Join("\r\n", foundObject.Fluxes.Select(flux => $"{Enum.GetName(typeof(FluxType), flux.FluxType)}: {flux.Value} (mag)"));
         }
 
         private static void AddFieldToEmbeddedMessageIfNotEmpty(
