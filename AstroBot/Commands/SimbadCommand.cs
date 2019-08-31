@@ -87,7 +87,7 @@ namespace AstroBot.Commands
 
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Estimated Distance:", estimatedDistance, inline: true);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Angular size:", foundObject.AngularDimensions?.ToString(), inline: true);
-            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Fluxes:", FormatFluxes(foundObject), inline: false);
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Fluxes [mag]:", FormatFluxes(foundObject), inline: false);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Secondary types:", string.Join(", ", foundObject.OtherTypes), inline: false);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Also known as:", string.Join(", ", foundObject.OtherNames).WithMaxLength(1024), inline: false);
 
@@ -96,7 +96,11 @@ namespace AstroBot.Commands
 
         private static string FormatFluxes(AstronomicalObject foundObject)
         {
-            return string.Join("\r\n", foundObject.Fluxes.Select(flux => $"{Enum.GetName(typeof(FluxType), flux.FluxType)}: {flux.Value} (mag)"));
+            return string.Join("\r\n", foundObject.Fluxes.Select(flux =>
+            {
+                var displayInformation = Flux.FluxRangesLookup.FirstOrDefault(x => x.Key == flux.FluxType);
+                return $"{Enum.GetName(typeof(FluxType), flux.FluxType)}: {flux.Value} ({displayInformation.Value.From} - {displayInformation.Value.To})";
+            }));
         }
 
         private static void AddFieldToEmbeddedMessageIfNotEmpty(
