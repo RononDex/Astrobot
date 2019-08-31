@@ -40,6 +40,11 @@ namespace AstroBot.Objects.AstronomicalObjects
         }
 
         /// <summary>
+        /// Id used to identify the object on simbad
+        /// </summary>
+        public int SimbadId => Get<int>("SimbadId");
+
+        /// <summary>
         /// The main name of the object
         /// </summary>
         /// <returns></returns>

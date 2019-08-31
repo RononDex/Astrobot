@@ -9,6 +9,7 @@ using AwesomeChatBot.Commands.Handlers;
 using System;
 using AstroBot.Utilities.UnitConverters;
 using AstroBot.Objects;
+using AstroBot.Utilities.Extensions;
 
 namespace AstroBot.Commands
 {
@@ -57,7 +58,8 @@ namespace AstroBot.Commands
         {
             var embeddedMessage = new EmbeddedMessage
             {
-                Title = foundObject.Name
+                Title = foundObject.Name,
+                ThumbnailUrl = $"http://alasky.u-strasbg.fr/cgi/simbad-thumbnails/get-thumbnail.py?oid={foundObject.SimbadId}&size=200&legend=true"
             };
 
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Type:", foundObject.Type, inline: true);
@@ -87,7 +89,7 @@ namespace AstroBot.Commands
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Angular size:", foundObject.AngularDimensions?.ToString(), inline: true);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Fluxes:", FormatFluxes(foundObject), inline: false);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Secondary types:", string.Join(", ", foundObject.OtherTypes), inline: false);
-            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Also known as:", string.Join(", ", foundObject.OtherNames), inline: false);
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Also known as:", string.Join(", ", foundObject.OtherNames).WithMaxLength(1024), inline: false);
 
             return receivedMessage.Channel.SendMessageAsync(new SendMessage(embeddedMessage));
         }

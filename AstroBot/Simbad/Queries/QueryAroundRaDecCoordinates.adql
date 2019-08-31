@@ -1,5 +1,6 @@
 -- Display basic data about objects contained in a given circle
-SELECT basic.OID,
+SELECT TOP 1
+       basic.OID AS "SimbadId",
        RA AS "Ra",
        DEC AS "Dec",
        main_id AS "Name",
