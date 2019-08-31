@@ -11,7 +11,6 @@ namespace AstroBot.Simbad
     /// </summary>
     public class SimbadTAPQueryResult
     {
-
         public IReadOnlyList<Dictionary<string, object>> ResultDataSet { get; private set; }
 
         /// <summary>
@@ -61,15 +60,7 @@ namespace AstroBot.Simbad
                 var properties = ParseProperties(entity.Select(x => x.Key).ToArray(), entity.Select(x => x.Value).ToArray());
                 var shortType = properties.ContainsKey("TYPESHORT") ? Convert.ToString(properties["TYPESHORT"]) : string.Empty;
 
-                // Depending on the type, create objects of different types
-                if (shortType.Contains('*'))
-                {
-                    astronomicalObjects.Add(new Star(properties));
-                }
-                else
-                {
-                    astronomicalObjects.Add(new AstronomicalObject(properties));
-                }
+                astronomicalObjects.Add(new AstronomicalObject(properties));
             }
 
             return astronomicalObjects;
@@ -81,7 +72,7 @@ namespace AstroBot.Simbad
         /// <param name="columnNames"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        private Dictionary<string, object> ParseProperties(string[] columnNames, object[] values)
+        private static Dictionary<string, object> ParseProperties(string[] columnNames, object[] values)
         {
             var properties = new Dictionary<string, object>();
 
@@ -91,12 +82,12 @@ namespace AstroBot.Simbad
                 var value = values[i];
 
                 // strings are contained within quotes ""
-                if (value is string)
+                if (value is string @string)
                 {
                     // If the field name is "OtherTypes", then we have to translate the short codes into human readable values
                     if (column == "OtherTypes")
                     {
-                        var types = ((string)value).Split("|", StringSplitOptions.RemoveEmptyEntries)
+                        var types = @string.Split("|", StringSplitOptions.RemoveEmptyEntries)
                             .Select(x => x.Trim())
                             .Select(x => SimbadClient.ShortTypeNameCache.ContainsKey(x) ? SimbadClient.ShortTypeNameCache[x] : x);
 
@@ -108,7 +99,7 @@ namespace AstroBot.Simbad
                     {
                         properties.Add(
                             key: column,
-                            value: (value as string));
+                            value: (value as string)?.Trim());
                     }
                 }
                 // Else its a number (double)

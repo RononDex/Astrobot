@@ -10,7 +10,7 @@ namespace AstroBot.Objects
 
         public override string ToString()
         {
-            return $"{Value} {Unit} {(Error != null ? "±" + Error.ToString() : string.Empty)}";
+            return $"{Value} {Unit} {(Error != null ? "± " + Error + " " + Unit : string.Empty)}";
         }
     }
 }

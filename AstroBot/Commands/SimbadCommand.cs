@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -5,6 +6,10 @@ using AstroBot.Simbad;
 using AstroBot.Objects.AstronomicalObjects;
 using AwesomeChatBot.ApiWrapper;
 using AwesomeChatBot.Commands.Handlers;
+using System;
+using AstroBot.Utilities.UnitConverters;
+using AstroBot.Objects;
+using AstroBot.Utilities.Extensions;
 
 namespace AstroBot.Commands
 {
@@ -30,50 +35,94 @@ namespace AstroBot.Commands
 
         public override string Name => "Simbad";
 
-        public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
+        public async Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {
-            return Task.Factory.StartNew(() =>
+            var simbadClient = new SimbadClient();
+
+            if (regexMatch.Groups["AstroObject"].Success)
             {
-                var simbadClient = new SimbadClient();
-
-                if (regexMatch.Groups["AstroObject"].Success)
+                var objectName = regexMatch.Groups["AstroObject"].Value;
+                var foundObject = simbadClient.FindObjectByName(objectName);
+                if (foundObject == null)
                 {
-                    var objectName = regexMatch.Groups["AstroObject"].Value;
-                    var foundObject = simbadClient.FindObjectByName(objectName);
-                    if (foundObject == null)
-                    {
-                        WriteObjectNotFoundAsync(receivedMessage, objectName).Wait();
-                        return true;
-                    }
-
-                    WriteObjectDetailsAsync(receivedMessage, foundObject);
+                    await WriteObjectNotFoundAsync(receivedMessage, objectName);
+                    return true;
                 }
-                return true;
-            });
+
+                await WriteObjectDetailsAsyncEmbeddedAsync(receivedMessage, foundObject);
+            }
+            return true;
+        }
+
+        private static Task WriteObjectDetailsAsyncEmbeddedAsync(ReceivedMessage receivedMessage, AstronomicalObject foundObject)
+        {
+            var embeddedMessage = new EmbeddedMessage
+            {
+                Title = foundObject.Name,
+                ThumbnailUrl = $"http://alasky.u-strasbg.fr/cgi/simbad-thumbnails/get-thumbnail.py?oid={foundObject.SimbadId}&size=200&legend=true"
+            };
+
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Type:", foundObject.Type, inline: true);
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Morphological Type:", foundObject.MorphologicalType, inline: true);
+
+            var coordinates = foundObject.RaDecCoordinate != null
+                ? $"RA: {Math.Round(foundObject.RaDecCoordinate.RightAscension, 5)}\r\nDEC: {Math.Round(foundObject.RaDecCoordinate.Declination, 5)}"
+                : null;
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Coordinates:", coordinates, inline: true);
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Relative Velocity:", foundObject.RelativeVelocity?.ToString(), inline: true);
+
+            var estimatedDistance = foundObject.MeasuredDistance != null
+                ? $"{foundObject.MeasuredDistance}"
+                : null;
+            if (estimatedDistance != null)
+            {
+                var convertedDistance = AstronomicalDistanceUnitConverter.ConvertMeasurementWithErrorTo(
+                    foundObject.MeasuredDistance,
+                    AstronomicalDistanceUnitType.SI);
+                if (convertedDistance.Value != foundObject.MeasuredDistance.Value)
+                {
+                    estimatedDistance += $"\r\n{convertedDistance}";
+                }
+            }
+
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Estimated Distance:", estimatedDistance, inline: true);
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Angular size:", foundObject.AngularDimensions?.ToString(), inline: true);
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Fluxes [mag]:", FormatFluxes(foundObject), inline: false);
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Secondary types:", string.Join(", ", foundObject.OtherTypes), inline: false);
+            AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Also known as:", string.Join(", ", foundObject.OtherNames).WithMaxLength(1024), inline: false);
+
+            return receivedMessage.Channel.SendMessageAsync(new SendMessage(embeddedMessage));
+        }
+
+        private static string FormatFluxes(AstronomicalObject foundObject)
+        {
+            return string.Join("\r\n", foundObject.Fluxes.Select(flux =>
+            {
+                var displayInformation = Flux.FluxRangesLookup.FirstOrDefault(x => x.Key == flux.FluxType);
+                return $"{Enum.GetName(typeof(FluxType), flux.FluxType)}: {flux.Value} ({displayInformation.Value.From} - {displayInformation.Value.To})";
+            }));
+        }
+
+        private static void AddFieldToEmbeddedMessageIfNotEmpty(
+            EmbeddedMessage embeddedMessage,
+            string title,
+            string fieldValue,
+            bool inline)
+        {
+            if (!string.IsNullOrEmpty(fieldValue))
+            {
+                embeddedMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Name = title,
+                    Content = fieldValue,
+                    Inline = inline
+                });
+            }
         }
 
         private static Task WriteObjectNotFoundAsync(ReceivedMessage receivedMessage, string objectName)
         {
             return receivedMessage.Channel.SendMessageAsync($"No astronomical object found for \"{objectName}\"");
-        }
-
-        private static Task WriteObjectDetailsAsync(ReceivedMessage receivedMessage, AstronomicalObject astronomicalObject)
-        {
-            const int columnSize = 24;
-
-            return receivedMessage.Channel.SendMessageAsync(
-                receivedMessage.ApiWrapper.MessageFormatter.CodeBlock(
-                    $"{"Name:".PadRight(columnSize)} {astronomicalObject.Name}\r\n" +
-                    $"{"Type:".PadRight(columnSize)} {astronomicalObject.Type}\r\n" +
-                    $"{"Relative velocity:".PadRight(columnSize)} {astronomicalObject.RelativeVelocity}\r\n" +
-                    $"\r\n" +
-                    $"{"Coordinates:".PadRight(columnSize)} RA: {astronomicalObject.RaDecCoordinate.RightAscension}\r\n" +
-                    $"{"            ".PadRight(columnSize)} DEC: {astronomicalObject.RaDecCoordinate.Declination}\r\n" +
-                    $"\r\n" +
-                    $"Secondary types:\r\n{string.Join(',', astronomicalObject.OtherTypes)}\r\n" +
-                    $"\r\n" +
-                    $"OtherNames:\r\n{string.Join(',', astronomicalObject.OtherNames)}\r\n"
-                ));
         }
     }
 }
