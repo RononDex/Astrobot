@@ -40,6 +40,11 @@ namespace AstroBot.Objects.AstronomicalObjects
         }
 
         /// <summary>
+        /// Id used to identify the object on simbad
+        /// </summary>
+        public int SimbadId => Get<int>("SimbadId");
+
+        /// <summary>
         /// The main name of the object
         /// </summary>
         /// <returns></returns>
@@ -103,7 +108,7 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// </summary>
         /// <returns></returns>
         public DimensionsWithAngle AngularDimensions => Properties.ContainsKey("MajorAxisDimension") ?
-            new DimensionsWithAngle()
+            new DimensionsWithAngle
             {
                 MajorAxis = Get<double>("MajorAxisDimension"),
                 MinorAxis = Get<double>("MinorAxisDimension"),
@@ -118,6 +123,21 @@ namespace AstroBot.Objects.AstronomicalObjects
         public RaDecCoordinate RaDecCoordinate => Properties.ContainsKey("Ra") && Properties.ContainsKey("Dec") ?
             new RaDecCoordinate(rightAscension: Get<double>("Ra"), declination: Get<double>("Dec")) :
             null;
+
+        /// <summary>
+        /// The morphological type of a galaxy (null if not a galaxy)
+        /// </summary>
+        public string MorphologicalType => Properties.ContainsKey("MorphologicalType")
+            ? Get<string>("MorphologicalType")
+            : null;
+
+        /// <summary>
+        /// A list of known fluxes of the object
+        /// </summary>
+        public IList<Flux> Fluxes => Flux.FluxRangesLookup
+            .Where(range => Properties.ContainsKey($"Flux{range.Key.ToString()}"))
+            .Select(range => new Flux { FluxType = range.Key, Value = Get<float>($"Flux{range.Key.ToString()}") })
+            .ToList();
 
         /// <summary>
         /// Override ToString to return objects name

@@ -1,5 +1,6 @@
 -- Basic data from an object given one of its identifiers.
-SELECT TOP 1 basic.OID,
+SELECT TOP 1
+       basic.OID AS "SimbadId",
        RA AS "Ra",
        DEC AS "Dec",
        main_id AS "Name",
@@ -19,10 +20,20 @@ SELECT TOP 1 basic.OID,
        mesDistance.qual AS "DistanceQual",
        mesDistance.method AS "DistanceMethod",
        mesDistance.minus_err AS "DistanceMinusErr",
-       mesDistance.plus_err AS "DistancePlusErr"
+       mesDistance.plus_err AS "DistancePlusErr",
+       morph_type AS "MorphologicalType",
+       AllFluxes.U AS "FluxU",
+       AllFluxes.B AS "FluxB",
+       AllFluxes.V AS "FluxV",
+       AllFluxes.R AS "FluxR",
+       AllFluxes.I AS "FluxI",
+       AllFluxes.J AS "FluxJ",
+       AllFluxes.H AS "FluxH",
+       AllFluxes.K AS "FluxK"
 FROM basic JOIN ident ON ident.oidref = oid
 LEFT JOIN OTYPEDEF ON OTYPEDEF.otype = basic.otype
 JOIN ids ON "public".basic.oid = "public".ids.oidref
 JOIN alltypes ON basic.oid = alltypes.oidref
 LEFT JOIN mesDistance ON basic.oid = mesDistance.oidref
-WHERE id = '{{name}}';
+LEFT JOIN AllFluxes ON AllFluxes.oidref = basic.oid
+WHERE id = '{{name}}' OR OTYPEDEF.otype_shortname = '{{name}}' OR OTYPEDEF.otype_longname = '{{name}}';
