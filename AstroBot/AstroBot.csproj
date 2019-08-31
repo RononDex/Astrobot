@@ -19,8 +19,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NLog" Version="4.6.4" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.5.1" />
+    <PackageReference Include="NLog" Version="4.6.7" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.5.3" />
     <PackageReference Include="SkiaSharp" Version="1.68.0" />
   </ItemGroup>
 
@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="AwesomeChatBot" Version="1.4.0" />
-    <PackageReference Include="AwesomeChatBot.Discord" Version="1.4.0" />
+    <PackageReference Include="AwesomeChatBot" Version="1.5.0" />
+    <PackageReference Include="AwesomeChatBot.Discord" Version="1.5.0" />
   </ItemGroup>
 
 
