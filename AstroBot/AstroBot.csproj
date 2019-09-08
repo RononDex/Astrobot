@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="AwesomeChatBot" Version="1.5.0" />
-    <PackageReference Include="AwesomeChatBot.Discord" Version="1.5.0" />
+    <PackageReference Include="AwesomeChatBot" Version="1.5.2" />
+    <PackageReference Include="AwesomeChatBot.Discord" Version="1.5.1" />
   </ItemGroup>
 
 

@@ -41,9 +41,28 @@ namespace AstroBot.Commands
                         receivedMessage.Channel.SendMessageAsync($"The role \"{roleNameToAdd}\" does not exist or I have no permission to assign it to you!");
                         return true;
                     }
+                    if (receivedMessage.Author.Roles.Any(x => string.Equals(x.Name, roleNameToAdd, System.StringComparison.Ordinal)))
+                    {
+                        receivedMessage.Channel.SendMessageAsync($"You have no role of name \"{roleNameToAdd}\" assigned");
+                        return true;
+                    }
 
                     receivedMessage.Author.AddRole(roleNameToAdd);
-                    receivedMessage.Channel.SendMessageAsync($"Done! You are now assigned the role {roleNameToAdd}").Wait();
+                    receivedMessage.Channel.SendMessageAsync($"Done! You are now assigned the role {roleNameToAdd}");
+                }
+
+                if (regexMatch.Groups["RemoveRoleName"].Success)
+                {
+                    var roleNameToRemove = regexMatch.Groups["RemoveRoleName"].Value;
+
+                    if (!receivedMessage.Author.Roles.Any(x => string.Equals(x.Name, roleNameToRemove, System.StringComparison.Ordinal)))
+                    {
+                        receivedMessage.Channel.SendMessageAsync($"You have no role of name \"{roleNameToRemove}\" assigned");
+                        return true;
+                    }
+
+                    receivedMessage.Author.RemoveRole(roleNameToRemove);
+                    receivedMessage.Channel.SendMessageAsync($"The role \"{roleNameToRemove}\" has been removed!");
                 }
 
                 if (regexMatch.Groups["RemoveRoleName"].Success)
