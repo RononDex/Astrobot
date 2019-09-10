@@ -36,4 +36,4 @@ JOIN ids ON "public".basic.oid = "public".ids.oidref
 JOIN alltypes ON basic.oid = alltypes.oidref
 LEFT JOIN mesDistance ON basic.oid = mesDistance.oidref
 LEFT JOIN AllFluxes ON AllFluxes.oidref = basic.oid
-WHERE id = '{{name}}' OR OTYPEDEF.otype_shortname = '{{name}}' OR OTYPEDEF.otype_longname = '{{name}}';
+WHERE id = '{{name}}';
