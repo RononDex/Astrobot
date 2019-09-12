@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -6,7 +7,6 @@ using AstroBot.Simbad;
 using AstroBot.Objects.AstronomicalObjects;
 using AwesomeChatBot.ApiWrapper;
 using AwesomeChatBot.Commands.Handlers;
-using System;
 using AstroBot.Utilities.UnitConverters;
 using AstroBot.Objects;
 using AstroBot.Utilities.Extensions;
