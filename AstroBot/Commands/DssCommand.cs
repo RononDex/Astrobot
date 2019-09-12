@@ -26,8 +26,8 @@ namespace AstroBot.Commands
         public override string Name => "DeepSkySurvey";
 
         private const float DEFAULT_ANGULARSIZE_ARCMINUTES = 60;
-        private const float FACTOR_ANGULARSIZE_ARCMINUTES = 1.5f;
-        private const float MAX_ANGULARSIZE_ARCMINUTES = 90f;
+        private const float FACTOR_ANGULARSIZE_ARCMINUTES = 1.7f;
+        private const float MAX_ANGULARSIZE_ARCMINUTES = 120f;
 
         public async Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
         {
@@ -49,7 +49,7 @@ namespace AstroBot.Commands
                     return true;
                 }
 
-                await receivedMessage.Channel.SendMessageAsync("Getting the image from the deep sky survey (DSS) server, one moment...");
+                await receivedMessage.Channel.SendMessageAsync("Getting the image from the deep sky survey (DSS) server, one moment...\r\n(The larger the FOV, the longer it takes)");
                 var arcminutesSize = objectResolvedBySimbad.AngularDimensions != null
                     ? Math.Min(objectResolvedBySimbad.AngularDimensions.MajorAxis * FACTOR_ANGULARSIZE_ARCMINUTES, MAX_ANGULARSIZE_ARCMINUTES)
                     : DEFAULT_ANGULARSIZE_ARCMINUTES;
@@ -60,7 +60,7 @@ namespace AstroBot.Commands
                     arcminutesSize.ToString(CultureInfo.InvariantCulture));
 
                 await receivedMessage.Channel.SendMessageAsync(new SendMessage(
-                    content: $"Image size: {arcminutesSize}' x {arcminutesSize}'",
+                    content: $"Image size: {Math.Round(arcminutesSize, 3)}' x {Math.Round(arcminutesSize, 3)}'",
                     new List<Attachment>
                     {
                         new SendAttachment

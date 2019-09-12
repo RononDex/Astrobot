@@ -1,5 +1,6 @@
 using System.IO;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 
 namespace AstroBot.Utilities
@@ -16,7 +17,7 @@ namespace AstroBot.Utilities
             var image = Image.Load(original);
             image.Mutate(x => x.Grayscale());
             var changedImage = new MemoryStream();
-            image.SaveAsPng(changedImage);
+            image.SaveAsJpeg(changedImage, new JpegEncoder { Quality = 85 });
             return changedImage;
         }
     }
