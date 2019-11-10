@@ -41,7 +41,7 @@ namespace AstroBot
             botFramework.ServerAvailable += Events.ServerEvents.ServerAvailable;
 
             // Register CronJobs
-            // GlobalConfiguration.Configuration.UseMemoryStorage();
+            GlobalConfiguration.Configuration.UseMemoryStorage();
             CronTasks.UpcomingLaunches.Register();
         }
 
