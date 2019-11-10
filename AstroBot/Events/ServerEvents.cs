@@ -9,7 +9,7 @@ namespace AstroBot.Events
             Config.DefaultConfigsHelper.SetupDefaultServerConfig(server);
             if (server.ServerName.Contains("Test"))
             {
-                CronTasks.UpcomingLaunches.Execute();
+                // CronTasks.UpcomingLaunches.Execute();
             }
         }
     }
