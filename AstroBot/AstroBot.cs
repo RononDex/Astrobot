@@ -5,6 +5,8 @@ using System;
 using System.IO;
 using AwesomeChatBot.ApiWrapper;
 using System.Collections.Generic;
+using Hangfire;
+using Hangfire.MemoryStorage;
 
 namespace AstroBot
 {
@@ -37,6 +39,10 @@ namespace AstroBot
             // Register events
             botFramework.NewUserJoinedServer += Events.UserServerEvents.UserJoinedServer;
             botFramework.ServerAvailable += Events.ServerEvents.ServerAvailable;
+
+            // Register CronJobs
+            GlobalConfiguration.Configuration.UseMemoryStorage();
+            CronTasks.UpcomingLaunches.Register();
         }
 
         /// <summary>

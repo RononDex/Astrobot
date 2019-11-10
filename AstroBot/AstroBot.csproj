@@ -18,11 +18,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.6.7" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.5.3" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.7" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.6.3" />
   </ItemGroup>
 
   <ItemGroup>

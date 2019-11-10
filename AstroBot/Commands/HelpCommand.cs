@@ -27,6 +27,7 @@ namespace AstroBot.Commands
             await receivedMessage.Channel.SendMessageAsync("Following commands are available in this server:");
             var configStore = receivedMessage.ApiWrapper.ConfigStore;
             var context = new IConfigurationDependency[] { receivedMessage.Channel.ParentServer };
+            var message = "";
 
             foreach (TypeInfo ti in ass.DefinedTypes)
             {
@@ -48,7 +49,7 @@ namespace AstroBot.Commands
 
                         // Write help output for the command
                         var formatter = receivedMessage.ApiWrapper.MessageFormatter;
-                        var message = $"{formatter.Bold(command.Name)}: {command.Description}\r\nExample(s):\r\n";
+                        var curMessage = $"{formatter.Bold(command.Name)}: {command.Description}\r\nExample(s):\r\n";
                         var examples = string.Empty;
                         var builder = new System.Text.StringBuilder();
                         builder.Append(examples);
@@ -58,12 +59,20 @@ namespace AstroBot.Commands
                         }
                         examples = builder.ToString();
 
-                        message += formatter.Quote(examples);
+                        curMessage += formatter.Quote(examples);
 
-                        await receivedMessage.Channel.SendMessageAsync(new SendMessage(message));
+                        if (message.Length + curMessage.Length > 2000)
+                        {
+                            await receivedMessage.Channel.SendMessageAsync(new SendMessage(message));
+                            message = string.Empty;
+                        }
+
+                        message += curMessage;
                     }
                 }
             }
+
+            await receivedMessage.Channel.SendMessageAsync(new SendMessage(message));
 
             return true;
         }
