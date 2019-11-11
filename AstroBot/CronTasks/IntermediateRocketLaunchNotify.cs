@@ -62,7 +62,7 @@ namespace AstroBot.CronTasks
 
         public static void Register()
         {
-            Globals.CronDaemon.Add("*/1 * * * *", Execute);
+            Globals.CronDaemon.Add("*/5 * * * *", Execute);
         }
     }
 }
