@@ -14,7 +14,7 @@ namespace AstroBot.CronTasks
                     launch.Isostart,
                     "yyyyMMddTHHmmssZ",
                     CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal) > DateTime.UtcNow);
+                    DateTimeStyles.AssumeUniversal).ToUniversalTime() > DateTime.UtcNow);
 
             foreach (var wrapper in Globals.BotFramework.ApiWrappers)
             {

@@ -11,17 +11,17 @@ namespace AstroBot.CronTasks
 
         public static void Execute()
         {
-            var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(days: 1)
-                .Where(launch => DateTime.ParseExact(
+            var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(days: 1);
+            var filteredLaunches = intermediateLaunches.Where(launch => DateTime.ParseExact(
                     launch.Isostart,
                     "yyyyMMddTHHmmssZ",
                     CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal) > DateTime.UtcNow
+                    DateTimeStyles.AssumeUniversal).ToUniversalTime() > DateTime.UtcNow
                     && DateTime.ParseExact(
                         launch.Isostart,
                         "yyyyMMddTHHmmssZ",
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal) < DateTime.UtcNow.AddHours(1));
+                        DateTimeStyles.AssumeUniversal).ToUniversalTime() < DateTime.UtcNow.AddHours(1));
 
             if (intermediateLaunches.Any())
             {
@@ -62,7 +62,7 @@ namespace AstroBot.CronTasks
 
         public static void Register()
         {
-            Globals.CronDaemon.Add("*/5 * * * *", Execute);
+            Globals.CronDaemon.Add("*/1 * * * *", Execute);
         }
     }
 }
