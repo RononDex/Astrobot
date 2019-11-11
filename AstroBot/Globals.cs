@@ -1,4 +1,5 @@
 using System.IO;
+using Cron;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
@@ -34,6 +35,8 @@ namespace AstroBot
         /// <value></value>
         public static AwesomeChatBot.AwesomeChatBot BotFramework { get; set; }
 
+        public static CronDaemon CronDaemon { get; set; }
+
         /// <summary>
         /// Initialize the global variables
         /// </summary>
@@ -60,6 +63,10 @@ namespace AstroBot
             // Create logger factory
             LoggerFactory = new LoggerFactory();
             LoggerFactory.AddNLog();
+
+            // Setup CronDaemon
+            CronDaemon = new CronDaemon();
+            CronDaemon.Start();
         }
     }
 }

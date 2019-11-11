@@ -14,7 +14,8 @@ namespace AstroBot.Config
             new ConfigValue { Key = "GreetNewUsersMessage", Value = "Welcome @UserMention" },
             new ConfigValue { Key = "UserSelfAssignableRoles", Value = "" },
             new ConfigValue { Key = "RocketLaunchesNewsEnabled", Value = "false" },
-            new ConfigValue { Key = "RocketLaunchesNewsChannel", Value = "news" }
+            new ConfigValue { Key = "RocketLaunchesNewsChannel", Value = "news" },
+            new ConfigValue { Key = "RocketLaunchesIntermediateTagRole", Value = "LaunchNotify" },
         };
 
         /// <summary>

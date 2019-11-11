@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.Linq;
 using AwesomeChatBot.ApiWrapper;
-using Hangfire;
 
 namespace AstroBot.CronTasks
 {
@@ -42,14 +41,14 @@ namespace AstroBot.CronTasks
                                 {
                                     Inline = true,
                                     Name = "Agency",
-                                    Content = launch.Rocket?.Agencies?.FirstOrDefault()?.Name
+                                    Content = launch.Lsp?.Name ?? string.Empty
                                 });
 
                                 launchMessage.Fields.Add(new EmbeddedMessageField
                                 {
                                     Inline = true,
                                     Name = "Rocket",
-                                    Content = launch.Rocket?.Name
+                                    Content = launch.Rocket?.Name ?? string.Empty
                                 });
 
                                 launchMessage.Fields.Add(new EmbeddedMessageField
@@ -80,7 +79,7 @@ namespace AstroBot.CronTasks
                                     {
                                         Inline = false,
                                         Name = $"Mission {missionNr} Description",
-                                        Content = mission.Description
+                                        Content = mission.Description ?? string.Empty
                                     });
 
                                     missionNr++;
@@ -96,11 +95,7 @@ namespace AstroBot.CronTasks
 
         public static void Register()
         {
-            RecurringJob.AddOrUpdate(
-                "Post upcoming launches",
-                () => Execute(),
-                Cron.Daily
-            );
+            Globals.CronDaemon.Add("0 0 * * *", Execute);
         }
     }
 }

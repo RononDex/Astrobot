@@ -23,8 +23,7 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="1.5.3" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
-    <PackageReference Include="Hangfire.Core" Version="1.7.7" />
-    <PackageReference Include="Hangfire.MemoryStorage" Version="1.6.3" />
+    <PackageReference Include="Cron" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,8 +33,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="AwesomeChatBot" Version="1.5.2" />
-    <PackageReference Include="AwesomeChatBot.Discord" Version="1.5.1" />
+    <PackageReference Include="AwesomeChatBot" Version="1.5.3" />
+    <PackageReference Include="AwesomeChatBot.Discord" Version="1.5.3" />
   </ItemGroup>
 
 
