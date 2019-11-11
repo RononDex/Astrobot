@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -6,38 +7,43 @@ namespace AstroBot.CronTasks
 {
     public static class IntermediateRocketLaunchNotify
     {
+        private static readonly List<long> NotifiedLaunches = new List<long>();
+
         public static void Execute()
         {
-            var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(days: 1)
-                .Where(launch => DateTime.ParseExact(
+            var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(days: 1);
+            var filteredLaunches = intermediateLaunches.Where(launch => DateTime.ParseExact(
                     launch.Isostart,
                     "yyyyMMddTHHmmssZ",
                     CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal) > DateTime.UtcNow
+                    DateTimeStyles.AssumeUniversal).ToUniversalTime() > DateTime.UtcNow
                     && DateTime.ParseExact(
                         launch.Isostart,
                         "yyyyMMddTHHmmssZ",
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal) < DateTime.UtcNow.AddHours(1));
+                        DateTimeStyles.AssumeUniversal).ToUniversalTime() < DateTime.UtcNow.AddHours(1));
 
             if (intermediateLaunches.Any())
             {
-                foreach (var wrapper in Globals.BotFramework.ApiWrappers)
+                foreach (var launch in intermediateLaunches)
                 {
-                    foreach (var server in wrapper.GetAvailableServers())
-                    {
-                        if (Globals.BotFramework.ConfigStore.GetConfigValue<bool>("RocketLaunchesNewsEnabled", server))
-                        {
-                            var role = Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesIntermediateTagRole", server);
-                            if (!string.IsNullOrEmpty(role))
-                            {
-                                var channel = server
-                                    .ResolveChannelAsync(Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesNewsChannel", server))
-                                    .GetAwaiter()
-                                    .GetResult();
+                    if (NotifiedLaunches.Contains(launch.Id))
+                        continue;
 
-                                foreach (var launch in intermediateLaunches)
+                    foreach (var wrapper in Globals.BotFramework.ApiWrappers)
+                    {
+                        foreach (var server in wrapper.GetAvailableServers())
+                        {
+                            if (Globals.BotFramework.ConfigStore.GetConfigValue<bool>("RocketLaunchesNewsEnabled", server))
+                            {
+                                var role = Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesIntermediateTagRole", server);
+                                if (!string.IsNullOrEmpty(role))
                                 {
+                                    var channel = server
+                                        .ResolveChannelAsync(Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesNewsChannel", server))
+                                        .GetAwaiter()
+                                        .GetResult();
+
                                     var roles = server.GetAvailableUserRolesAsync().GetAwaiter().GetResult();
                                     var roleObj = roles.FirstOrDefault(serverRole => serverRole.Name == role);
                                     if (roleObj != null)
@@ -48,6 +54,8 @@ namespace AstroBot.CronTasks
                             }
                         }
                     }
+
+                    NotifiedLaunches.Add(launch.Id);
                 }
             }
         }
