@@ -40,6 +40,7 @@ namespace AstroBot
 
             // Register CronJobs
             CronTasks.UpcomingLaunches.Register();
+            CronTasks.IntermediateRocketLaunchNotify.Register();
         }
 
         /// <summary>
