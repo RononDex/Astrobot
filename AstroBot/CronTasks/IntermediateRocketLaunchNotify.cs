@@ -16,12 +16,12 @@ namespace AstroBot.CronTasks
                     launch.Isostart,
                     "yyyyMMddTHHmmssZ",
                     CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeLocal).ToUniversalTime() > DateTime.UtcNow
+                    DateTimeStyles.AssumeUniversal) > DateTime.UtcNow
                     && DateTime.ParseExact(
                         launch.Isostart,
                         "yyyyMMddTHHmmssZ",
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeLocal).ToUniversalTime() < DateTime.UtcNow.AddHours(1));
+                        DateTimeStyles.AssumeUniversal) < DateTime.UtcNow.AddHours(1));
 
             if (intermediateLaunches.Any())
             {
