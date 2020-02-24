@@ -10,7 +10,7 @@ namespace AstroBot.Test
         [TestInitialize]
         public void Setup()
         {
-            Directory.SetCurrentDirectory("../../../../AstroBot/Bin/Debug/netcoreapp2.2/");
+            Directory.SetCurrentDirectory("../../../../AstroBot/bin/Debug/netcoreapp3.1/");
         }
 
         [TestMethod]
