@@ -1,0 +1,13 @@
+{
+  "configurations": {
+    "launch - netcoredbg": {
+      "adapter": "netcoredbg",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/AstroBot/bin/Debug/netcoreapp3.1/AstroBot.dll",
+        "args": [],
+        "stopAtEntry": true
+      }
+    }
+  }
+}
