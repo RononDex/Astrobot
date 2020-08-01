@@ -24,6 +24,8 @@ namespace AstroBot.Commands
         {
             "what is M31?",
             "what do you know about M31?",
+            "what is around [RA] [DEC]",
+            "what is around M51",
             // "how far away is M13?",
             // "fluxes of NGC6888?",
             // "how bright is M78?",
