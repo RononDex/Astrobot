@@ -33,6 +33,7 @@ namespace AstroBot.Commands
         public List<string> Regex => new List<string>()
         {
             @"what is around (?'CenterOfSearchRA'\d*\.\d*)\s(?'CenterOfSearchDEC'[+-]\d*\.\d*)",
+            @"what is around (?'CenterOfSearchName'.*\w)",
             @"what do you know about (?'AstroObject'.*\w)(\?)?",
             @"what is (?'AstroObject'.*\w)(\?)?",
         };
@@ -47,7 +48,8 @@ namespace AstroBot.Commands
             {
                 SearchForObjectByNameAsync(receivedMessage, regexMatch, simbadClient);
             }
-            if (regexMatch.Groups["CenterOfSearchRA"].Success)
+            if (regexMatch.Groups["CenterOfSearchRA"].Success
+                || regexMatch.Groups["CenterOfSearchName"].Success)
             {
                 SearchForObjectsAroundRaDec(receivedMessage, regexMatch, simbadClient);
             }
@@ -65,6 +67,18 @@ namespace AstroBot.Commands
                     centerCoordinates = new RaDecCoordinate(
                         double.Parse(regexMatch.Groups["CenterOfSearchRA"].Value, CultureInfo.InvariantCulture),
                         double.Parse(regexMatch.Groups["CenterOfSearchDEC"].Value, CultureInfo.InvariantCulture));
+                }
+                else if (regexMatch.Groups["CenterOfSearchName"].Success)
+                {
+                    var name = regexMatch.Groups["CenterOfSearchName"].Value;
+                    var queryAroundObject = simbadClient.FindObjectByName(name);
+                    if (queryAroundObject == null)
+                    {
+                        await receivedMessage.Channel.SendMessageAsync($"No object with name {name} found in the SIMBAD databse!");
+                        return;
+                    }
+
+                    centerCoordinates = queryAroundObject.RaDecCoordinate;
                 }
             }
             finally
