@@ -60,7 +60,11 @@ namespace AstroBot.Simbad
                 var properties = ParseProperties(entity.Select(x => x.Key).ToArray(), entity.Select(x => x.Value).ToArray());
                 var shortType = properties.ContainsKey("TYPESHORT") ? Convert.ToString(properties["TYPESHORT"]) : string.Empty;
 
-                astronomicalObjects.Add(new AstronomicalObject(properties));
+                var astronomicalObject = new AstronomicalObject(properties);
+                if (!astronomicalObjects.Any(x => x.Name == astronomicalObject.Name))
+                {
+                    astronomicalObjects.Add(astronomicalObject);
+                }
             }
 
             return astronomicalObjects;
