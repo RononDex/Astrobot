@@ -87,7 +87,7 @@ namespace AstroBot.Objects.AstronomicalObjects
             new MeasurementWithError
             {
                 Value = Get<double>("RelativeVelocity"),
-                Unit = Get<string>("RelativeVelocityType") == "v" ? "km/s" : "",
+                Unit = string.Equals(Get<string>("RelativeVelocityType").Trim(), "v", StringComparison.Ordinal) ? "km/s" : "",
                 Error = Properties.ContainsKey("RelativeVelocityError") ?
                     Get<double>("RelativeVelocityError") :
                     new double?()
