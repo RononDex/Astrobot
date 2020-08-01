@@ -1,4 +1,3 @@
-using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +14,7 @@ namespace AstroBot.LaunchLibrary
         {
             var logger = Globals.LoggerFactory.CreateLogger(nameof(LaunchLibraryClient));
             logger.Log(LogLevel.Information, $"Requesting upcoming launches from LaunchLibrary for the next {days} days");
-            var requestUrl = $"{ApiUrl}launch?mode=verbose&startdate={GetDateString(DateTime.Today)}&enddate={GetDateString(DateTime.Today.AddDays(days))}";
+            var requestUrl = $"{ApiUrl}launch?mode=verbose&startdate={GetDateString(DateTime.UtcNow.Date)}&enddate={GetDateString(DateTime.UtcNow.Date.AddDays(days))}";
             var webRequest = WebRequest.CreateHttp(requestUrl);
             webRequest.Accept = "application/json";
             webRequest.Headers["X-Requested-With"] = nameof(AstroBot);

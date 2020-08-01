@@ -12,16 +12,16 @@ namespace AstroBot.CronTasks
         public static void Execute()
         {
             var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(days: 1);
-            var filteredLaunches = intermediateLaunches.Where(launch => DateTime.ParseExact(
+            var filteredLaunches = intermediateLaunches.Where(launch => DateTimeOffset.ParseExact(
                     launch.Isostart,
                     "yyyyMMddTHHmmssZ",
                     CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal).ToUniversalTime() > DateTime.UtcNow.ToUniversalTime()
-                    && DateTime.ParseExact(
+                    DateTimeStyles.AssumeUniversal) > DateTimeOffset.Now
+                    && DateTimeOffset.ParseExact(
                         launch.Isostart,
                         "yyyyMMddTHHmmssZ",
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal).ToUniversalTime() < DateTime.UtcNow.AddHours(1).ToUniversalTime());
+                        DateTimeStyles.AssumeUniversal) < DateTimeOffset.Now.AddHours(1));
 
             if (intermediateLaunches.Any())
             {
