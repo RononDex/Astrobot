@@ -39,8 +39,8 @@
 
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <ProjectReference Include="..\..\AwesomeChatBot.Discord\AwesomeChatBot.DiscordWrapper.csproj" />
-    <ProjectReference Include="..\..\AwesomeChatBot\AwesomeChatBot\AwesomeChatBot.csproj" />
+      <ProjectReference Include="../lib/AwesomeChatBot.Discord/AwesomeChatBot.DiscordWrapper.csproj" />
+      <ProjectReference Include="../lib/AwesomeChatBot/AwesomeChatBot/AwesomeChatBot.csproj" />
   </ItemGroup>
 
   <ItemGroup>

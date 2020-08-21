@@ -1,0 +1,6 @@
+[submodule "lib/AwesomeChatBot"]
+	path = lib/AwesomeChatBot
+	url = https://github.com/RononDex/AwesomeChatBot.git
+[submodule "lib/AwesomeChatBot.Discord"]
+	path = lib/AwesomeChatBot.Discord
+	url = https://github.com/RononDex/AwesomeChatBot.Discord.git
