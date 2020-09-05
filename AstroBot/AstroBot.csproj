@@ -32,15 +32,9 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="AwesomeChatBot" Version="1.6.0" />
-    <PackageReference Include="AwesomeChatBot.Discord" Version="1.6.0" />
-  </ItemGroup>
-
-
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-      <ProjectReference Include="../lib/AwesomeChatBot.Discord/AwesomeChatBot.DiscordWrapper.csproj" />
-      <ProjectReference Include="../lib/AwesomeChatBot/AwesomeChatBot/AwesomeChatBot.csproj" />
+  <ItemGroup>
+    <PackageReference Include="AwesomeChatBot" Version="1.6.1" />
+    <PackageReference Include="AwesomeChatBot.Discord" Version="1.6.1" />
   </ItemGroup>
 
   <ItemGroup>

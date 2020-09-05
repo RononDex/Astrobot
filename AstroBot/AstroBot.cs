@@ -11,7 +11,7 @@ namespace AstroBot
     /// <summary>
     /// The main class controlling / starting the bot
     /// </summary>
-    public class AstroBot
+    public class AstroBotController
     {
         private AwesomeChatBot.AwesomeChatBot BotFramework { get; set; }
 
@@ -48,7 +48,7 @@ namespace AstroBot
         /// </summary>
         private void InitializeFramework()
         {
-            Log<AstroBot>.Info("Initializing bot...");
+            Log<AstroBotController>.Info("Initializing bot...");
 
             // Set up configuration laoder
             var builder = new ConfigurationBuilder()

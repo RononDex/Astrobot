@@ -43,7 +43,7 @@ namespace AstroBot
             // Initialize globals
             Globals.InitGlobals();
 
-            new AstroBot().Initialize();
+            new AstroBotController().Initialize();
 
             // Wait indefinitely so the bot can run in the background
             return Task.Delay(-1);
@@ -56,7 +56,7 @@ namespace AstroBot
         /// <param name="e"></param>
         private static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
         {
-            NLog.LogManager.GetLogger(nameof(AstroBot)).Fatal($"Unhandled exception caught by global handler: {e.ExceptionObject}");
+            NLog.LogManager.GetLogger(nameof(AstroBotController)).Fatal($"Unhandled exception caught by global handler: {e.ExceptionObject}");
         }
     }
 }

@@ -17,8 +17,8 @@ namespace AstroBot.LaunchLibrary
             var requestUrl = $"{ApiUrl}launch?mode=verbose&startdate={GetDateString(DateTime.UtcNow.Date)}&enddate={GetDateString(DateTime.UtcNow.Date.AddDays(days))}";
             var webRequest = WebRequest.CreateHttp(requestUrl);
             webRequest.Accept = "application/json";
-            webRequest.Headers["X-Requested-With"] = nameof(AstroBot);
-            webRequest.UserAgent = nameof(AstroBot);
+            webRequest.Headers["X-Requested-With"] = nameof(AstroBotController);
+            webRequest.UserAgent = nameof(AstroBotController);
 
             var response = (HttpWebResponse)webRequest.GetResponse();
             string text;
