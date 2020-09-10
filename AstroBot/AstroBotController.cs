@@ -1,10 +1,11 @@
-﻿using AwesomeChatBot.DiscordWrapper;
+﻿using AwesomeChatBot.Discord;
 using AstroBot.Objects.Config;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using AwesomeChatBot.ApiWrapper;
 using System.Collections.Generic;
+using AstroBot.CronTasks;
 
 namespace AstroBot
 {
@@ -39,8 +40,9 @@ namespace AstroBot
             botFramework.ServerAvailable += Events.ServerEvents.ServerAvailable;
 
             // Register CronJobs
-            CronTasks.UpcomingLaunches.Register();
-            CronTasks.IntermediateRocketLaunchNotify.Register();
+            CronTaskManager.Init();
+            CronTaskManager.Register(new IntermediateRocketLaunchNotify());
+            CronTaskManager.Register(new UpcomingLaunches());
         }
 
         /// <summary>

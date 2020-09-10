@@ -5,16 +5,16 @@ using AwesomeChatBot.ApiWrapper;
 
 namespace AstroBot.CronTasks
 {
-    public static class UpcomingLaunches
+    public class UpcomingLaunches : CronTask
     {
-        public static void Execute()
+        public override string Name => nameof(UpcomingLaunches);
+
+        public override DateTime NextExecution => LastExecution.Date.AddMinutes(1);
+
+        public override void Execute()
         {
-            var upcomingLaunces = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(days: 3)
-                .Where(launch => DateTime.ParseExact(
-                    launch.Isostart,
-                    "yyyyMMddTHHmmssZ",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal).ToUniversalTime() > DateTime.UtcNow);
+            var upcomingLaunces = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(limit: 20)
+                .Where(launch => launch.WindowStart > DateTime.UtcNow);
 
             foreach (var wrapper in Globals.BotFramework.ApiWrappers)
             {
@@ -33,57 +33,52 @@ namespace AstroBot.CronTasks
                             {
                                 var launchMessage = new EmbeddedMessage
                                 {
-                                    Title = "Upcoming launch - " + string.Join(", ", launch.Missions.Select(mission => mission.Name)),
-                                    ThumbnailUrl = launch.Rocket?.ImageUrl?.ToString()
+                                    Title = "Upcoming launch - " + string.Join(", ", launch.Mission.Name),
+                                    ThumbnailUrl = launch.Image
                                 };
 
                                 launchMessage.Fields.Add(new EmbeddedMessageField
                                 {
                                     Inline = true,
                                     Name = "Agency",
-                                    Content = launch.Lsp?.Name ?? string.Empty
+                                    Content = launch.LaunchServiceProvider?.Name ?? string.Empty
                                 });
 
                                 launchMessage.Fields.Add(new EmbeddedMessageField
                                 {
                                     Inline = true,
                                     Name = "Rocket",
-                                    Content = launch.Rocket?.Name ?? string.Empty
+                                    Content = launch.Rocket?.Configuration.FullName ?? string.Empty
                                 });
 
                                 launchMessage.Fields.Add(new EmbeddedMessageField
                                 {
                                     Inline = true,
                                     Name = "Launch Window",
-                                    Content = $"{launch.Windowstart} to \r\n{launch.Windowend}"
+                                    Content = $"{launch.WindowStart} to \r\n{launch.WindowEnd}"
                                 });
 
                                 launchMessage.Fields.Add(new EmbeddedMessageField
                                 {
                                     Inline = true,
                                     Name = "Launch pad",
-                                    Content = $"{launch.Location?.Name} - {launch.Location?.Pads.FirstOrDefault()?.Name}"
+                                    Content = $"{launch.Pad?.Location?.Name} - {launch.Pad?.Name}"
                                 });
 
-                                var missionNr = 1;
-                                foreach (var mission in launch.Missions)
+                                var mission = launch.Mission;
+                                launchMessage.Fields.Add(new EmbeddedMessageField
                                 {
-                                    launchMessage.Fields.Add(new EmbeddedMessageField
-                                    {
-                                        Inline = false,
-                                        Name = $"Mission {missionNr}",
-                                        Content = mission.Name
-                                    });
+                                    Inline = false,
+                                    Name = $"Mission",
+                                    Content = mission.Name
+                                });
 
-                                    launchMessage.Fields.Add(new EmbeddedMessageField
-                                    {
-                                        Inline = false,
-                                        Name = $"Mission {missionNr} Description",
-                                        Content = mission.Description ?? string.Empty
-                                    });
-
-                                    missionNr++;
-                                }
+                                launchMessage.Fields.Add(new EmbeddedMessageField
+                                {
+                                    Inline = false,
+                                    Name = $"Mission Description",
+                                    Content = mission.Description ?? string.Empty
+                                });
 
                                 channel.SendMessageAsync(launchMessage);
                             }
@@ -91,11 +86,8 @@ namespace AstroBot.CronTasks
                     }
                 }
             }
-        }
 
-        public static void Register()
-        {
-            Globals.CronDaemon.Add("0 0 * * *", Execute);
+            base.Execute();
         }
     }
 }

@@ -23,7 +23,6 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0007" />
-    <PackageReference Include="Cron" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
