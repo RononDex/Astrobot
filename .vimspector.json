@@ -6,6 +6,7 @@
         "request": "launch",
         "program": "${workspaceRoot}/AstroBot/bin/Debug/netcoreapp3.1/AstroBot.dll",
         "args": [],
+        "cwd": "${workspaceRoot}/AstroBot",
         "stopAtEntry": true
       }
     }
