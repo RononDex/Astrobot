@@ -17,11 +17,11 @@ namespace AstroBot.CronTasks
         {
             var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(limit: 10);
             var filteredLaunches = intermediateLaunches.Where(launch => launch.WindowStart > DateTime.Now
-                    && launch.WindowStart < DateTimeOffset.Now.AddHours(1));
+                    && launch.WindowStart < DateTime.Now.AddHours(1));
 
-            if (intermediateLaunches.Any())
+            if (filteredLaunches.Any())
             {
-                foreach (var launch in intermediateLaunches)
+                foreach (var launch in filteredLaunches)
                 {
                     if (NotifiedLaunches.Contains(launch.Id))
                         continue;

@@ -40,7 +40,6 @@ namespace AstroBot
             botFramework.ServerAvailable += Events.ServerEvents.ServerAvailable;
 
             // Register CronJobs
-            CronTaskManager.Init();
             CronTaskManager.Register(new IntermediateRocketLaunchNotify());
             CronTaskManager.Register(new UpcomingLaunches());
         }

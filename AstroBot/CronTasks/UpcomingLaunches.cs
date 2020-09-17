@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using AwesomeChatBot.ApiWrapper;
 
@@ -9,12 +8,12 @@ namespace AstroBot.CronTasks
     {
         public override string Name => nameof(UpcomingLaunches);
 
-        public override DateTime NextExecution => LastExecution.Date.AddMinutes(1);
+        public override DateTime NextExecution => LastExecution.Date.AddDays(1);
 
         public override void Execute()
         {
-            var upcomingLaunces = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(limit: 20)
-                .Where(launch => launch.WindowStart > DateTime.UtcNow);
+            var upcomingLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(limit: 20);
+            var filteredLaunches = upcomingLaunches.Where(launch => launch.WindowStart > DateTime.UtcNow && launch.WindowStart < DateTime.UtcNow.Date.AddDays(4));
 
             foreach (var wrapper in Globals.BotFramework.ApiWrappers)
             {
@@ -29,11 +28,11 @@ namespace AstroBot.CronTasks
 
                         if (channel != null)
                         {
-                            foreach (var launch in upcomingLaunces)
+                            foreach (var launch in filteredLaunches)
                             {
                                 var launchMessage = new EmbeddedMessage
                                 {
-                                    Title = "Upcoming launch - " + string.Join(", ", launch.Mission.Name),
+                                    Title = "Upcoming launch - " + string.Join(", ", launch.Name),
                                     ThumbnailUrl = launch.Image
                                 };
 

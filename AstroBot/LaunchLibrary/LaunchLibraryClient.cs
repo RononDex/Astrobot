@@ -15,7 +15,7 @@ namespace AstroBot.LaunchLibrary
         {
             var logger = Globals.LoggerFactory.CreateLogger(nameof(LaunchLibraryClient));
             logger.Log(LogLevel.Information, $"Requesting the next {limit} upcoming launches from LaunchLibrary");
-            var requestUrl = $"{ApiUrl}launch/?mode=detailed&format=json&limit={limit}";
+            var requestUrl = $"{ApiUrl}launch/upcoming/?mode=detailed&format=json&limit={limit}";
             var webRequest = WebRequest.CreateHttp(requestUrl);
             webRequest.Accept = "application/json";
             webRequest.Headers["X-Requested-With"] = "AstroBot";

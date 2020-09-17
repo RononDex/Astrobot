@@ -194,7 +194,7 @@ namespace AstroBot.LaunchLibrary
         public int Id { get; set; }
 
         [JsonProperty("launch_library_id")]
-        public int LaunchLibraryId { get; set; }
+        public int? LaunchLibraryId { get; set; }
 
         [JsonProperty("url")]
         public string Url { get; set; }
@@ -224,28 +224,28 @@ namespace AstroBot.LaunchLibrary
         public string Alias { get; set; }
 
         [JsonProperty("min_stage")]
-        public int MinStage { get; set; }
+        public int? MinStage { get; set; }
 
         [JsonProperty("max_stage")]
-        public int MaxStage { get; set; }
+        public int? MaxStage { get; set; }
 
         [JsonProperty("length")]
-        public object Length { get; set; }
+        public float? Length { get; set; }
 
         [JsonProperty("diameter")]
-        public object Diameter { get; set; }
+        public float? Diameter { get; set; }
 
         [JsonProperty("maiden_flight")]
         public object MaidenFlight { get; set; }
 
         [JsonProperty("launch_mass")]
-        public object LaunchMass { get; set; }
+        public float? LaunchMass { get; set; }
 
         [JsonProperty("leo_capacity")]
-        public int LeoCapacity { get; set; }
+        public float? LeoCapacity { get; set; }
 
         [JsonProperty("gto_capacity")]
-        public object GtoCapacity { get; set; }
+        public float? GtoCapacity { get; set; }
 
         [JsonProperty("to_thrust")]
         public object ToThrust { get; set; }
@@ -266,19 +266,19 @@ namespace AstroBot.LaunchLibrary
         public string WikiUrl { get; set; }
 
         [JsonProperty("total_launch_count")]
-        public int TotalLaunchCount { get; set; }
+        public int? TotalLaunchCount { get; set; }
 
         [JsonProperty("consecutive_successful_launches")]
-        public int ConsecutiveSuccessfulLaunches { get; set; }
+        public int? ConsecutiveSuccessfulLaunches { get; set; }
 
         [JsonProperty("successful_launches")]
-        public int SuccessfulLaunches { get; set; }
+        public int? SuccessfulLaunches { get; set; }
 
         [JsonProperty("failed_launches")]
-        public int FailedLaunches { get; set; }
+        public int? FailedLaunches { get; set; }
 
         [JsonProperty("pending_launches")]
-        public int PendingLaunches { get; set; }
+        public int? PendingLaunches { get; set; }
     }
 
     public class Rocket
@@ -302,7 +302,7 @@ namespace AstroBot.LaunchLibrary
         public int Id { get; set; }
 
         [JsonProperty("launch_library_id")]
-        public int LaunchLibraryId { get; set; }
+        public int? LaunchLibraryId { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -410,7 +410,7 @@ namespace AstroBot.LaunchLibrary
         public string Url { get; set; }
 
         [JsonProperty("launch_library_id")]
-        public int LaunchLibraryId { get; set; }
+        public int? LaunchLibraryId { get; set; }
 
         [JsonProperty("slug")]
         public string Slug { get; set; }
@@ -440,13 +440,13 @@ namespace AstroBot.LaunchLibrary
         public bool Tbddate { get; set; }
 
         [JsonProperty("probability")]
-        public int Probability { get; set; }
+        public int? Probability { get; set; }
 
         [JsonProperty("holdreason")]
         public string Holdreason { get; set; }
 
         [JsonProperty("failreason")]
-        public object Failreason { get; set; }
+        public string Failreason { get; set; }
 
         [JsonProperty("hashtag")]
         public object Hashtag { get; set; }
@@ -482,28 +482,28 @@ namespace AstroBot.LaunchLibrary
         public List<object> Program { get; set; }
 
         [JsonProperty("orbital_launch_attempt_count")]
-        public int OrbitalLaunchAttemptCount { get; set; }
+        public int? OrbitalLaunchAttemptCount { get; set; }
 
         [JsonProperty("location_launch_attempt_count")]
-        public int LocationLaunchAttemptCount { get; set; }
+        public int? LocationLaunchAttemptCount { get; set; }
 
         [JsonProperty("pad_launch_attempt_count")]
-        public int PadLaunchAttemptCount { get; set; }
+        public int? PadLaunchAttemptCount { get; set; }
 
         [JsonProperty("agency_launch_attempt_count")]
-        public int AgencyLaunchAttemptCount { get; set; }
+        public int? AgencyLaunchAttemptCount { get; set; }
 
         [JsonProperty("orbital_launch_attempt_count_year")]
-        public int OrbitalLaunchAttemptCountYear { get; set; }
+        public int? OrbitalLaunchAttemptCountYear { get; set; }
 
         [JsonProperty("location_launch_attempt_count_year")]
-        public int LocationLaunchAttemptCountYear { get; set; }
+        public int? LocationLaunchAttemptCountYear { get; set; }
 
         [JsonProperty("pad_launch_attempt_count_year")]
-        public int PadLaunchAttemptCountYear { get; set; }
+        public int? PadLaunchAttemptCountYear { get; set; }
 
         [JsonProperty("agency_launch_attempt_count_year")]
-        public int AgencyLaunchAttemptCountYear { get; set; }
+        public int? AgencyLaunchAttemptCountYear { get; set; }
     }
 
     public class Root
