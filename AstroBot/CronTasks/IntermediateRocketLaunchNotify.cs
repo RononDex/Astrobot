@@ -16,7 +16,8 @@ namespace AstroBot.CronTasks
         public override void Execute()
         {
             var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(limit: 10);
-            var filteredLaunches = intermediateLaunches.Where(launch => launch.WindowStart > DateTime.Now
+            var filteredLaunches = intermediateLaunches.Where(launch => 
+                    launch.WindowStart > DateTime.Now
                     && launch.WindowStart < DateTime.Now.AddHours(1));
 
             if (filteredLaunches.Any())
@@ -54,6 +55,8 @@ namespace AstroBot.CronTasks
                     NotifiedLaunches.Add(launch.Id);
                 }
             }
+
+            base.Execute();
         }
     }
 }
