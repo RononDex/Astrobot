@@ -5,27 +5,23 @@ using System.Linq;
 
 namespace AstroBot.CronTasks
 {
-    public static class IntermediateRocketLaunchNotify
+    public class IntermediateRocketLaunchNotify : CronTask
     {
-        private static readonly List<long> NotifiedLaunches = new List<long>();
+        private static readonly List<string> NotifiedLaunches = new List<string>();
 
-        public static void Execute()
+        public override string Name => nameof(IntermediateRocketLaunchNotify);
+
+        public override DateTime NextExecution => LastExecution.AddMinutes(5);
+
+        public override void Execute()
         {
-            var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(days: 1);
-            var filteredLaunches = intermediateLaunches.Where(launch => DateTimeOffset.ParseExact(
-                    launch.Isostart,
-                    "yyyyMMddTHHmmssZ",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal) > DateTimeOffset.Now
-                    && DateTimeOffset.ParseExact(
-                        launch.Isostart,
-                        "yyyyMMddTHHmmssZ",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal) < DateTimeOffset.Now.AddHours(1));
+            var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(limit: 10);
+            var filteredLaunches = intermediateLaunches.Where(launch => launch.WindowStart > DateTime.Now
+                    && launch.WindowStart < DateTime.Now.AddHours(1));
 
-            if (intermediateLaunches.Any())
+            if (filteredLaunches.Any())
             {
-                foreach (var launch in intermediateLaunches)
+                foreach (var launch in filteredLaunches)
                 {
                     if (NotifiedLaunches.Contains(launch.Id))
                         continue;
@@ -48,7 +44,7 @@ namespace AstroBot.CronTasks
                                     var roleObj = roles.FirstOrDefault(serverRole => serverRole.Name == role);
                                     if (roleObj != null)
                                     {
-                                        channel.SendMessageAsync($"{roleObj.GetMention()} Upcoming launch within the next hour!\r\n{wrapper.MessageFormatter.Bold(launch.Name)}\r\n{launch.VidUrLs.FirstOrDefault()}");
+                                        channel.SendMessageAsync($"{roleObj.GetMention()} Upcoming launch within the next hour!\r\n{wrapper.MessageFormatter.Bold(launch.Name)}\r\n{launch.VidURLs.FirstOrDefault()}");
                                     }
                                 }
                             }
@@ -58,11 +54,6 @@ namespace AstroBot.CronTasks
                     NotifiedLaunches.Add(launch.Id);
                 }
             }
-        }
-
-        public static void Register()
-        {
-            Globals.CronDaemon.Add("*/5 * * * *", Execute);
         }
     }
 }

@@ -8,6 +8,8 @@
         "args": [],
         "cwd": "${workspaceRoot}/AstroBot",
         "stopAtEntry": true
+        "stopAtEntry": true,
+        "cwd": "${workspaceRoot}/AstroBot/",
       }
     }
   }

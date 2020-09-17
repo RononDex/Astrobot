@@ -9,7 +9,8 @@ namespace AstroBot.Test
         [TestMethod]
         public void Test()
         {
-            IntermediateRocketLaunchNotify.Execute();
+            var task = new IntermediateRocketLaunchNotify();
+            task.Execute();
         }
     }
 }
