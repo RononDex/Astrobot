@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AwesomeChatBot" Version="1.6.3" />
-    <PackageReference Include="AwesomeChatBot.Discord" Version="1.6.1" />
+    <PackageReference Include="AwesomeChatBot" Version="1.6.4" />
+    <PackageReference Include="AwesomeChatBot.Discord" Version="1.6.2" />
   </ItemGroup>
 
   <ItemGroup>
