@@ -31,7 +31,7 @@ namespace AstroBot.LaunchLibrary
 
             var result = JsonConvert.DeserializeObject<Root>(text);
             logger.Log(LogLevel.Information, $"Found {result.Results.Count} upcoming launches");
-            return result.Results.OrderBy(x => x.Net).ToList();
+            return result.Results.OrderByDescending(x => x.Net).ToList();
         }
     }
 }
