@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace AstroBot.CronTasks
 {
@@ -25,6 +26,8 @@ namespace AstroBot.CronTasks
             {
                 if (registeredTask.NextExecution < DateTime.Now)
                 {
+                    var logger = Globals.LoggerFactory.CreateLogger(nameof(CronTaskManager));
+                    logger.Log(LogLevel.Information, $"Executing task {registeredTask.Name}");
                     registeredTask.Execute();
                 }
             }

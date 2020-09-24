@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace AstroBot.LaunchLibrary
 
             var result = JsonConvert.DeserializeObject<Root>(text);
             logger.Log(LogLevel.Information, $"Found {result.Results.Count} upcoming launches");
-            return result.Results;
+            return result.Results.OrderBy(x => x.Net).ToList();
         }
     }
 }

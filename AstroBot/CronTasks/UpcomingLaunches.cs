@@ -8,12 +8,13 @@ namespace AstroBot.CronTasks
     {
         public override string Name => nameof(UpcomingLaunches);
 
-        public override DateTime NextExecution => LastExecution.Date.AddDays(1);
+        public override DateTime NextExecution => LastExecution.Date.AddMinutes(1);
 
         public override void Execute()
         {
-            var upcomingLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(limit: 20);
-            var filteredLaunches = upcomingLaunches.Where(launch => launch.WindowStart > DateTime.UtcNow && launch.WindowStart < DateTime.UtcNow.Date.AddDays(4));
+            var filteredLaunches = Globals.UpcomingRocketLaunchesCache.Where(launch =>
+                    launch.WindowStart > DateTime.UtcNow
+                    && launch.WindowStart < DateTime.UtcNow.Date.AddDays(4));
 
             foreach (var wrapper in Globals.BotFramework.ApiWrappers)
             {

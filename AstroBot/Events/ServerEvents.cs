@@ -1,3 +1,4 @@
+using System.Threading;
 using AwesomeChatBot.ApiWrapper;
 
 namespace AstroBot.Events
@@ -9,7 +10,7 @@ namespace AstroBot.Events
             Config.DefaultConfigsHelper.SetupDefaultServerConfig(server);
             if (server.ServerName.Contains("Test"))
             {
-                // CronTasks.UpcomingLaunches.Execute();
+                //new CronTasks.UpcomingLaunches().Execute();
             }
         }
     }

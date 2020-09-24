@@ -24,7 +24,6 @@ namespace AstroBot.CronTasks
             {
                 Globals.BotFramework.ConfigStore.SetConfigValue(key: $"{Name}_LastExecution", value);
             }
-
         }
 
         public virtual void Execute()

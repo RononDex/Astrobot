@@ -15,8 +15,7 @@ namespace AstroBot.CronTasks
 
         public override void Execute()
         {
-            var intermediateLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(limit: 10);
-            var filteredLaunches = intermediateLaunches.Where(launch => 
+            var filteredLaunches = Globals.UpcomingRocketLaunchesCache.Where(launch =>
                     launch.WindowStart > DateTime.Now
                     && launch.WindowStart < DateTime.Now.AddHours(1));
 

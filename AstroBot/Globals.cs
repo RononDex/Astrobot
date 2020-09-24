@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -33,6 +34,8 @@ namespace AstroBot
         /// </summary>
         /// <value></value>
         public static AwesomeChatBot.AwesomeChatBot BotFramework { get; set; }
+
+        public static List<LaunchLibrary.Launch> UpcomingRocketLaunchesCache { get; set; }
 
         /// <summary>
         /// Initialize the global variables
