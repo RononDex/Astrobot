@@ -12,9 +12,11 @@ namespace AstroBot.CronTasks
 
         public override void Execute()
         {
-            var filteredLaunches = Globals.UpcomingRocketLaunchesCache.Where(launch =>
+            var filteredLaunches = Globals.UpcomingRocketLaunchesCache
+                .Where(launch =>
                     launch.WindowStart > DateTime.UtcNow
-                    && launch.WindowStart < DateTime.UtcNow.Date.AddDays(4));
+                    && launch.WindowStart < DateTime.UtcNow.Date.AddDays(4))
+                .OrderBy(launch => launch.WindowStart;
 
             foreach (var wrapper in Globals.BotFramework.ApiWrappers)
             {
@@ -80,7 +82,7 @@ namespace AstroBot.CronTasks
                                     Content = mission.Description ?? string.Empty
                                 });
 
-                                channel.SendMessageAsync(launchMessage);
+                                channel.SendMessageAsync(launchMessage).GetAwaiter().GetResult();
                             }
                         }
                     }
