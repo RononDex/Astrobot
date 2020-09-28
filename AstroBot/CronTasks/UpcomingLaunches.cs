@@ -16,7 +16,7 @@ namespace AstroBot.CronTasks
                 .Where(launch =>
                     launch.WindowStart > DateTime.UtcNow
                     && launch.WindowStart < DateTime.UtcNow.Date.AddDays(4))
-                .OrderBy(launch => launch.WindowStart;
+                .OrderBy(launch => launch.WindowStart);
 
             foreach (var wrapper in Globals.BotFramework.ApiWrappers)
             {

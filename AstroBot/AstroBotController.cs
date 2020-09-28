@@ -38,6 +38,7 @@ namespace AstroBot
             // Register events
             botFramework.NewUserJoinedServer += Events.UserServerEvents.UserJoinedServer;
             botFramework.ServerAvailable += Events.ServerEvents.ServerAvailable;
+            botFramework.MessageDeleted += Events.ServerEvents.MessageDeleted;
 
             // Register CronJobs
             CronTaskManager.Register(new UpdateLaunchLibraryCache());

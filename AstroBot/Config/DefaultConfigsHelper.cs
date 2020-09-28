@@ -16,6 +16,7 @@ namespace AstroBot.Config
             new ConfigValue { Key = "RocketLaunchesNewsEnabled", Value = "false" },
             new ConfigValue { Key = "RocketLaunchesNewsChannel", Value = "news" },
             new ConfigValue { Key = "RocketLaunchesIntermediateTagRole", Value = "LaunchNotify" },
+            new ConfigValue { Key = "LogChannel", Value = "bot-log" },
         };
 
         /// <summary>
