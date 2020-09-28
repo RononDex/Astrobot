@@ -44,7 +44,7 @@ namespace AstroBot.CronTasks
                                     var roleObj = roles.FirstOrDefault(serverRole => serverRole.Name == role);
                                     if (roleObj != null)
                                     {
-                                        channel.SendMessageAsync($"{roleObj.GetMention()} Upcoming launch within the next hour!\r\n{wrapper.MessageFormatter.Bold(launch.Name)}\r\n{launch.VidURLs.FirstOrDefault()}");
+                                        channel.SendMessageAsync($"{roleObj.GetMention()} Upcoming launch within the next hour!\r\n{wrapper.MessageFormatter.Bold(launch.Name)}\r\n{launch.VidURLs.FirstOrDefault().Url}");
                                     }
                                 }
                             }
