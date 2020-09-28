@@ -467,7 +467,7 @@ namespace AstroBot.LaunchLibrary
         public List<InfoURL> InfoURLs { get; set; }
 
         [JsonProperty("vidURLs")]
-        public List<object> VidURLs { get; set; }
+        public List<VidURL> VidURLs { get; set; }
 
         [JsonProperty("webcast_live")]
         public bool WebcastLive { get; set; }
@@ -504,6 +504,24 @@ namespace AstroBot.LaunchLibrary
 
         [JsonProperty("agency_launch_attempt_count_year")]
         public int? AgencyLaunchAttemptCountYear { get; set; }
+    }
+
+    public class VidURL
+    {
+        [JsonProperty("priority")]
+        public int Priority { get; set; }
+
+        [JsonProperty("title")]
+        public string Title { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("feature_image")]
+        public string FeatureImage { get; set; }
+
+        [JsonProperty("url")]
+        public string Url { get; set; }
     }
 
     public class Root
