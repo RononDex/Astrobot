@@ -22,7 +22,7 @@ namespace AstroBot.Events
             {
                 var channel = deletedMessage.Channel.ParentServer.ResolveChannelAsync(greetingsChannel).Result;
                 var message = $"A message from user __{deletedMessage.Author.Name}__ was **deleted** in channel #{deletedMessage.Channel.Name}:\r\n-------------------\r\n{deletedMessage.Content}";
-                channel?.SendMessageAsync(message);
+                channel?.SendMessageAsync(new SendMessage(message, deletedMessage.Attachments));
             }
         }
     }
