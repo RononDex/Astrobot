@@ -46,7 +46,7 @@ namespace AstroBot
             new AstroBotController().Initialize();
 
             // Wait indefinitely so the bot can run in the background
-            return Task.Delay(-1);
+            return Task.Delay(-1, CancellationToken.None);
         }
 
         /// <summary>
