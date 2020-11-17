@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AstroBot.Utilities.Extensions;
 using AwesomeChatBot.ApiWrapper;
 
 namespace AstroBot.CronTasks
@@ -50,7 +51,7 @@ namespace AstroBot.CronTasks
                                 {
                                     Inline = true,
                                     Name = "Rocket",
-                                    Content = launch.Rocket?.Configuration.FullName ?? string.Empty
+                                    Content = launch.Rocket?.Configuration?.FullName ?? string.Empty
                                 });
 
                                 launchMessage.Fields.Add(new EmbeddedMessageField
@@ -72,14 +73,14 @@ namespace AstroBot.CronTasks
                                 {
                                     Inline = false,
                                     Name = $"Mission",
-                                    Content = mission.Name
+                                    Content = mission?.Name
                                 });
 
                                 launchMessage.Fields.Add(new EmbeddedMessageField
                                 {
                                     Inline = false,
                                     Name = $"Mission Description",
-                                    Content = mission.Description ?? string.Empty
+                                    Content = mission.Description?.ShortenTo(1024) ?? string.Empty
                                 });
 
                                 channel.SendMessageAsync(launchMessage).GetAwaiter().GetResult();

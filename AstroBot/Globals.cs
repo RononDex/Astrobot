@@ -35,7 +35,7 @@ namespace AstroBot
         /// <value></value>
         public static AwesomeChatBot.AwesomeChatBot BotFramework { get; set; }
 
-        public static List<LaunchLibrary.Launch> UpcomingRocketLaunchesCache { get; set; }
+        public static IReadOnlyList<LaunchLibrary.Launch> UpcomingRocketLaunchesCache { get; set; }
 
         /// <summary>
         /// Initialize the global variables
