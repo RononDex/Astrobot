@@ -15,7 +15,7 @@ namespace AstroBot.CronTasks
         public override void Execute()
         {
             var filteredLaunches = Globals.UpcomingRocketLaunchesCache.Where(launch =>
-                    launch.WindowStart > DateTime.Now
+                    launch.WindowStart > DateTime.UtcNow
                     && launch.WindowStart < DateTime.UtcNow.AddHours(1));
 
             if (filteredLaunches.Any())
