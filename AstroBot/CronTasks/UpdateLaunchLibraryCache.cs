@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace AstroBot.CronTasks
 {
@@ -12,7 +11,7 @@ namespace AstroBot.CronTasks
         public override void Execute()
         {
             var newCache = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(10);
-            Globals.UpcomingRocketLaunchesCache = newCache.Select(x => x).ToList();
+            Globals.UpcomingRocketLaunchesCache = newCache ?? Globals.UpcomingRocketLaunchesCache;
 
             base.Execute();
         }

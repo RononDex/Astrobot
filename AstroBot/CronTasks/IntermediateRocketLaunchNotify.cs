@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace AstroBot.CronTasks
@@ -17,7 +16,7 @@ namespace AstroBot.CronTasks
         {
             var filteredLaunches = Globals.UpcomingRocketLaunchesCache.Where(launch =>
                     launch.WindowStart > DateTime.Now
-                    && launch.WindowStart < DateTime.Now.AddHours(1));
+                    && launch.WindowStart < DateTime.UtcNow.AddHours(1));
 
             if (filteredLaunches.Any())
             {
@@ -32,20 +31,28 @@ namespace AstroBot.CronTasks
                         {
                             if (Globals.BotFramework.ConfigStore.GetConfigValue<bool>("RocketLaunchesNewsEnabled", server))
                             {
-                                var role = Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesIntermediateTagRole", server);
-                                if (!string.IsNullOrEmpty(role))
+                                var roleName = Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesIntermediateTagRole", server);
+                                if (string.IsNullOrEmpty(roleName))
                                 {
-                                    var channel = server
-                                        .ResolveChannelAsync(Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesNewsChannel", server))
-                                        .GetAwaiter()
-                                        .GetResult();
+                                    continue;
+                                }
 
-                                    var roles = server.GetAvailableUserRolesAsync().GetAwaiter().GetResult();
-                                    var roleObj = roles.FirstOrDefault(serverRole => serverRole.Name == role);
-                                    if (roleObj != null)
-                                    {
-                                        channel.SendMessageAsync($"{roleObj.GetMention()} Upcoming launch within the next hour!\r\n{wrapper.MessageFormatter.Bold(launch.Name)}\r\n{launch.VidURLs.FirstOrDefault().Url}");
-                                    }
+                                var channelName = Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesNewsChannel", server);
+                                if (string.IsNullOrEmpty(channelName))
+                                {
+                                    continue;
+                                }
+
+                                var channel = server
+                                    .ResolveChannelAsync(channelName)
+                                    .GetAwaiter()
+                                    .GetResult();
+
+                                var roles = server.GetAvailableUserRolesAsync().GetAwaiter().GetResult();
+                                var roleObj = roles.FirstOrDefault(serverRole => serverRole.Name == roleName);
+                                if (roleObj != null && channel != null)
+                                {
+                                    channel.SendMessageAsync($"{roleObj.GetMention()} Upcoming launch within the next hour!\r\n{wrapper.MessageFormatter.Bold(launch.Name)}\r\n{launch.VidURLs?.FirstOrDefault()?.Url}");
                                 }
                             }
                         }
