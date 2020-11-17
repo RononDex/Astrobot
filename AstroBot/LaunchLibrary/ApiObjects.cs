@@ -401,6 +401,54 @@ namespace AstroBot.LaunchLibrary
         public string Url { get; set; }
     }
 
+    public class Event
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("url")]
+        public string Url { get; set; }
+
+        [JsonProperty("slug")]
+        public string Slug { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("type")]
+        public EventType Type { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("location")]
+        public string Location { get; set; }
+
+        [JsonProperty("news_url")]
+        public string NewsUrl { get; set; }
+
+        [JsonProperty("video_url")]
+        public string VideoUrl { get; set; }
+
+        [JsonProperty("feature_image")]
+        public string FeatureImgUrl { get; set; }
+
+        [JsonProperty("date")]
+        public DateTime EventTime { get; set; }
+
+        [JsonProperty("launches")]
+        public List<Launch> Launches { get; set; }
+    }
+
+    public class EventType
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+    }
+
     public class Launch
     {
         [JsonProperty("id")]
@@ -524,7 +572,7 @@ namespace AstroBot.LaunchLibrary
         public string Url { get; set; }
     }
 
-    public class Root
+    public class RootLaunches
     {
         [JsonProperty("count")]
         public int Count { get; set; }
@@ -539,4 +587,18 @@ namespace AstroBot.LaunchLibrary
         public List<Launch> Results { get; set; }
     }
 
+    public class RootEvents
+    {
+        [JsonProperty("count")]
+        public int Count { get; set; }
+
+        [JsonProperty("next")]
+        public string Next { get; set; }
+
+        [JsonProperty("previous")]
+        public object Previous { get; set; }
+
+        [JsonProperty("results")]
+        public List<Event> Results { get; set; }
+    }
 }
