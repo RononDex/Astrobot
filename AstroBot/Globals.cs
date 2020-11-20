@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using AstroBot.LaunchLibrary;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
@@ -14,28 +15,26 @@ namespace AstroBot
         /// <summary>
         /// Logger factory used to create logger instances
         /// </summary>
-        /// <value></value>
         public static ILoggerFactory LoggerFactory { get; private set; }
 
         /// <summary>
         /// The settings belonging to the AwesomeChatBot framework
         /// </summary>
-        /// <value></value>
         public static AwesomeChatBot.AwesomeChatBotSettings AwesomeChatBotSettings { get; private set; }
 
         /// <summary>
         /// The bot wide settings
         /// </summary>
-        /// <value></value>
         public static Objects.Config.BotSettings BotSettings { get; private set; }
 
         /// <summary>
         /// Globally stored BotFramework instance for easy access
         /// </summary>
-        /// <value></value>
-        public static AwesomeChatBot.AwesomeChatBot BotFramework { get; set; }
+        public static AwesomeChatBot.AwesomeChatBot BotFramework { get; internal set; }
 
-        public static IReadOnlyList<LaunchLibrary.Launch> UpcomingRocketLaunchesCache { get; set; }
+        public static IReadOnlyList<Launch> UpcomingRocketLaunchesCache { get; internal set; }
+
+        public static IReadOnlyList<Event> UpcomingEventsCache { get; internal set; }
 
         /// <summary>
         /// Initialize the global variables

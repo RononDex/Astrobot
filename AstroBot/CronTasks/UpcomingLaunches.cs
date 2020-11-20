@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using AstroBot.LaunchLibrary;
 using AstroBot.Utilities.Extensions;
 using AwesomeChatBot.ApiWrapper;
 
@@ -19,71 +21,57 @@ namespace AstroBot.CronTasks
                     && launch.WindowStart < DateTime.UtcNow.Date.AddDays(4))
                 .OrderBy(launch => launch.WindowStart);
 
+            var filteredEvents = Globals.UpcomingEventsCache
+                .Where(spaceEvent =>
+                    spaceEvent.EventTime > DateTime.UtcNow
+                    && spaceEvent.EventTime < DateTime.UtcNow.Date.AddDays(4))
+                .OrderBy(spaceEvent => spaceEvent.EventTime);
+
             foreach (var wrapper in Globals.BotFramework.ApiWrappers)
             {
                 foreach (var server in wrapper.GetAvailableServers())
                 {
                     if (Globals.BotFramework.ConfigStore.GetConfigValue<bool>("RocketLaunchesNewsEnabled", server))
                     {
+                        var channelName = Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesNewsChannel", server);
+
+                        if (string.IsNullOrEmpty(channelName))
+                        {
+                            continue;
+                        }
+
                         var channel = server
-                            .ResolveChannelAsync(Globals.BotFramework.ConfigStore.GetConfigValue<string>("RocketLaunchesNewsChannel", server))
+                            .ResolveChannelAsync(channelName)
                             .GetAwaiter()
                             .GetResult();
 
                         if (channel != null)
                         {
-                            foreach (var launch in filteredLaunches)
+                            var sortedMessageList = filteredLaunches.Select(launch => launch as object).ToList();
+                            sortedMessageList.AddRange(filteredEvents);
+                            sortedMessageList = sortedMessageList
+                                .OrderBy(message => message is Event
+                                    ? (message as Event)!.EventTime
+                                    : (message as Launch)!.WindowStart)
+                                .ToList();
+
+                            foreach (var message in sortedMessageList)
                             {
-                                var launchMessage = new EmbeddedMessage
+                                if (message is Launch launch)
                                 {
-                                    Title = "Upcoming launch - " + string.Join(", ", launch.Name),
-                                    ThumbnailUrl = launch.Image
-                                };
+                                    var launchMessage = CreateLaunchMessage(launch);
 
-                                launchMessage.Fields.Add(new EmbeddedMessageField
+                                    channel.SendMessageAsync(launchMessage).GetAwaiter().GetResult();
+                                    Task.Delay(100).GetAwaiter().GetResult(); // Give discord api some time to post the message (it appears to be kinda slow)
+                                }
+
+                                if (message is Event spaceEvent)
                                 {
-                                    Inline = true,
-                                    Name = "Agency",
-                                    Content = launch.LaunchServiceProvider?.Name ?? string.Empty
-                                });
+                                    var spaceEventMessage = CreateSpaceEventEventMessage(spaceEvent);
 
-                                launchMessage.Fields.Add(new EmbeddedMessageField
-                                {
-                                    Inline = true,
-                                    Name = "Rocket",
-                                    Content = launch.Rocket?.Configuration?.FullName ?? string.Empty
-                                });
-
-                                launchMessage.Fields.Add(new EmbeddedMessageField
-                                {
-                                    Inline = true,
-                                    Name = "Launch Window",
-                                    Content = $"{launch.WindowStart} to \r\n{launch.WindowEnd}"
-                                });
-
-                                launchMessage.Fields.Add(new EmbeddedMessageField
-                                {
-                                    Inline = true,
-                                    Name = "Launch pad",
-                                    Content = $"{launch.Pad?.Location?.Name} - {launch.Pad?.Name}"
-                                });
-
-                                var mission = launch.Mission;
-                                launchMessage.Fields.Add(new EmbeddedMessageField
-                                {
-                                    Inline = false,
-                                    Name = $"Mission",
-                                    Content = mission?.Name
-                                });
-
-                                launchMessage.Fields.Add(new EmbeddedMessageField
-                                {
-                                    Inline = false,
-                                    Name = $"Mission Description",
-                                    Content = mission.Description?.ShortenTo(1024) ?? string.Empty
-                                });
-
-                                channel.SendMessageAsync(launchMessage).GetAwaiter().GetResult();
+                                    channel.SendMessageAsync(spaceEventMessage).GetAwaiter().GetResult();
+                                    Task.Delay(100).GetAwaiter().GetResult(); // Give discord api some time to post the message (it appears to be kinda slow)
+                                }
                             }
                         }
                     }
@@ -91,6 +79,98 @@ namespace AstroBot.CronTasks
             }
 
             base.Execute();
+        }
+
+        private static EmbeddedMessage CreateSpaceEventEventMessage(Event spaceEvent)
+        {
+            var eventMessage = new EmbeddedMessage
+            {
+                Title = $"Upcoming event - {spaceEvent.Name}",
+                ThumbnailUrl = spaceEvent.FeatureImgUrl,
+            };
+
+            eventMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = true,
+                Name = "Type of event",
+                Content = spaceEvent.Type?.Name,
+            });
+
+            eventMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = true,
+                Name = "Time of event UTC",
+                Content = spaceEvent.EventTime.ToString(),
+            });
+
+            eventMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = true,
+                Name = "Location",
+                Content = spaceEvent.Location,
+            });
+
+            eventMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = false,
+                Name = "Description",
+                Content = spaceEvent.Description,
+            });
+
+            return eventMessage;
+        }
+
+        private static EmbeddedMessage CreateLaunchMessage(Launch launch)
+        {
+            var launchMessage = new EmbeddedMessage
+            {
+                Title = "Upcoming launch - " + string.Join(", ", launch.Name),
+                ThumbnailUrl = launch.Image
+            };
+
+            launchMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = true,
+                Name = "Agency",
+                Content = launch.LaunchServiceProvider?.Name ?? string.Empty
+            });
+
+            launchMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = true,
+                Name = "Rocket",
+                Content = launch.Rocket?.Configuration?.FullName ?? string.Empty
+            });
+
+            launchMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = true,
+                Name = "Launch Window UTC",
+                Content = $"{launch.WindowStart} to \r\n{launch.WindowEnd}"
+            });
+
+            launchMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = true,
+                Name = "Launch pad",
+                Content = $"{launch.Pad?.Location?.Name} - {launch.Pad?.Name}"
+            });
+
+            var mission = launch.Mission;
+            launchMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = false,
+                Name = $"Mission",
+                Content = mission?.Name
+            });
+
+            launchMessage.Fields.Add(new EmbeddedMessageField
+            {
+                Inline = false,
+                Name = $"Mission Description",
+                Content = mission.Description?.ShortenTo(1024) ?? string.Empty
+            });
+            return launchMessage;
         }
     }
 }
