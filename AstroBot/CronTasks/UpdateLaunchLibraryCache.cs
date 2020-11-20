@@ -10,8 +10,11 @@ namespace AstroBot.CronTasks
 
         public override void Execute()
         {
-            var newCache = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(10);
-            Globals.UpcomingRocketLaunchesCache = newCache ?? Globals.UpcomingRocketLaunchesCache;
+            var newCacheLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(10);
+            var newCacheEvents = LaunchLibrary.LaunchLibraryClient.GetUpcomingEvents(10);
+
+            Globals.UpcomingRocketLaunchesCache = newCacheLaunches ?? Globals.UpcomingRocketLaunchesCache;
+            Globals.UpcomingEventsCache = newCacheEvents ?? Globals.UpcomingEventsCache;
 
             base.Execute();
         }
