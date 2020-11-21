@@ -114,7 +114,7 @@ namespace AstroBot.CronTasks
             {
                 Inline = false,
                 Name = "Description",
-                Content = spaceEvent.Description,
+                Content = spaceEvent.Description.ShortenTo(1024),
             });
 
             return eventMessage;

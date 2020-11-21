@@ -25,6 +25,9 @@ namespace AstroBot.CronTasks
 
             if (filteredLaunches.Any() || filteredSpaceEvents.Any())
             {
+                var notifiedLaunchesNow = new List<string>();
+                var notifiedEventsNow = new List<string>();
+
                 foreach (var wrapper in Globals.BotFramework.ApiWrappers)
                 {
                     var servers = wrapper.GetAvailableServers();
@@ -68,9 +71,9 @@ namespace AstroBot.CronTasks
 
                                     channel.SendMessageAsync($"{roleForLaunches.GetMention()} Upcoming launch within the next hour!\r\n{wrapper.MessageFormatter.Bold(launch.Name)}\r\n{launch.VidURLs?.FirstOrDefault()?.Url}");
 
-                                    if (string.Equals(servers.Last().ServerID, server.ServerID, StringComparison.Ordinal))
+                                    if (!notifiedLaunchesNow.Contains(launch.Id))
                                     {
-                                        NotifiedLaunches.Add(launch.Id);
+                                        notifiedLaunchesNow.Add(launch.Id);
                                     }
                                 }
 
@@ -80,17 +83,18 @@ namespace AstroBot.CronTasks
                                         continue;
 
                                     channel.SendMessageAsync($"{roleForEvents.GetMention()} Upcoming event within the next hour!\r\n{wrapper.MessageFormatter.Bold(spaceEvent.Name)}\r\n{spaceEvent.VideoUrl}");
-
-                                    if (string.Equals(servers.Last().ServerID, server.ServerID, StringComparison.Ordinal))
+                                    if (!notifiedEventsNow.Contains(spaceEvent.Id))
                                     {
-                                        NotifiedSpaceEvents.Add(spaceEvent.Id);
+                                        notifiedEventsNow.Add(spaceEvent.Id);
                                     }
                                 }
                             }
                         }
                     }
-
                 }
+
+                NotifiedLaunches.AddRange(notifiedLaunchesNow);
+                NotifiedSpaceEvents.AddRange(notifiedEventsNow);
             }
 
             base.Execute();
