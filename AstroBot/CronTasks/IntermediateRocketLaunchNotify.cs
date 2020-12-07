@@ -11,7 +11,7 @@ namespace AstroBot.CronTasks
 
         public override string Name => nameof(IntermediateRocketLaunchNotify);
 
-        public override DateTime NextExecution => LastExecution.AddMinutes(5);
+        public override DateTime NextExecution => LastExecution.AddMinutes(1);
 
         public override void Execute()
         {
@@ -61,9 +61,8 @@ namespace AstroBot.CronTasks
                             var roles = server.GetAvailableUserRolesAsync().GetAwaiter().GetResult();
                             var roleForLaunches = roles.FirstOrDefault(serverRole => serverRole.Name == roleNameLaunches);
                             var roleForEvents = roles.FirstOrDefault(serverRole => serverRole.Name == roleNameEvents);
-                            if (roleForLaunches != null && roleNameEvents != null && channel != null)
+                            if (roleForLaunches != null && roleForEvents != null && channel != null)
                             {
-
                                 foreach (var launch in filteredLaunches)
                                 {
                                     if (NotifiedLaunches.Contains(launch.Id))
