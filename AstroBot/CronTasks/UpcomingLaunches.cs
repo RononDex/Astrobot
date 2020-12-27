@@ -11,7 +11,7 @@ namespace AstroBot.CronTasks
     {
         public override string Name => nameof(UpcomingLaunches);
 
-        public override DateTime NextExecution => LastExecution.Date.AddMinutes(1);
+        public override DateTime NextExecution => LastExecution.Date.AddDays(1);
 
         public override void Execute()
         {
