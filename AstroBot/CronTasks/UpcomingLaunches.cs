@@ -11,7 +11,7 @@ namespace AstroBot.CronTasks
     {
         public override string Name => nameof(UpcomingLaunches);
 
-        public override DateTime NextExecution => LastExecution.Date.AddDays(1);
+        public override DateTime NextExecution => LastExecution.Date.AddMinutes(1);
 
         public override void Execute()
         {
@@ -168,7 +168,7 @@ namespace AstroBot.CronTasks
             {
                 Inline = false,
                 Name = $"Mission Description",
-                Content = mission.Description?.ShortenTo(1024) ?? string.Empty
+                Content = mission?.Description?.ShortenTo(1024) ?? string.Empty
             });
             return launchMessage;
         }
