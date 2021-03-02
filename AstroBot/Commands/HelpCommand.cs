@@ -20,11 +20,11 @@ namespace AstroBot.Commands
 
         public List<string> Regex => new List<string> { "help" };
 
-        public async Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
+        public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
         {
             var ass = Assembly.GetEntryAssembly();
 
-            await receivedMessage.Channel.SendMessageAsync("Following commands are available in this server:");
+            await receivedMessage.Channel.SendMessageAsync("Following commands are available in this server:").ConfigureAwait(false);
             var configStore = receivedMessage.ApiWrapper.ConfigStore;
             var context = new IConfigurationDependency[] { receivedMessage.Channel.ParentServer };
             var message = "";
@@ -63,7 +63,7 @@ namespace AstroBot.Commands
 
                         if (message.Length + curMessage.Length > 2000)
                         {
-                            await receivedMessage.Channel.SendMessageAsync(new SendMessage(message));
+                            await receivedMessage.Channel.SendMessageAsync(new SendMessage(message)).ConfigureAwait(false);
                             message = string.Empty;
                         }
 
@@ -72,7 +72,7 @@ namespace AstroBot.Commands
                 }
             }
 
-            await receivedMessage.Channel.SendMessageAsync(new SendMessage(message));
+            await receivedMessage.Channel.SendMessageAsync(new SendMessage(message)).ConfigureAwait(false);
 
             return true;
         }

@@ -42,26 +42,26 @@ namespace AstroBot.Commands
 
         public override string Name => "Simbad";
 
-        public async Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
+        public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
         {
             var simbadClient = new SimbadClient();
 
             if (regexMatch.Groups["AstroObject"].Success)
             {
-                SearchForObjectByNameAsync(receivedMessage, regexMatch, simbadClient);
+                await SearchForObjectByNameAsync(receivedMessage, regexMatch, simbadClient).ConfigureAwait(false);
             }
             if (regexMatch.Groups["CenterOfSearchRA"].Success
                 || regexMatch.Groups["CenterOfSearchName"].Success)
             {
-                SearchForObjectsAroundRaDec(receivedMessage, regexMatch, simbadClient);
+                await SearchForObjectsAroundRaDecAsync(receivedMessage, regexMatch, simbadClient);
             }
             return true;
         }
 
-        private async void SearchForObjectsAroundRaDec(ReceivedMessage receivedMessage, Match regexMatch, SimbadClient simbadClient)
+        private static async Task SearchForObjectsAroundRaDecAsync(ReceivedMessage receivedMessage, Match regexMatch, SimbadClient simbadClient)
         {
             RaDecCoordinate centerCoordinates = null;
-            var radiusInDegrees = 0.5f;
+            const float radiusInDegrees = 0.5f;
             try
             {
                 if (regexMatch.Groups["CenterOfSearchRA"].Success)
@@ -76,7 +76,7 @@ namespace AstroBot.Commands
                     var queryAroundObject = simbadClient.FindObjectByName(name);
                     if (queryAroundObject == null)
                     {
-                        await receivedMessage.Channel.SendMessageAsync($"No object with name {name} found in the SIMBAD databse!");
+                        await receivedMessage.Channel.SendMessageAsync($"No object with name {name} found in the SIMBAD databse!").ConfigureAwait(false);
                         return;
                     }
 
@@ -87,13 +87,13 @@ namespace AstroBot.Commands
             {
                 if (centerCoordinates == null)
                 {
-                    await receivedMessage.Channel.SendMessageAsync("Could not parse RA/DEC coordinates");
+                    await receivedMessage.Channel.SendMessageAsync("Could not parse RA/DEC coordinates").ConfigureAwait(false);
                 }
             }
 
             var objectsAroundTarget = simbadClient.QueryAround(centerCoordinates, radiusInDegrees);
             var csvString = CsvExporter.AstronomicalObjectsToCsv(objectsAroundTarget);
-            await receivedMessage.Channel.SendMessageAsync($"Found {objectsAroundTarget.Count} objects around {centerCoordinates} within a radius of {radiusInDegrees}°:");
+            await receivedMessage.Channel.SendMessageAsync($"Found {objectsAroundTarget.Count} objects around {centerCoordinates} within a radius of {radiusInDegrees}°:").ConfigureAwait(false);
             await receivedMessage.Channel.SendMessageAsync(
                     new SendMessage(
                         content: null,
@@ -104,7 +104,7 @@ namespace AstroBot.Commands
                                 Name = "queryResult.csv",
                                 Content = Encoding.ASCII.GetBytes(csvString)
                             }
-                        }));
+                        })).ConfigureAwait(false);
         }
 
         private static async Task SearchForObjectByNameAsync(ReceivedMessage receivedMessage, Match regexMatch, SimbadClient simbadClient)
@@ -117,10 +117,10 @@ namespace AstroBot.Commands
                 return;
             }
 
-            await WriteObjectDetailsEmbedded(receivedMessage, foundObject);
+            await WriteObjectDetailsEmbeddedAsync(receivedMessage, foundObject).ConfigureAwait(false);
         }
 
-        private static async Task WriteObjectDetailsEmbedded(ReceivedMessage receivedMessage, AstronomicalObject foundObject)
+        private static Task WriteObjectDetailsEmbeddedAsync(ReceivedMessage receivedMessage, AstronomicalObject foundObject)
         {
             var embeddedMessage = new EmbeddedMessage
             {
@@ -157,7 +157,7 @@ namespace AstroBot.Commands
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Secondary types:", string.Join(", ", foundObject.OtherTypes), inline: false);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Also known as:", string.Join(", ", foundObject.OtherNames).WithMaxLength(1024), inline: false);
 
-            await receivedMessage.Channel.SendMessageAsync(new SendMessage(embeddedMessage));
+            return receivedMessage.Channel.SendMessageAsync(new SendMessage(embeddedMessage));
         }
 
         private static string FormatFluxes(AstronomicalObject foundObject)

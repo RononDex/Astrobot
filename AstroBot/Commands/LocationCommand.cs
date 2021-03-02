@@ -19,8 +19,7 @@ namespace AstroBot.Commands
         /// <summary>
         /// The regex, when matched executes the command
         /// </summary>
-        /// <returns></returns>
-        public List<string> Regex => new List<string>() { @"Where is (?'SearchLocation'.*\w)(\?)?" };
+        public List<string> Regex => new List<string> { @"Where is (?'SearchLocation'.*\w)(\?)?" };
 
         public string Description => "Gets the Lat / Lng coordinates of a certain location";
         public string[] ExampleCalls => new[] { "Where is Zurich" };
@@ -30,27 +29,23 @@ namespace AstroBot.Commands
         /// </summary>
         /// <param name="receivedMessage"></param>
         /// <param name="regexMatch"></param>
-        /// <returns></returns>
-        public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
+        public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
         {
-            return Task<bool>.Factory.StartNew(() =>
+            var location = regexMatch.Groups["SearchLocation"].Value;
+            var geoLocation = GeoLocation.GeoLocation.FindLocation(location);
+
+            if (geoLocation == null)
             {
-                var location = regexMatch.Groups["SearchLocation"].Value;
-                var geoLocation = GeoLocation.GeoLocation.FindLocation(location);
-
-                if (geoLocation == null)
-                {
-                    receivedMessage.Channel.SendMessageAsync(new SendMessage($"I don't know any place on earth with the name {location}")).Wait();
-                    return true;
-                }
-
-                _ = receivedMessage.Channel.SendMessageAsync(new SendMessage($"I found the following location for \"{location}\":\r\n" +
-                                                                            receivedMessage.ApiWrapper.MessageFormatter.Quote($"Name:   {geoLocation.Name}\r\n" +
-                                                                            $"Lat:    {geoLocation.Lat}\r\n" +
-                                                                            $"Lng:    {geoLocation.Lng}")));
-
+                await receivedMessage.Channel.SendMessageAsync(new SendMessage($"I don't know any place on earth with the name {location}")).ConfigureAwait(false);
                 return true;
-            });
+            }
+
+            await receivedMessage.Channel.SendMessageAsync(new SendMessage($"I found the following location for \"{location}\":\r\n" +
+                                                                        receivedMessage.ApiWrapper.MessageFormatter.Quote($"Name:   {geoLocation.Name}\r\n" +
+                                                                        $"Lat:    {geoLocation.Lat}\r\n" +
+                                                                        $"Lng:    {geoLocation.Lng}"))).ConfigureAwait(false);
+
+            return true;
         }
     }
 }

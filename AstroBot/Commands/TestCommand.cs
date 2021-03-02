@@ -26,18 +26,13 @@ namespace AstroBot.Commands
         /// </summary>
         /// <param name="receivedMessage"></param>
         /// <param name="regexMatch"></param>
-        /// <returns></returns>
-        public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
+        public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
         {
-            return Task<bool>.Factory.StartNew(() =>
-            {
-                var testParam = regexMatch.Groups["TestParam"].Value;
+            var testParam = regexMatch.Groups["TestParam"].Value;
 
-                receivedMessage.Channel.SendMessageAsync(new SendMessage($"IT'S WORKING!!! You entered {testParam}")).Wait();
+            await receivedMessage.Channel.SendMessageAsync(new SendMessage($"IT'S WORKING!!! You entered {testParam}")).ConfigureAwait(false);
 
-                return true;
-            });
-
+            return true;
         }
     }
 }

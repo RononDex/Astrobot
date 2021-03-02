@@ -23,33 +23,33 @@ namespace AstroBot.Commands
 
         public override string Name => "Weather";
 
-        public Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
+        public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
         {
-            return Task<bool>.Factory.StartNew(() =>
+            if (regexMatch.Groups["SearchLocationCL"].Success)
             {
-                if (regexMatch.Groups["SearchLocationCL"].Success)
+
+                var location = regexMatch.Groups["SearchLocationCL"].Value;
+                var geoLocation = GeoLocation.GeoLocation.FindLocation(location);
+
+                // If no place with that name can be found
+                if (geoLocation == null)
                 {
-
-                    var location = regexMatch.Groups["SearchLocationCL"].Value;
-                    var geoLocation = GeoLocation.GeoLocation.FindLocation(location);
-
-                    // If no place with that name can be found
-                    if (geoLocation == null)
-                    {
-                        receivedMessage.Channel.SendMessageAsync(new SendMessage($"I could not find any place on earth with the name \"{location}\"")).Wait();
-                        return true;
-                    }
-
-                    // Get the weather forecast
-                    receivedMessage.Channel.SendMessageAsync($"Searching weather forecast for:    Name: {geoLocation.Name}, Lat: {geoLocation.Lat}, Lng: {geoLocation.Lng}").Wait();
-                    var forecast = Weather.Clearoutside.GetWeatherForecast(geoLocation);
-                    receivedMessage.Channel.SendMessageAsync(new SendMessage("I found the following weather forecast:", new List<Attachment>() { forecast })).Wait();
-
+                    await receivedMessage.Channel.SendMessageAsync(new SendMessage($"I could not find any place on earth with the name \"{location}\""))
+                        .ConfigureAwait(false);
                     return true;
                 }
 
-                return false;
-            });
+                // Get the weather forecast
+                await receivedMessage.Channel.SendMessageAsync($"Searching weather forecast for:    Name: {geoLocation.Name}, Lat: {geoLocation.Lat}, Lng: {geoLocation.Lng}")
+                    .ConfigureAwait(false);
+                var forecast = Weather.Clearoutside.GetWeatherForecast(geoLocation);
+                await receivedMessage.Channel.SendMessageAsync(new SendMessage("I found the following weather forecast:", new List<Attachment> { forecast }))
+                    .ConfigureAwait(false);
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

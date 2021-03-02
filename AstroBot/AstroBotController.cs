@@ -36,9 +36,9 @@ namespace AstroBot
             botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
 
             // Register events
-            botFramework.NewUserJoinedServer += Events.UserServerEvents.UserJoinedServer;
-            botFramework.ServerAvailable += Events.ServerEvents.ServerAvailable;
-            botFramework.MessageDeleted += Events.ServerEvents.MessageDeleted;
+            botFramework.NewUserJoinedServer += Events.UserServerEvents.UserJoinedServerAsync;
+            botFramework.ServerAvailable += Events.ServerEvents.ServerAvailableAsync;
+            botFramework.MessageDeleted += Events.ServerEvents.MessageDeletedAsync;
 
             // Register CronJobs
             CronTaskManager.Register(new UpdateLaunchLibraryCache());
@@ -46,7 +46,7 @@ namespace AstroBot
             CronTaskManager.Register(new UpcomingLaunches());
 
             // Update Cache at app startup
-            new UpdateLaunchLibraryCache().Execute();
+            new UpdateLaunchLibraryCache().ExecuteAsync().GetAwaiter().GetResult();
         }
 
         /// <summary>

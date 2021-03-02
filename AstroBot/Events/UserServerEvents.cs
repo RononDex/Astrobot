@@ -1,18 +1,22 @@
+using System.Threading.Tasks;
 using AwesomeChatBot.ApiWrapper;
 
 namespace AstroBot.Events
 {
     public static class UserServerEvents
     {
-        public static void UserJoinedServer(User user, Server server)
+        public static async Task UserJoinedServerAsync(User user, Server server)
         {
             var greetingsChannel = Globals.BotFramework.ConfigStore.GetConfigValue<string>("GreetNewUsersChannel", server);
             if (Globals.BotFramework.ConfigStore.GetConfigValue<bool>("GreetNewUsers", server)
                 && greetingsChannel != null)
             {
-                var channel = server.ResolveChannelAsync(greetingsChannel).Result;
+                var channel = await server.ResolveChannelAsync(greetingsChannel).ConfigureAwait(false);
                 var message = Globals.BotFramework.ConfigStore.GetConfigValue<string>("GreetNewUsersMessage", server);
-                _ = channel?.SendMessageAsync($"{message.Replace("@UserMention", user.GetMention())}");
+                if (channel != null)
+                {
+                    await channel.SendMessageAsync($"{message.Replace("@UserMention", user.GetMention())}").ConfigureAwait(false);
+                }
             }
         }
     }
