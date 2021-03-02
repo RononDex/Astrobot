@@ -13,7 +13,7 @@ namespace AstroBot.CronTasks
 
         public override DateTime NextExecution => LastExecution.Date.AddDays(1);
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
             var filteredLaunches = Globals.UpcomingRocketLaunchesCache
                 .Where(launch =>
@@ -29,7 +29,7 @@ namespace AstroBot.CronTasks
 
             foreach (var wrapper in Globals.BotFramework.ApiWrappers)
             {
-                foreach (var server in wrapper.GetAvailableServers())
+                foreach (var server in await wrapper.GetAvailableServersAsync().ConfigureAwait(false))
                 {
                     if (Globals.BotFramework.ConfigStore.GetConfigValue<bool>("RocketLaunchesNewsEnabled", server))
                     {
@@ -40,10 +40,9 @@ namespace AstroBot.CronTasks
                             continue;
                         }
 
-                        var channel = server
+                        var channel = await server
                             .ResolveChannelAsync(channelName)
-                            .GetAwaiter()
-                            .GetResult();
+                            .ConfigureAwait(false);
 
                         if (channel != null)
                         {
@@ -61,16 +60,16 @@ namespace AstroBot.CronTasks
                                 {
                                     var launchMessage = CreateLaunchMessage(launch);
 
-                                    channel.SendMessageAsync(launchMessage).GetAwaiter().GetResult();
-                                    Task.Delay(100).GetAwaiter().GetResult(); // Give discord api some time to post the message (it appears to be kinda slow)
+                                    await channel.SendMessageAsync(launchMessage).ConfigureAwait(false);
+                                    await Task.Delay(100).ConfigureAwait(false); // Give discord api some time to post the message (it appears to be kinda slow)
                                 }
 
                                 if (message is Event spaceEvent)
                                 {
                                     var spaceEventMessage = CreateSpaceEventEventMessage(spaceEvent);
 
-                                    channel.SendMessageAsync(spaceEventMessage).GetAwaiter().GetResult();
-                                    Task.Delay(100).GetAwaiter().GetResult(); // Give discord api some time to post the message (it appears to be kinda slow)
+                                    await channel.SendMessageAsync(spaceEventMessage).ConfigureAwait(false);
+                                    await Task.Delay(100).ConfigureAwait(false); // Give discord api some time to post the message (it appears to be kinda slow)
                                 }
                             }
                         }
@@ -78,7 +77,7 @@ namespace AstroBot.CronTasks
                 }
             }
 
-            base.Execute();
+            await base.ExecuteAsync().ConfigureAwait(false);
         }
 
         private static EmbeddedMessage CreateSpaceEventEventMessage(Event spaceEvent)

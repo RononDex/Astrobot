@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AstroBot.CronTasks
 {
@@ -13,7 +14,7 @@ namespace AstroBot.CronTasks
 
         public override DateTime NextExecution => LastExecution.AddMinutes(1);
 
-        public override void Execute()
+        public override async Task ExecuteAsync()
         {
             var filteredLaunches = Globals.UpcomingRocketLaunchesCache.Where(launch =>
                     launch.WindowStart > DateTime.UtcNow
@@ -30,7 +31,7 @@ namespace AstroBot.CronTasks
 
                 foreach (var wrapper in Globals.BotFramework.ApiWrappers)
                 {
-                    var servers = wrapper.GetAvailableServers();
+                    var servers = await wrapper.GetAvailableServersAsync().ConfigureAwait(false);
                     foreach (var server in servers)
                     {
                         if (Globals.BotFramework.ConfigStore.GetConfigValue<bool>("RocketLaunchesNewsEnabled", server))
@@ -53,12 +54,11 @@ namespace AstroBot.CronTasks
                                 continue;
                             }
 
-                            var channel = server
+                            var channel = await server
                                 .ResolveChannelAsync(channelName)
-                                .GetAwaiter()
-                                .GetResult();
+                                .ConfigureAwait(false);
 
-                            var roles = server.GetAvailableUserRolesAsync().GetAwaiter().GetResult();
+                            var roles = await server.GetAvailableUserRolesAsync().ConfigureAwait(false);
                             var roleForLaunches = roles.FirstOrDefault(serverRole => serverRole.Name == roleNameLaunches);
                             var roleForEvents = roles.FirstOrDefault(serverRole => serverRole.Name == roleNameEvents);
                             if (roleForLaunches != null && roleForEvents != null && channel != null)
@@ -68,7 +68,9 @@ namespace AstroBot.CronTasks
                                     if (NotifiedLaunches.Contains(launch.Id))
                                         continue;
 
-                                    channel.SendMessageAsync($"{roleForLaunches.GetMention()} Upcoming launch within the next hour!\r\n{wrapper.MessageFormatter.Bold(launch.Name)}\r\n{launch.VidURLs?.FirstOrDefault()?.Url}");
+                                    await channel
+                                        .SendMessageAsync($"{roleForLaunches.GetMention()} Upcoming launch within the next hour!\r\n{wrapper.MessageFormatter.Bold(launch.Name)}\r\n{launch.VidURLs?.FirstOrDefault()?.Url}")
+                                        .ConfigureAwait(false);
 
                                     if (!notifiedLaunchesNow.Contains(launch.Id))
                                     {
@@ -79,9 +81,14 @@ namespace AstroBot.CronTasks
                                 foreach (var spaceEvent in filteredSpaceEvents)
                                 {
                                     if (NotifiedSpaceEvents.Contains(spaceEvent.Id))
+                                    {
                                         continue;
+                                    }
 
-                                    channel.SendMessageAsync($"{roleForEvents.GetMention()} Upcoming event within the next hour!\r\n{wrapper.MessageFormatter.Bold(spaceEvent.Name)}\r\n{spaceEvent.VideoUrl}");
+                                    await channel
+                                        .SendMessageAsync($"{roleForEvents.GetMention()} Upcoming event within the next hour!\r\n{wrapper.MessageFormatter.Bold(spaceEvent.Name)}\r\n{spaceEvent.VideoUrl}")
+                                        .ConfigureAwait(false);
+
                                     if (!notifiedEventsNow.Contains(spaceEvent.Id))
                                     {
                                         notifiedEventsNow.Add(spaceEvent.Id);
@@ -96,7 +103,7 @@ namespace AstroBot.CronTasks
                 NotifiedSpaceEvents.AddRange(notifiedEventsNow);
             }
 
-            base.Execute();
+            await base.ExecuteAsync().ConfigureAwait(false);
         }
     }
 }

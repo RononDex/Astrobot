@@ -30,7 +30,7 @@ namespace AstroBot.Commands
         private const float MAX_ANGULARSIZE_ARCMINUTES = 120f;
         private const float MIN_ANGULARSIZE_ARCMINUTES = 30f;
 
-        public async Task<bool> ExecuteRegexCommand(ReceivedMessage receivedMessage, Match regexMatch)
+        public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
         {
             if (regexMatch.Groups["ObjectName"].Success)
             {
@@ -40,17 +40,17 @@ namespace AstroBot.Commands
 
                 if (objectResolvedBySimbad == null)
                 {
-                    await receivedMessage.Channel.SendMessageAsync($"No object with name {astronomicalObjectName} could be found on simbad!");
+                    await receivedMessage.Channel.SendMessageAsync($"No object with name {astronomicalObjectName} could be found on simbad!").ConfigureAwait(false);
                     return true;
                 }
 
                 if (objectResolvedBySimbad.RaDecCoordinate == null)
                 {
-                    await receivedMessage.Channel.SendMessageAsync($"The object was found, but no Ra / Dec coordinates are known for the object!");
+                    await receivedMessage.Channel.SendMessageAsync($"The object was found, but no Ra / Dec coordinates are known for the object!").ConfigureAwait(false);
                     return true;
                 }
 
-                await receivedMessage.Channel.SendMessageAsync("Getting the image from the deep sky survey (DSS) server, one moment...\r\n(The larger the FOV, the longer it takes)");
+                await receivedMessage.Channel.SendMessageAsync("Getting the image from the deep sky survey (DSS) server, one moment...\r\n(The larger the FOV, the longer it takes)").ConfigureAwait(false);
                 var arcminutesSize =
                     Math.Max(objectResolvedBySimbad.AngularDimensions != null
                         ? Math.Min(objectResolvedBySimbad.AngularDimensions.MajorAxis * FACTOR_ANGULARSIZE_ARCMINUTES, MAX_ANGULARSIZE_ARCMINUTES)
@@ -71,7 +71,7 @@ namespace AstroBot.Commands
                             Name = $"{objectResolvedBySimbad.Name}.jpg",
                             Content = image
                         }
-                    }));
+                    })).ConfigureAwait(false);
             }
 
             return true;

@@ -28,7 +28,7 @@ namespace AstroBot.CronTasks
                 {
                     var logger = Globals.LoggerFactory.CreateLogger(nameof(CronTaskManager));
                     logger.Log(LogLevel.Information, $"Executing task {registeredTask.Name}");
-                    registeredTask.Execute();
+                    registeredTask.ExecuteAsync().GetAwaiter().GetResult();
                 }
             }
         }

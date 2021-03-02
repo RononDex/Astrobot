@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace AstroBot.CronTasks
 {
@@ -26,9 +27,10 @@ namespace AstroBot.CronTasks
             }
         }
 
-        public virtual void Execute()
+        public virtual Task ExecuteAsync()
         {
             LastExecution = DateTime.Now;
+            return Task.CompletedTask;
         }
     }
 }
