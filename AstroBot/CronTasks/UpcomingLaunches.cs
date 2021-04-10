@@ -88,33 +88,45 @@ namespace AstroBot.CronTasks
                 ThumbnailUrl = spaceEvent.FeatureImgUrl,
             };
 
-            eventMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(spaceEvent.Type?.Name))
             {
-                Inline = true,
-                Name = "Type of event",
-                Content = spaceEvent.Type?.Name,
-            });
+                eventMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = true,
+                    Name = "Type of event",
+                    Content = spaceEvent.Type?.Name,
+                });
+            }
 
-            eventMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(spaceEvent.EventTime.ToString()))
             {
-                Inline = true,
-                Name = "Time of event UTC",
-                Content = spaceEvent.EventTime.ToString(),
-            });
+                eventMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = true,
+                    Name = "Time of event UTC",
+                    Content = spaceEvent.EventTime.ToString(),
+                });
+            }
 
-            eventMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(spaceEvent.Location))
             {
-                Inline = true,
-                Name = "Location",
-                Content = spaceEvent.Location,
-            });
+                eventMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = true,
+                    Name = "Location",
+                    Content = spaceEvent.Location,
+                });
+            }
 
-            eventMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(spaceEvent.Description))
             {
-                Inline = false,
-                Name = "Description",
-                Content = spaceEvent.Description.ShortenTo(1024),
-            });
+                eventMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = false,
+                    Name = "Description",
+                    Content = spaceEvent.Description.ShortenTo(1024),
+                });
+            }
 
             return eventMessage;
         }
@@ -127,48 +139,68 @@ namespace AstroBot.CronTasks
                 ThumbnailUrl = launch.Image
             };
 
-            launchMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(launch.LaunchServiceProvider?.Name))
             {
-                Inline = true,
-                Name = "Agency",
-                Content = launch.LaunchServiceProvider?.Name ?? string.Empty
-            });
+                launchMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = true,
+                    Name = "Agency",
+                    Content = launch.LaunchServiceProvider?.Name
+                });
+            }
 
-            launchMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(launch.Rocket?.Configuration?.FullName))
             {
-                Inline = true,
-                Name = "Rocket",
-                Content = launch.Rocket?.Configuration?.FullName ?? string.Empty
-            });
+                launchMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = true,
+                    Name = "Rocket",
+                    Content = launch.Rocket?.Configuration?.FullName
+                });
+            }
 
-            launchMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(launch.WindowStart.ToString())
+                    && !string.IsNullOrEmpty(launch.WindowEnd.ToString()))
             {
-                Inline = true,
-                Name = "Launch Window UTC",
-                Content = $"{launch.WindowStart} to \r\n{launch.WindowEnd}"
-            });
+                launchMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = true,
+                    Name = "Launch Window UTC",
+                    Content = $"{launch.WindowStart} to \r\n{launch.WindowEnd}"
+                });
+            }
 
-            launchMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(launch.Pad?.Name))
             {
-                Inline = true,
-                Name = "Launch pad",
-                Content = $"{launch.Pad?.Location?.Name} - {launch.Pad?.Name}"
-            });
+                launchMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = true,
+                    Name = "Launch pad",
+                    Content = $"{launch.Pad?.Location?.Name} - {launch.Pad?.Name}"
+                });
+            }
 
             var mission = launch.Mission;
-            launchMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(mission?.Name))
             {
-                Inline = false,
-                Name = $"Mission",
-                Content = mission?.Name
-            });
+                launchMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = false,
+                    Name = $"Mission",
+                    Content = mission?.Name
+                });
+            }
 
-            launchMessage.Fields.Add(new EmbeddedMessageField
+            if (!string.IsNullOrEmpty(mission?.Description))
             {
-                Inline = false,
-                Name = $"Mission Description",
-                Content = mission?.Description?.ShortenTo(1024) ?? string.Empty
-            });
+                launchMessage.Fields.Add(new EmbeddedMessageField
+                {
+                    Inline = false,
+                    Name = $"Mission Description",
+                    Content = mission?.Description?.ShortenTo(1024) ?? string.Empty
+                });
+            }
+
             return launchMessage;
         }
     }
