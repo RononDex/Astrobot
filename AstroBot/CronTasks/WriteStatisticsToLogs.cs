@@ -50,6 +50,8 @@ namespace AstroBot.CronTasks
             {
                 logger.Log(LogLevel.Information, line);
             }
+
+            await base.ExecuteAsync().ConfigureAwait(false);
         }
     }
 }
