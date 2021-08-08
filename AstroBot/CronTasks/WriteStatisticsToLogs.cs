@@ -24,9 +24,9 @@ namespace AstroBot.CronTasks
             var numberOfUsersByServer = new Dictionary<string, int>();
             foreach (var server in availableServers)
             {
-                var users = await server.GetUserseOnServer();
+                var numberOfUsers = await server.GetNumberOfUsersAsync();
 
-                numberOfUsersByServer.Add(server.ServerID, users.Count);
+                numberOfUsersByServer.Add(server.ServerID, numberOfUsers);
             }
 
             var message = $"";
@@ -42,7 +42,7 @@ namespace AstroBot.CronTasks
             {
                 message += $"    Server name: {server.ServerName}\r\n";
                 message += $"        Server Id: {server.ServerID}\r\n";
-                message += $"        Userse on Server: {numberOfUsersByServer[server.ServerID]}\r\n";
+                message += $"        Users on Server: {numberOfUsersByServer[server.ServerID]}\r\n";
             }
 
             var logger = Globals.LoggerFactory.CreateLogger(nameof(WriteStatisticsToLog));
