@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using AstroBot.Config;
 using AstroBot.LaunchLibrary;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NLog.Extensions.Logging;
 
 namespace AstroBot
@@ -36,6 +39,8 @@ namespace AstroBot
 
         public static IReadOnlyList<Event> UpcomingEventsCache { get; internal set; }
 
+        public static Root SmallTalkReponsesConfig { get; internal set; }
+
         /// <summary>
         /// Initialize the global variables
         /// </summary>
@@ -58,6 +63,10 @@ namespace AstroBot
             var awesomeChatbotSettings = new AwesomeChatBot.AwesomeChatBotSettings();
             configuration.GetSection("AwesomeChatBotSettings").Bind(awesomeChatbotSettings);
             AwesomeChatBotSettings = awesomeChatbotSettings;
+
+
+            SmallTalkReponsesConfig = JsonConvert.DeserializeObject<Root>(File.ReadAllText("smallTalkConfig.json"));
+            Console.WriteLine($"Loaded {SmallTalkReponsesConfig.SmallTalkResponses.Count} small talk responses");
 
             // Create logger factory
             LoggerFactory = new LoggerFactory();

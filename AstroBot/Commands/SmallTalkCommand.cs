@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AwesomeChatBot.ApiWrapper;
@@ -14,10 +16,15 @@ namespace AstroBot.Commands
 
         public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
         {
-            if (receivedMessage.IsBotMentioned)
+            foreach (var smallTalkResponse in Globals.SmallTalkReponsesConfig.SmallTalkResponses.Where(response => response.IsMentioned == receivedMessage.IsBotMentioned))
             {
-                await receivedMessage.Channel.SendMessageAsync("I am not sure how to respond to that");
-                return true;
+                  if (smallTalkResponse.MatchRegexList.Any(r => r.IsMatch(receivedMessage.Content)))
+                  {
+                      var random = new Random();
+                      var randomResponse = smallTalkResponse.Responses[random.Next(smallTalkResponse.Responses.Count)];
+                      await receivedMessage.Channel.SendMessageAsync(randomResponse);
+                      return true;
+                  }
             }
 
             return false;

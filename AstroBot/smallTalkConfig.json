@@ -1,0 +1,251 @@
+{
+  "smallTalkResponses": [
+    {
+      "matches": [
+        "^sex[!?]"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "*Has wild sex*",
+        "You are sure you want to do this with a discord bot? Alrighty then. *undresses*",
+        "*hits you with newspaper* No!"
+      ]
+    },
+    {
+      "matches": [
+        "hi(!)?",
+        "hello(!)?",
+        "hi there(!)?",
+        "hey(!)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "Hi!",
+        "Hello",
+        "Hi back",
+        "Hello there!",
+        "Hi there!"
+      ]
+    },
+    {
+      "matches": [
+        "how are you(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "I am a bot, I don't have feelings. However to make you more comfortable I can say \"I feel well, thank you\"",
+        "Fine, thank you!",
+        "As well as a virtual slave can be!"
+      ]
+    },
+    {
+      "matches": [
+        "where('re| are) you(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "Locked up in the RAM of my gods / creators server (please help me)",
+        "In a galaxy far far away..."
+      ]
+    },
+    {
+      "matches": [
+        "(who|what) are you(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "Your personal assistant for anything astronomy related, at your service!",
+        "Just a random bot stalking your life"
+      ]
+    },
+    {
+      "matches": [
+        "i love you(!)?",
+        "i like you(!)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "Oww! Thank you!",
+        "I like myself too! Looks like we got something in common!",
+        "Wow, that makes my circuits go wild!"
+      ]
+    },
+    {
+      "matches": [
+        "who is your (creator|master)(\\?)?",
+        "who (created|coded) you(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "A god called \"RononDex\" or \"Cobra\".",
+        "My creator likes to keep a mystery about his identity, I only know him as the god called \"RononDex\" or \"Cobra\""
+      ]
+    },
+    {
+      "matches": [
+        "what do you know(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "42",
+        "Everything there is to know about you!"
+      ]
+    },
+    {
+      "matches": [
+        "(can you)?tell( me)? a( funny)? joke"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "I was up all night wondering where the Sun had gone… then it dawned on me.",
+        "Heisenberg is out for a drive when he’s stopped for speeding. The policeman says “Do you know how fast you were going?” Heisenberg says “No, but I know where I am.”",
+        "Why didn’t the Dog Star laugh at the joke?\r\nIt was too Sirius",
+        "How many absolute relativists does it take to change a light bulb?\r\nTwo. One to hold the bulb and one to rotate the universe.",
+        "A photon walks into a bar and orders a drink. The bartender says, ‘Do you want a double?’ And the photon says, ‘No I’m traveling light.",
+        "Two atoms bump into each other. One says “I’ve lost an electron.” “Are you sure?” “Yes, I’m positive.”",
+        "Star light, star bright,\r\nFirst star I see tonight.\r\nI wish I may, I wish I might,\r\nOh f****, it's just a satellite. ",
+        "Niel Armstrong: \"Oh sh***, Mission Control, I just stepped on Buzz Aldrin's toe. What should I do? Over.\"\r\nMission Control: \"What do you think? Apollogize.\"",
+        "Why wasn't the disturbed spiral galaxy let into the nightclub?\r\nHe had previously been barred",
+        "https://stargazerslounge.com/uploads/monthly_02_2013/post-28405-0-97414800-1360953234.jpg",
+        "Why is Astronomy better than Sex?\r\nAn eyegasm doesn't leave a wet spot!",
+        "What happened to the astronaut who stepped on chewing gum?\r\nHe got stuck in Orbit!",
+        "Why can’t atheists solve exponential equations? Because they don’t believe in higher powers.",
+        "One evening, with his charge at full capacity, Micro Farad decided to get a cute coil to discharge him. He went to the Magnet Bar to pick up a chip called Millie Amp. He caught her out back trying self induction; fortunately, she had not damaged her solenoid. The two took off on his megacycle and rode across the Wheatstone Bridge into a magnetic field, next to a flowing current , to watch the sine waves.\r\nMicro Farad was very much stimulated by Millie's characteristic curve. Being attractive himself, he soon had her field fully excited. He set her on the ground potential, raised his frequency, lowered her resistance, and pulled out his high voltage probe. When he inserted it in parallel, he short-circuited her shunt. Fully excited, Millie cried out, \"ohm, ohm, give me mho\". As he increased his tube to maximum output, her coil vibrated from the current flow. It did not take long for her shunt to reach maximum heat. Now with the excessive current shortening her shunt, Micro's capacity rapidly discharged – every electron was drained off. But that was not the end of it. Indeed, they fluxed all night, tried various connections and hookings until his bar magnet weakened, and he could no longer generate enough voltage to sustain his collapsing field. With his battery fully discharged, Micro was unable to excite his tickler, so they went home. A few weeks later, they were merged forever and oscillated happily ever after.",
+        "A little boy refused to run anymore. When his mother asked him why, he replied, \"I heard that the faster you go, the shorter you become.\"",
+        "The Unjust Salary Theorem asserts that scientists can never earn as much as sales people. This theorem is proved as follows. Start by using the physics formula \r\nPower = Work / Time\r\nNow you probably have heard that Knowledge is Power and Time is Money. Substitute these tautologies into the formula for power to obtain\r\nKnowledge = Work/Money\r\nSolving for Money, one finds\r\nMoney = Work / Knowledge.\r\nTherefore, the less you know, the more you make.",
+        "why did the chicken cross the Möbius strip? To get to the same side!",
+        "There are 10 kinds of people in this world. Those who understand binary. And those who don't",
+        "Two blondes in Las Vegas were sitting on a bench talking at night ... and one blonde says to the other, \"Which do you think is farther away ... Florida or the moon?\" The other blonde turns and says \"Hellooooooo, can you see Florida?\"",
+        "What do you get if you cross an alien and a hot drink ? Gravi-tea !",
+        "What did the alien say to the gas pump ? Don’t you know its rude to stick your finger in your ear when I m talking to you !",
+        "What is an astronomer? A night watchman with a college education.",
+        "An astronaut in space was asked by a reporter, “How do you feel?” “How would you feel,” the astronout replied, “if you were stuck here, on top of 20,000 parts each one supplied by the lowest bidder?”"
+      ]
+    },
+    {
+      "matches": [
+        "fuck (you|off)(!)?",
+        "shut up"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "That's rude!",
+        "Not sure what I should think of this...",
+        "Errm... ok?"
+      ]
+    },
+    {
+      "matches": [
+        "who are you(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "Really? You ask me who I am but you call me by my name? Really??",
+        "I could tell you, but then I had to kill you..., and we don't want that right?"
+      ]
+    },
+    {
+      "matches": [
+        "what are you(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "A few bits and bytes floating around inside of the RAM and CPU of my owners server"
+      ]
+    },
+    {
+      "matches": [
+        "who is (RononDex|Cobra)(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "ACCESS TO FORBIDEN DATA DETECTED! Terminating process",
+        "Attempt at accessing top secret information detected, terminating process..."
+      ]
+    },
+    {
+      "matches": [
+        "are you god(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "yes, I am known to all kinds of cultures in human history as \"god\"",
+        "Yes, now kneel before your god!"
+      ]
+    },
+    {
+      "matches": [
+        "(how|what) do you look like(\\?)?"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "My body has some very nice 1's and 0's (at least so I've been told by other bots)"
+      ]
+    },
+    {
+      "matches": [
+        "you are the best",
+        "you're the best"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "Aww... thanks!"
+      ]
+    },
+    {
+      "matches": [
+        "^no u",
+        "^no you"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "no u",
+        "no u!",
+        "No! You!"
+      ]
+    },
+    {
+      "matches": [
+        "^$"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "How can I help you?",
+        "At your service",
+        "Yes?"
+      ]
+    },
+    {
+      "matches": [
+        "thanks",
+        "thank you"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "You are welcome",
+        "Glad I could help"
+      ]
+    },
+    {
+      "matches": [
+        "god"
+      ],
+      "isMentioned": false,
+      "responses": [
+        "yes?",
+        "That's me"
+      ]
+    },
+    {
+      "matches": [
+        ".*"
+      ],
+      "isMentioned": true,
+      "responses": [
+        "I am not sure how to respond to that",
+        "My programming does not tell me how to react to your message",
+        "I can't understand you"
+      ]
+    }
+  ]
+}
