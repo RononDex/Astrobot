@@ -21,9 +21,9 @@ namespace AstroBot
             // Initialize the DI provider, configs and bot framework
             InitializeFramework();
 
-            // Register commands
             var botFramework = BotFramework;
 
+            // Register commands
             botFramework.RegisterCommand(new Commands.TestCommand());
             botFramework.RegisterCommand(new Commands.LocationCommand());
             botFramework.RegisterCommand(new Commands.HelpCommand());
@@ -31,8 +31,8 @@ namespace AstroBot
             botFramework.RegisterCommand(new Commands.AstrometryCommand());
             botFramework.RegisterCommand(new Commands.SimbadCommand());
             botFramework.RegisterCommand(new Commands.AdminCommand());
-            botFramework.RegisterCommand(new Commands.UserRolesManagementCommand());
             botFramework.RegisterCommand(new Commands.DssCommand());
+            botFramework.RegisterCommand(new Commands.SmallTalkCommand());
             botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
 
             // Register events
