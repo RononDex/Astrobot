@@ -44,6 +44,7 @@ namespace AstroBot
             CronTaskManager.Register(new UpdateLaunchLibraryCache());
             CronTaskManager.Register(new IntermediateRocketLaunchNotify());
             CronTaskManager.Register(new UpcomingLaunches());
+            CronTaskManager.Register(new WriteStatisticsToLog());
 
             // Update Cache at app startup
             new UpdateLaunchLibraryCache().ExecuteAsync().GetAwaiter().GetResult();
