@@ -10,7 +10,7 @@ namespace AstroBot.GeoLocation
     /// </summary>
     internal static class GeoLocation
     {
-        private static string _googleApiKey;
+        private static string? _googleApiKey;
 
         /// <summary>
         /// Keep the Api key in memory, to reduce I/O and increase performance
@@ -36,7 +36,7 @@ namespace AstroBot.GeoLocation
         /// </summary>
         /// <param name="address"></param>
         /// <returns></returns>
-        public static Objects.LatLngLocation FindLocation(string address)
+        public static Objects.LatLngLocation? FindLocation(string address)
         {
             Log<AstroBotController>.Info($"Requesting GeoLocation for {address}");
 
@@ -49,8 +49,8 @@ namespace AstroBot.GeoLocation
                 text = sr.ReadToEnd();
             }
 
-            dynamic result = JsonConvert.DeserializeObject(text);
-            if (result.results.Count == 0)
+            dynamic? result = JsonConvert.DeserializeObject(text);
+            if (result!.results.Count == 0)
                 return null;
 
             var hit = result.results[0];

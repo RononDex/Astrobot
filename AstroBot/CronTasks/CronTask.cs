@@ -19,11 +19,11 @@ namespace AstroBot.CronTasks
         {
             get
             {
-                return Globals.BotFramework.ConfigStore.GetConfigValue<DateTime>(key: $"{Name}_LastExecution", defaultValue: DateTime.MinValue);
+                return Globals.BotFramework!.ConfigStore.GetConfigValue<DateTime>(key: $"{Name}_LastExecution", defaultValue: DateTime.MinValue);
             }
             private set
             {
-                Globals.BotFramework.ConfigStore.SetConfigValue(key: $"{Name}_LastExecution", value);
+                Globals.BotFramework!.ConfigStore.SetConfigValue(key: $"{Name}_LastExecution", value);
             }
         }
 

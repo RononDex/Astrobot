@@ -20,7 +20,7 @@ namespace AstroBot.CronTasks
             RegisteredTasks.Add(task);
         }
 
-        public static void ExecutePendingTasks(object state)
+        public static void ExecutePendingTasks(object? state)
         {
             foreach (var registeredTask in RegisteredTasks)
             {

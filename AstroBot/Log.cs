@@ -13,7 +13,7 @@ namespace AstroBot
         /// </summary>
         public static void Info(string message)
         {
-            Globals.LoggerFactory.CreateLogger(typeof(T).FullName).LogInformation(message);
+            Globals.LoggerFactory!.CreateLogger(typeof(T).FullName).LogInformation(message);
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace AstroBot
         /// <param name="message"></param>
         public static void Error(string message)
         {
-            Globals.LoggerFactory.CreateLogger(typeof(T).FullName).LogError(message);
+            Globals.LoggerFactory!.CreateLogger(typeof(T).FullName).LogError(message);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace AstroBot.Objects
 
         public double Value { get; set; }
 
-        public string Unit { get; set; }
+        public string Unit { get; set; } = "";
 
         public override string ToString()
         {
