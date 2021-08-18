@@ -18,28 +18,28 @@ namespace AstroBot
         /// <summary>
         /// Logger factory used to create logger instances
         /// </summary>
-        public static ILoggerFactory LoggerFactory { get; private set; }
+        public static ILoggerFactory? LoggerFactory { get; private set; }
 
         /// <summary>
         /// The settings belonging to the AwesomeChatBot framework
         /// </summary>
-        public static AwesomeChatBot.AwesomeChatBotSettings AwesomeChatBotSettings { get; private set; }
+        public static AwesomeChatBot.AwesomeChatBotSettings? AwesomeChatBotSettings { get; private set; }
 
         /// <summary>
         /// The bot wide settings
         /// </summary>
-        public static Objects.Config.BotSettings BotSettings { get; private set; }
+        public static Objects.Config.BotSettings? BotSettings { get; private set; }
 
         /// <summary>
         /// Globally stored BotFramework instance for easy access
         /// </summary>
-        public static AwesomeChatBot.AwesomeChatBot BotFramework { get; internal set; }
+        public static AwesomeChatBot.AwesomeChatBot? BotFramework { get; internal set; }
 
-        public static IReadOnlyList<Launch> UpcomingRocketLaunchesCache { get; internal set; }
+        public static IReadOnlyList<Launch>? UpcomingRocketLaunchesCache { get; internal set; }
 
-        public static IReadOnlyList<Event> UpcomingEventsCache { get; internal set; }
+        public static IReadOnlyList<Event>? UpcomingEventsCache { get; internal set; }
 
-        public static Root SmallTalkReponsesConfig { get; internal set; }
+        public static Root? SmallTalkReponsesConfig { get; internal set; }
 
         /// <summary>
         /// Initialize the global variables

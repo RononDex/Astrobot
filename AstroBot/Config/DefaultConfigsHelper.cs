@@ -26,7 +26,7 @@ namespace AstroBot.Config
         /// <param name="server"></param>
         public static void SetupDefaultServerConfig(Server server)
         {
-            var existingEntries = Globals.BotFramework.ConfigStore.GetAllConfigValues(server);
+            var existingEntries = Globals.BotFramework!.ConfigStore.GetAllConfigValues(server);
 
             foreach (var defaultConfigValue in DefaultServerConfig)
             {
