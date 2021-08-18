@@ -127,7 +127,7 @@ namespace AstroBot.Commands
             embeddedMessage.Fields.Add(new EmbeddedMessageField
             {
                 Name = "Some objects found in image:",
-                Content = objectsInImage,
+                Content = string.IsNullOrEmpty(objectsInImage) ? "-" : objectsInImage,
                 Inline = false
             });
             return embeddedMessage;
