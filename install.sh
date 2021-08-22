@@ -4,6 +4,7 @@
 # Setup variables
 # ---------------------------------------------
 installPath="/opt/AstroBot"
+
 sourcePath="./AstroBot/"
 rootDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 RED='\033[0;31m'
@@ -11,6 +12,7 @@ GREEN='\033[1;32m'
 PURPLE='\033[1;35m'
 NC='\033[0m' # No Color
 targetServiceFile="$installPath/AstroBot.service"
+targetRunitFile="/etc/services/AstroBot/run"
 serviceUser="astrobot"
 
 
@@ -54,6 +56,14 @@ sudo echo "Restart=on-failure" | sudo tee --append $targetServiceFile
 sudo echo "" | sudo tee --append $targetServiceFile
 sudo echo "[Install]" | sudo tee --append $targetServiceFile
 sudo echo "WantedBy=multi-user.target" | sudo tee --append $targetServiceFile
+
+
+echo -e "$GREEN Setting up runit service ...' $NC"
+sudo mkdir -p /etc/services/AstroBot/
+sudo cp $rootDir/runitService $targetRunitFile
+sudo chmod +x $targetRunitFile
+sudo echo "exec su -c 'dotnet $installPath/AstroBot.dll' $serviceUser" | sudo tee --append $targetRunitFile
+
 
 # Create symlink
 sudo ln -sf $targetServiceFile /etc/systemd/system/AstroBot.service
