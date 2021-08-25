@@ -62,7 +62,7 @@ echo -e "$GREEN Setting up runit service ...' $NC"
 sudo mkdir -p /etc/sv/AstroBot/
 sudo cp $rootDir/runitService $targetRunitFile
 sudo chmod +x $targetRunitFile
-sudo echo "exec chpst -u $serviceUser 'bash $installPath/StartAstroBot.sh'" | sudo tee --append $targetRunitFile
+sudo echo "exec sudo $serviceUser -c $installPath/StartAstroBot.sh" | sudo tee --append $targetRunitFile
 
 
 # Create symlink
