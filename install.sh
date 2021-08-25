@@ -62,12 +62,13 @@ echo -e "$GREEN Setting up runit service ...' $NC"
 sudo mkdir -p /etc/sv/AstroBot/
 sudo cp $rootDir/runitService $targetRunitFile
 sudo chmod +x $targetRunitFile
-sudo echo "exec su -c 'dotnet $installPath/AstroBot.dll' $serviceUser" | sudo tee --append $targetRunitFile
+sudo echo "exec chpst -u $serviceUser 'dotnet $installPath/AstroBot.dll' $serviceUser" | sudo tee --append $targetRunitFile
 
 
 # Create symlink
 sudo ln -sf $targetServiceFile /etc/systemd/system/AstroBot.service
 sudo systemctl daemon-reload
+sudo chmod +x $installPath/StartAstroBot.sh
 
 # ---------------------------------------------
 # Create user
