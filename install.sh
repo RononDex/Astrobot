@@ -12,7 +12,7 @@ GREEN='\033[1;32m'
 PURPLE='\033[1;35m'
 NC='\033[0m' # No Color
 targetServiceFile="$installPath/AstroBot.service"
-targetRunitFile="/etc/services/AstroBot/run"
+targetRunitFile="/etc/sv/AstroBot/run"
 serviceUser="astrobot"
 
 
@@ -59,7 +59,7 @@ sudo echo "WantedBy=multi-user.target" | sudo tee --append $targetServiceFile
 
 
 echo -e "$GREEN Setting up runit service ...' $NC"
-sudo mkdir -p /etc/services/AstroBot/
+sudo mkdir -p /etc/sv/AstroBot/
 sudo cp $rootDir/runitService $targetRunitFile
 sudo chmod +x $targetRunitFile
 sudo echo "exec su -c 'dotnet $installPath/AstroBot.dll' $serviceUser" | sudo tee --append $targetRunitFile
