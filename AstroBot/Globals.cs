@@ -70,7 +70,7 @@ namespace AstroBot
 
             // Create logger factory
             LoggerFactory = new LoggerFactory();
-            LoggerFactory.AddNLog();
+           LoggerFactory.AddNLog();
         }
     }
 }
