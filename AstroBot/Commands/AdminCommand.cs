@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AwesomeChatBot.ApiWrapper;
 using AwesomeChatBot.Commands.Handlers;
+using Newtonsoft.Json;
 
 namespace AstroBot.Commands
 {
@@ -15,6 +16,8 @@ namespace AstroBot.Commands
         {
             "(?'ListServerSettings'show server config)",
             "set server config (?'SetServerConfigKey'\\w*) (?'SetServerConfigValue'.*\\w)",
+            "unban (?'UnbanBotUsageUserId'\\d*) from bot usage",
+            "ban (?'BanBotUsageUserId'\\d*) from bot usage",
         };
 
         public string Description => "Administrative commands";
@@ -47,7 +50,7 @@ namespace AstroBot.Commands
                 var key = regexMatch.Groups["SetServerConfigKey"].Value;
                 var value = regexMatch.Groups["SetServerConfigValue"].Value;
 
-                if (!Globals.BotFramework.ConfigStore.DoesConfigEntryWithKeyExist(key, receivedMessage.Channel.ParentServer))
+                if (!Globals.BotFramework!.ConfigStore.DoesConfigEntryWithKeyExist(key, receivedMessage.Channel.ParentServer))
                 {
                     await receivedMessage.Channel.SendMessageAsync($"Unknown configuration key \"{key}\"").ConfigureAwait(false);
                     return true;
@@ -56,8 +59,53 @@ namespace AstroBot.Commands
                 receivedMessage.ApiWrapper.ConfigStore.SetConfigValue(key, value, receivedMessage.Channel.ParentServer);
                 await receivedMessage.Channel.SendMessageAsync($"{key} set to {value}!").ConfigureAwait(false);
             }
+            else if (regexMatch.Groups["BanBotUsageUserId"].Success)
+            {
+                var userId = regexMatch.Groups["BanBotUsageUserId"].Value;
+                if (IsServerAllowedForBanning(receivedMessage))
+                {
+                    await receivedMessage.Channel.SendMessageAsync("Your server is not whitelisted for this command");
+                    return true;
+                }
+
+                var currentBannedUsersList = Globals.GloballyBannedUsers;
+                if (!currentBannedUsersList.Contains(userId))
+                {
+                    currentBannedUsersList.Add(userId);
+                }
+
+                receivedMessage.ApiWrapper.ConfigStore.SetConfigValue("GlobalUserBanList", string.Join(';', currentBannedUsersList));
+                Globals.UpdateBanCache(receivedMessage.ApiWrapper);
+
+                await receivedMessage.Channel.SendMessageAsync($"User {userId} has been banned from using this bot globally (on all servers)");
+            }
+            else if (regexMatch.Groups["UnbanBotUsageUserId"].Success)
+            {
+                var userId = regexMatch.Groups["UnbanBotUsageUserId"].Value;
+                if (IsServerAllowedForBanning(receivedMessage))
+                {
+                    await receivedMessage.Channel.SendMessageAsync("Your server is not whitelisted for this command");
+                    return true;
+                }
+
+                var currentBannedUsersList = Globals.GloballyBannedUsers;
+                if (currentBannedUsersList.Contains(userId))
+                {
+                    currentBannedUsersList.Remove(userId);
+                }
+
+                receivedMessage.ApiWrapper.ConfigStore.SetConfigValue("GlobalUserBanList", string.Join(';', currentBannedUsersList));
+                Globals.UpdateBanCache(receivedMessage.ApiWrapper);
+
+                await receivedMessage.Channel.SendMessageAsync($"User {userId} has been unbanned from using this bot globally (on all servers)");
+            }
 
             return true;
+        }
+
+        private static bool IsServerAllowedForBanning(ReceivedMessage receivedMessage)
+        {
+            return (!Globals.BotSettings!.GlobalUserBanServerWhiteList.Any(x => x == receivedMessage.Channel.ParentServer.ServerID));
         }
 
         private static Task PrintServerConfigAsync(ReceivedMessage receivedMessage)

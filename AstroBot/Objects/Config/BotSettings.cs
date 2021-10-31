@@ -16,5 +16,11 @@ namespace AstroBot.Objects.Config
         /// </summary>
         /// <value></value>
         public string NovaAstrometryApiKeyPath { get; set; }
+
+        /// <summary>
+        /// A list of all servers that are whitelisted to globally ban a user from bot usage
+        /// </summary>
+        /// <value></value>
+        public string[] GlobalUserBanServerWhiteList { get; set; }
     }
 }
