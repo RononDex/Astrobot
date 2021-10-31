@@ -63,7 +63,7 @@ sudo mkdir -p /etc/sv/AstroBot/
 sudo cp $rootDir/runitService $targetRunitFile
 sudo chmod +x $targetRunitFile
 sudo echo "cd $installPath" | sudo tee --append $targetRunitFile
-sudo echo "exec chpst -u $serviceUser /usr/share/dotent/dotnet $installPath/AstroBot.dll" | sudo tee --append $targetRunitFile
+sudo echo "exec chpst -u $serviceUser /usr/share/dotnet/dotnet $installPath/AstroBot.dll" | sudo tee --append $targetRunitFile
 
 
 # Create symlink
