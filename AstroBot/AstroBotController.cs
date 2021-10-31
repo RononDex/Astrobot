@@ -6,6 +6,7 @@ using System.IO;
 using AwesomeChatBot.ApiWrapper;
 using System.Collections.Generic;
 using AstroBot.CronTasks;
+using System.Linq;
 
 namespace AstroBot
 {
@@ -24,6 +25,7 @@ namespace AstroBot
             var botFramework = BotFramework;
 
             // Register commands
+            botFramework.RegisterCommand(new Commands.ValidateUserBanCommand());
             botFramework.RegisterCommand(new Commands.TestCommand());
             botFramework.RegisterCommand(new Commands.LocationCommand());
             botFramework.RegisterCommand(new Commands.HelpCommand());
@@ -48,6 +50,8 @@ namespace AstroBot
 
             // Update Cache at app startup
             new UpdateLaunchLibraryCache().ExecuteAsync().GetAwaiter().GetResult();
+
+            Globals.UpdateBanCache(botFramework.ApiWrappers.First());
         }
 
         /// <summary>
@@ -77,9 +81,9 @@ namespace AstroBot
             }
 
             NLog.LogManager.GetLogger(GetType().FullName).Info($" - DiscordSettings.TokenPath:                         {discordSettings.DiscordTokenPath}");
-            NLog.LogManager.GetLogger(GetType().FullName).Info($" - AwesomeChatBotSettings.ConfigFolderPath:           {Globals.AwesomeChatBotSettings.ConfigFolderPath}");
+            NLog.LogManager.GetLogger(GetType().FullName).Info($" - AwesomeChatBotSettings.ConfigFolderPath:           {Globals.AwesomeChatBotSettings!.ConfigFolderPath}");
             NLog.LogManager.GetLogger(GetType().FullName).Info($" - AwesomeChatBotSettings.CommandsEnabledByDefault:   {Globals.AwesomeChatBotSettings.CommandsEnabledByDefault}");
-            NLog.LogManager.GetLogger(GetType().FullName).Info($" - BotSettings.GoogleGeoLocationTokenPath:            {Globals.BotSettings.GoogleGeoLocationTokenPath}");
+            NLog.LogManager.GetLogger(GetType().FullName).Info($" - BotSettings.GoogleGeoLocationTokenPath:            {Globals.BotSettings!.GoogleGeoLocationTokenPath}");
             NLog.LogManager.GetLogger(GetType().FullName).Info($" - BotSettings.NovaAstrometryApiKeyPath:              {Globals.BotSettings.NovaAstrometryApiKeyPath}");
 
             var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", "");

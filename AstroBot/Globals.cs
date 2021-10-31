@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using AstroBot.Config;
 using AstroBot.LaunchLibrary;
+using AwesomeChatBot.ApiWrapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -41,6 +43,8 @@ namespace AstroBot
 
         public static Root? SmallTalkReponsesConfig { get; internal set; }
 
+        public static List<string> GloballyBannedUsers { get; set; } = new List<string>();
+
         /// <summary>
         /// Initialize the global variables
         /// </summary>
@@ -70,7 +74,16 @@ namespace AstroBot
 
             // Create logger factory
             LoggerFactory = new LoggerFactory();
-           LoggerFactory.AddNLog();
+            LoggerFactory.AddNLog();
+        }
+
+        public static void UpdateBanCache(ApiWrapper wrapper)
+        {
+            var bannedList = wrapper.ConfigStore.GetConfigValue<string>("GlobalUserBanList")?.Split(";");
+            if (bannedList == null)
+                GloballyBannedUsers = new List<string>();
+            else
+                GloballyBannedUsers = bannedList.ToList();
         }
     }
 }
