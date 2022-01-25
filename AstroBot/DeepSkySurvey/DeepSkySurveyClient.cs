@@ -17,7 +17,7 @@ namespace AstroBot.DeepSkySurvey
         /// <param name="mimetype">mime type of image to download, default: download-gif</param>
         /// <param name="catalogue">the catalogue to query, default: DSS2</param>
         /// <returns></returns>
-        public static byte[] GetImage(float ra, float dec, string size = "60", string mimetype = "download-gif", string catalogue = "DSS2")
+        public static byte[] GetImage(float ra, float dec, string size = "60", string mimetype = "download-gif", string catalogue = "DSS2-red")
         {
             using (var client = new WebClient())
             {
@@ -37,6 +37,40 @@ namespace AstroBot.DeepSkySurvey
                             ms.Write(buffer, 0, read);
                         }
                         return ms.ToArray();
+                    }
+                }
+            }
+        }
+
+        public static byte[] GetColorImage(float ra, float dec, string size = "60", string mimetype = "download-gif")
+        {
+
+            using (var client = new WebClient())
+            {
+                var redData = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra.ToString())}&dec={HttpUtility.UrlEncode(dec.ToString())}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey=DSS2-red&equinox=J2000&statsmode=VO");
+                var blueData = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra.ToString())}&dec={HttpUtility.UrlEncode(dec.ToString())}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey=DSS2-blue&equinox=J2000&statsmode=VO");
+                var irData = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra.ToString())}&dec={HttpUtility.UrlEncode(dec.ToString())}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey=DSS2-infrared&equinox=J2000&statsmode=VO");
+
+                using (var redStream = new MemoryStream(redData))
+                {
+                    using (var blueStream = new MemoryStream(blueData))
+                    {
+                        using (var irStream = new MemoryStream(irData))
+                        {
+                            var newImage = Utilities.ImageUtility.MergeTogether(irStream, redStream, blueStream);
+                            newImage.Position = 0;
+
+                            var buffer = new byte[16 * 1024];
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                int read;
+                                while ((read = newImage.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    ms.Write(buffer, 0, read);
+                                }
+                                return ms.ToArray();
+                            }
+                        }
                     }
                 }
             }
