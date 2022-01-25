@@ -57,7 +57,7 @@ namespace AstroBot.Commands
                         : DEFAULT_ANGULARSIZE_ARCMINUTES,
                     MIN_ANGULARSIZE_ARCMINUTES);
 
-                var image = DeepSkySurvey.DeepSkySurveyClient.GetImage(
+                var image = DeepSkySurvey.DeepSkySurveyClient.GetColorImage(
                     Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.RightAscension),
                     Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.Declination),
                     arcminutesSize.ToString(CultureInfo.InvariantCulture));
