@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AstroBot.Simbad;
@@ -20,7 +21,9 @@ namespace AstroBot.Commands
 
         public List<string> Regex => new List<string>
         {
-            @"(how|what) does (?'ObjectName'.+?(?= look)) look like(\?)?"
+            @"(how|what) does (?'ObjectNameColor'.+?(?= look)) look like in color(\?)?",
+            @"(how|what) does (?'ObjectNameIr'.+?(?= look)) look like in (ir|infrared)(\?)?",
+            @"(how|what) does (?'ObjectNameRed'.+?(?= look)) look like(\?)?"
         };
 
         public override string Name => "DeepSkySurvey";
@@ -32,9 +35,9 @@ namespace AstroBot.Commands
 
         public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
         {
-            if (regexMatch.Groups["ObjectName"].Success)
+            if (regexMatch.Success)
             {
-                var astronomicalObjectName = regexMatch.Groups["ObjectName"].Value;
+                var astronomicalObjectName = regexMatch.Groups.Values.First(x => x.Name.StartsWith("ObjectName") && x.Success == true).Value;
                 var simbadClient = new SimbadClient();
                 var objectResolvedBySimbad = simbadClient.FindObjectByName(astronomicalObjectName);
 
@@ -57,10 +60,32 @@ namespace AstroBot.Commands
                         : DEFAULT_ANGULARSIZE_ARCMINUTES,
                     MIN_ANGULARSIZE_ARCMINUTES);
 
-                var image = DeepSkySurvey.DeepSkySurveyClient.GetColorImage(
-                    Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.RightAscension),
-                    Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.Declination),
-                    arcminutesSize.ToString(CultureInfo.InvariantCulture));
+                byte[] image = new byte[1];
+                if (regexMatch.Groups["ObjectNameColor"].Success)
+                {
+                    image = DeepSkySurvey.DeepSkySurveyClient.GetColorImage(
+                        Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.RightAscension),
+                        Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.Declination),
+                        arcminutesSize.ToString(CultureInfo.InvariantCulture));
+                }
+                else if (regexMatch.Groups["ObjectNameIr"].Success)
+                {
+                    image = DeepSkySurvey.DeepSkySurveyClient.GetImage(
+                        Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.RightAscension),
+                        Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.Declination),
+                        arcminutesSize.ToString(CultureInfo.InvariantCulture),
+                        "download-gif",
+                        "DSS2-infrared");
+                }
+                else if (regexMatch.Groups["ObjectNameRed"].Success)
+                {
+                    image = DeepSkySurvey.DeepSkySurveyClient.GetImage(
+                        Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.RightAscension),
+                        Convert.ToSingle(objectResolvedBySimbad.RaDecCoordinate.Declination),
+                        arcminutesSize.ToString(CultureInfo.InvariantCulture),
+                        "download-gif",
+                        "DSS2-red");
+                }
 
                 await receivedMessage.Channel.SendMessageAsync(new SendMessage(
                     content: $"Image size: {Math.Round(arcminutesSize, 3)}' x {Math.Round(arcminutesSize, 3)}'",

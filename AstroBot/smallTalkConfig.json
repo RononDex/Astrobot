@@ -125,13 +125,19 @@
     {
       "matches": [
         "fuck (you|off)(!)?",
-        "shut up"
+        "shut up",
+		"ass",
+		"you (are|'re') an ass",
+		"bad",
+		"bad bot"
       ],
       "isMentioned": true,
       "responses": [
         "That's rude!",
         "Not sure what I should think of this...",
-        "Errm... ok?"
+        "Errm... ok?",
+		"No reason to get mad at me!",
+		"Go fuck yourself"
       ]
     },
     {
@@ -218,12 +224,14 @@
     {
       "matches": [
         "thanks",
-        "thank you"
+        "thank you",
+        "ty"
       ],
       "isMentioned": true,
       "responses": [
         "You are welcome",
-        "Glad I could help"
+        "Glad I could help",
+        "You are most welcome"
       ]
     },
     {
