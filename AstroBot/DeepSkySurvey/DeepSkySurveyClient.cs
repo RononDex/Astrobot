@@ -49,27 +49,23 @@ namespace AstroBot.DeepSkySurvey
             {
                 var redData = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra.ToString())}&dec={HttpUtility.UrlEncode(dec.ToString())}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey=DSS2-red&equinox=J2000&statsmode=VO");
                 var blueData = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra.ToString())}&dec={HttpUtility.UrlEncode(dec.ToString())}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey=DSS2-blue&equinox=J2000&statsmode=VO");
-                var irData = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra.ToString())}&dec={HttpUtility.UrlEncode(dec.ToString())}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey=DSS2-infrared&equinox=J2000&statsmode=VO");
 
                 using (var redStream = new MemoryStream(redData))
                 {
                     using (var blueStream = new MemoryStream(blueData))
                     {
-                        using (var irStream = new MemoryStream(irData))
-                        {
-                            var newImage = Utilities.ImageUtility.MergeTogether(irStream, redStream, blueStream);
-                            newImage.Position = 0;
+                        var newImage = Utilities.ImageUtility.MergeTogether(redStream, blueStream);
+                        newImage.Position = 0;
 
-                            var buffer = new byte[16 * 1024];
-                            using (MemoryStream ms = new MemoryStream())
+                        var buffer = new byte[16 * 1024];
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            int read;
+                            while ((read = newImage.Read(buffer, 0, buffer.Length)) > 0)
                             {
-                                int read;
-                                while ((read = newImage.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    ms.Write(buffer, 0, read);
-                                }
-                                return ms.ToArray();
+                                ms.Write(buffer, 0, read);
                             }
+                            return ms.ToArray();
                         }
                     }
                 }

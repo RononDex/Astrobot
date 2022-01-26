@@ -29,7 +29,7 @@ namespace AstroBot.Utilities
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
-        public static MemoryStream MergeTogether(MemoryStream originalIRImage, MemoryStream originalRedImage, MemoryStream originalBlueImage)
+        public static MemoryStream MergeTogether(MemoryStream originalRedImage, MemoryStream originalBlueImage)
         {
             // Sometimes the blue image does not exist
             if (originalBlueImage.Length < 1000)
@@ -39,20 +39,17 @@ namespace AstroBot.Utilities
 
             var redImage = Image.Load<Rgba32>(originalRedImage);
             var blueImage = Image.Load<Rgba32>(originalBlueImage);
-            var irImage = Image.Load<Rgba32>(originalIRImage);
             redImage.Mutate(x => x.Grayscale());
             blueImage.Mutate(x => x.Grayscale());
-            irImage.Mutate(x => x.Grayscale());
 
-            var minHeight = new[] { redImage.Height, blueImage.Height, irImage.Height }.Min();
-            var minWidth = new[] { redImage.Width, blueImage.Width, irImage.Width }.Min();
+            var minHeight = new[] { redImage.Height, blueImage.Height }.Min();
+            var minWidth = new[] { redImage.Width, blueImage.Width }.Min();
 
             var colorImage = new Image<Rgba32>(minWidth, minHeight);
 
             for (int y = 0; y < minHeight; y++)
             {
                 Span<Rgba32> pixelRowSpanRed = redImage.GetPixelRowSpan(y);
-                Span<Rgba32> pixelRowSpanIr = irImage.GetPixelRowSpan(y);
                 Span<Rgba32> pixelRowSpanBlue = blueImage.GetPixelRowSpan(y);
                 Span<Rgba32> colorImageRowSpan = colorImage.GetPixelRowSpan(y);
 
