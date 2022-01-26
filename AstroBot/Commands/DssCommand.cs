@@ -21,7 +21,7 @@ namespace AstroBot.Commands
 
         public List<string> Regex => new List<string>
         {
-            @"(how|what) does (?'ObjectNameColor'.+?(?= look)) look like in color(\?)?",
+            @"(how|what) does (?'ObjectNameColor'.+?(?= look)) look like in col(o|ou)r(\?)?",
             @"(how|what) does (?'ObjectNameIr'.+?(?= look)) look like in (ir|infrared)(\?)?",
             @"(how|what) does (?'ObjectNameRed'.+?(?= look)) look like(\?)?"
         };
