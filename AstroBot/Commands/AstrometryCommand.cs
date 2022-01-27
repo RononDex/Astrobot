@@ -13,9 +13,9 @@ namespace AstroBot.Commands
     public class AstrometryCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ICommandDescription
     {
         public List<string> Regex => new List<string> {
-            @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo)(\?)?",
-            @"what can you (find|figure) out (about|on|from|for) this (image|photo)(\?)?",
-            @"what (space )?(objects|DSO) (are|do you know) in this (image|photo)(\?)?",
+            @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo|picture)(\?)?",
+            @"what can you (find|figure) out (about|on|from|for) this (image|photo|picture)(\?)?",
+            @"what (space )?(objects|DSO) (are|do you know) in this (image|photo|picture)(\?)?",
         };
 
         public string Description => "Platesolves and analyses the attached photo";
