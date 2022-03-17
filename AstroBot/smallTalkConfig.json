@@ -2,7 +2,7 @@
   "smallTalkResponses": [
     {
       "matches": [
-        "^sex[!?]"
+        "sex[!?]?"
       ],
       "isMentioned": true,
       "responses": [
@@ -191,7 +191,8 @@
     {
       "matches": [
         "you are the best",
-        "you're the best"
+        "you're the best",
+        "good bot"
       ],
       "isMentioned": true,
       "responses": [
