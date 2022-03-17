@@ -7,6 +7,7 @@ using AwesomeChatBot.ApiWrapper;
 using System.Collections.Generic;
 using AstroBot.CronTasks;
 using System.Linq;
+using Discord;
 
 namespace AstroBot
 {
@@ -89,7 +90,7 @@ namespace AstroBot
             var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", "");
 
             // Setup bot framework
-            var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory);
+            var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory, GatewayIntents.AllUnprivileged);
             var wrappers = new List<ApiWrapper>() { discordWrapper };
             BotFramework = new AwesomeChatBot.AwesomeChatBot(wrappers, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
 

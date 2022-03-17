@@ -5,6 +5,7 @@ using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Linq;
+using System.Numerics;
 
 namespace AstroBot.Utilities
 {
@@ -47,20 +48,23 @@ namespace AstroBot.Utilities
 
             var colorImage = new Image<Rgba32>(minWidth, minHeight);
 
-            for (int y = 0; y < minHeight; y++)
+            redImage.ProcessPixelRows(colorImage, blueImage, (redImageAccessor, colorImageAccessor, blueImageAccessor) =>
             {
-                Span<Rgba32> pixelRowSpanRed = redImage.GetPixelRowSpan(y);
-                Span<Rgba32> pixelRowSpanBlue = blueImage.GetPixelRowSpan(y);
-                Span<Rgba32> colorImageRowSpan = colorImage.GetPixelRowSpan(y);
-
-                for (int x = 0; x < minWidth; x++)
+                for (int y = 0; y < minHeight; y++)
                 {
-                    colorImageRowSpan[x] = new Rgba32(
-                            pixelRowSpanRed[x].R, 
-                            Convert.ToByte((0.5 * pixelRowSpanRed[x].R) + (0.5 * pixelRowSpanBlue[x].R)), 
-                            pixelRowSpanBlue[x].R);
+                    Span<Rgba32> pixelRowSpanRed = redImageAccessor.GetRowSpan(y);
+                    Span<Rgba32> pixelRowSpanBlue = blueImageAccessor.GetRowSpan(y);
+                    Span<Rgba32> colorImageRowSpan = colorImageAccessor.GetRowSpan(y);
+
+                    for (int x = 0; x < minWidth; x++)
+                    {
+                        colorImageRowSpan[x] = new Rgba32(
+                                pixelRowSpanRed[x].R,
+                                Convert.ToByte((0.5 * pixelRowSpanRed[x].R) + (0.5 * pixelRowSpanBlue[x].R)),
+                                pixelRowSpanBlue[x].R);
+                    }
                 }
-            }
+            });
 
             var changedImage = new MemoryStream();
             colorImage.SaveAsJpeg(changedImage, new JpegEncoder { Quality = 85 });
