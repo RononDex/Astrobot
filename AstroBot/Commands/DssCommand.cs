@@ -60,7 +60,7 @@ namespace AstroBot.Commands
                         : DEFAULT_ANGULARSIZE_ARCMINUTES,
                     MIN_ANGULARSIZE_ARCMINUTES);
 
-                byte[] image = new byte[1];
+                byte[]? image = null;
                 if (regexMatch.Groups["ObjectNameColor"].Success)
                 {
                     image = DeepSkySurvey.DeepSkySurveyClient.GetColorImage(
@@ -87,16 +87,22 @@ namespace AstroBot.Commands
                         "DSS2-red");
                 }
 
-                await receivedMessage.Channel.SendMessageAsync(new SendMessage(
-                    content: $"Image size: {Math.Round(arcminutesSize, 3)}' x {Math.Round(arcminutesSize, 3)}'",
-                    new List<Attachment>
-                    {
+                if (image != null)
+                {
+                    await receivedMessage.Channel.SendMessageAsync(new SendMessage(
+                        content: $"Image size: {Math.Round(arcminutesSize, 3)}' x {Math.Round(arcminutesSize, 3)}'",
+                        new List<Attachment>
+                        {
                         new SendAttachment
                         {
                             Name = $"{objectResolvedBySimbad.Name}.jpg",
                             Content = image
                         }
-                    })).ConfigureAwait(false);
+                        })).ConfigureAwait(false);
+                }
+                else {
+                    await receivedMessage.Channel.SendMessageAsync("I am sorry, it seems the requested object has not yet been imaged by dss-2");
+                }
             }
 
             return true;
