@@ -17,7 +17,7 @@ namespace AstroBot.DeepSkySurvey
         /// <param name="mimetype">mime type of image to download, default: download-gif</param>
         /// <param name="catalogue">the catalogue to query, default: DSS2</param>
         /// <returns></returns>
-        public static byte[] GetImage(float ra, float dec, string size = "60", string mimetype = "download-gif", string catalogue = "DSS2-red")
+        public static byte[]? GetImage(float ra, float dec, string size = "60", string mimetype = "download-gif", string catalogue = "DSS2-red")
         {
             using (var client = new WebClient())
             {
@@ -26,6 +26,9 @@ namespace AstroBot.DeepSkySurvey
                 using (var stream = new MemoryStream(data))
                 {
                     var newImage = Utilities.ImageUtility.MakeGrayscaleFromRGB(stream);
+                    if (newImage == null)
+                        return null;
+
                     newImage.Position = 0;
 
                     var buffer = new byte[16 * 1024];
@@ -42,7 +45,7 @@ namespace AstroBot.DeepSkySurvey
             }
         }
 
-        public static byte[] GetColorImage(float ra, float dec, string size = "60", string mimetype = "download-gif")
+        public static byte[]? GetColorImage(float ra, float dec, string size = "60", string mimetype = "download-gif")
         {
 
             using (var client = new WebClient())
@@ -55,6 +58,9 @@ namespace AstroBot.DeepSkySurvey
                     using (var blueStream = new MemoryStream(blueData))
                     {
                         var newImage = Utilities.ImageUtility.MergeTogether(redStream, blueStream);
+                        if (newImage == null)
+                            return null;
+
                         newImage.Position = 0;
 
                         var buffer = new byte[16 * 1024];

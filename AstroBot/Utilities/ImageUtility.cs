@@ -5,7 +5,6 @@ using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Linq;
-using System.Numerics;
 
 namespace AstroBot.Utilities
 {
@@ -16,8 +15,14 @@ namespace AstroBot.Utilities
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
-        public static MemoryStream MakeGrayscaleFromRGB(MemoryStream original)
+        public static MemoryStream? MakeGrayscaleFromRGB(MemoryStream original)
         {
+            // Sometimes the image does not exist
+            if (original.Length < 1000)
+            {
+                return null;
+            }
+
             var image = Image.Load(original);
             image.Mutate(x => x.Grayscale());
             var changedImage = new MemoryStream();
@@ -30,7 +35,7 @@ namespace AstroBot.Utilities
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
-        public static MemoryStream MergeTogether(MemoryStream originalRedImage, MemoryStream originalBlueImage)
+        public static MemoryStream? MergeTogether(MemoryStream originalRedImage, MemoryStream originalBlueImage)
         {
             // Sometimes the blue image does not exist
             if (originalBlueImage.Length < 1000)
