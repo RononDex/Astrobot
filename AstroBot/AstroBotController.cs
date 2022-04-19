@@ -90,8 +90,8 @@ namespace AstroBot
             var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", "");
 
             // Setup bot framework
-            var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory, GatewayIntents.AllUnprivileged);
-            var wrappers = new List<ApiWrapper>() { discordWrapper };
+            var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory, GatewayIntents.All);
+            var wrappers = new List<ApiWrapper> { discordWrapper };
             BotFramework = new AwesomeChatBot.AwesomeChatBot(wrappers, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
 
             Globals.BotFramework = BotFramework;
