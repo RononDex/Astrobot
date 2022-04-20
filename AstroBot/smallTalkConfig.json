@@ -15,6 +15,7 @@
       "matches": [
         "hi(!)?",
         "hello(!)?",
+        "hallo(!)?",
         "hi there(!)?",
         "hey(!)?"
       ],
@@ -24,7 +25,8 @@
         "Hello",
         "Hi back",
         "Hello there!",
-        "Hi there!"
+        "Hi there!",
+        "https://giphy.com/embed/xT9IgG50Fb7Mi0prBC"
       ]
     },
     {
@@ -137,7 +139,8 @@
         "Not sure what I should think of this...",
         "Errm... ok?",
 		"No reason to get mad at me!",
-		"Go fuck yourself"
+		"Go fuck yourself",
+        "No you!"
       ]
     },
     {
