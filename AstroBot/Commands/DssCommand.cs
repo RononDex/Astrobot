@@ -43,7 +43,7 @@ namespace AstroBot.Commands
 
                 if (objectResolvedBySimbad == null)
                 {
-                    await receivedMessage.Channel.SendMessageAsync($"No object with name {astronomicalObjectName} could be found on simbad!").ConfigureAwait(false);
+                    await receivedMessage.Channel.SendMessageAsync($"No object with that name could be found on simbad!").ConfigureAwait(false);
                     return true;
                 }
 

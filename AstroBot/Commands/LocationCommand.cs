@@ -36,11 +36,11 @@ namespace AstroBot.Commands
 
             if (geoLocation == null)
             {
-                await receivedMessage.Channel.SendMessageAsync(new SendMessage($"I don't know any place on earth with the name {location}")).ConfigureAwait(false);
+                await receivedMessage.Channel.SendMessageAsync(new SendMessage($"I don't know any place on earth with the that name")).ConfigureAwait(false);
                 return true;
             }
 
-            await receivedMessage.Channel.SendMessageAsync(new SendMessage($"I found the following location for \"{location}\":\r\n" +
+            await receivedMessage.Channel.SendMessageAsync(new SendMessage($"I found the following location:\r\n" +
                                                                         receivedMessage.ApiWrapper.MessageFormatter.Quote($"Name:   {geoLocation.Name}\r\n" +
                                                                         $"Lat:    {geoLocation.Lat}\r\n" +
                                                                         $"Lng:    {geoLocation.Lng}"))).ConfigureAwait(false);
