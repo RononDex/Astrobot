@@ -52,12 +52,12 @@ namespace AstroBot.Commands
 
                 if (!Globals.BotFramework!.ConfigStore.DoesConfigEntryWithKeyExist(key, receivedMessage.Channel.ParentServer))
                 {
-                    await receivedMessage.Channel.SendMessageAsync($"Unknown configuration key \"{key}\"").ConfigureAwait(false);
+                    await receivedMessage.Channel.SendMessageAsync($"Unknown configuration key").ConfigureAwait(false);
                     return true;
                 }
 
                 receivedMessage.ApiWrapper.ConfigStore.SetConfigValue(key, value, receivedMessage.Channel.ParentServer);
-                await receivedMessage.Channel.SendMessageAsync($"{key} set to {value}!").ConfigureAwait(false);
+                await receivedMessage.Channel.SendMessageAsync($"Done").ConfigureAwait(false);
             }
             else if (regexMatch.Groups["BanBotUsageUserId"].Success)
             {

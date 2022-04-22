@@ -76,7 +76,7 @@ namespace AstroBot.Commands
                     var queryAroundObject = simbadClient.FindObjectByName(name);
                     if (queryAroundObject == null)
                     {
-                        await receivedMessage.Channel.SendMessageAsync($"No object with name {name} found in the SIMBAD databse!").ConfigureAwait(false);
+                        await receivedMessage.Channel.SendMessageAsync($"No object with that name found in the SIMBAD databse!").ConfigureAwait(false);
                         return;
                     }
 

@@ -34,7 +34,7 @@ namespace AstroBot.Commands
                 // If no place with that name can be found
                 if (geoLocation == null)
                 {
-                    await receivedMessage.Channel.SendMessageAsync(new SendMessage($"I could not find any place on earth with the name \"{location}\""))
+                    await receivedMessage.Channel.SendMessageAsync(new SendMessage($"I could not find any place on earth with that name"))
                         .ConfigureAwait(false);
                     return true;
                 }

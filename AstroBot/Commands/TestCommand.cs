@@ -30,7 +30,7 @@ namespace AstroBot.Commands
         {
             var testParam = regexMatch.Groups["TestParam"].Value;
 
-            await receivedMessage.Channel.SendMessageAsync(new SendMessage($"IT'S WORKING!!! You entered {testParam}")).ConfigureAwait(false);
+            await receivedMessage.Channel.SendMessageAsync(new SendMessage($"IT'S WORKING!!!")).ConfigureAwait(false);
 
             return true;
         }
