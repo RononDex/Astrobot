@@ -235,7 +235,7 @@ namespace AstroBot.Astrometry.Nova
         /// <returns></returns>
         public string GetAnnotatedImageURL(int jobID)
         {
-            return $"http://nova.astrometry.net/annotated_display/{jobID}";
+            return $"http://nova.astrometry.net/annotated_full/{jobID}";
         }
     }
 }
