@@ -198,10 +198,10 @@ namespace AstroBot.Astrometry.Nova
             for (var i = 0; i < jsonResult.machine_tags.Count; i++)
                 result.MachineTags.Add(Convert.ToString(jsonResult.machine_tags[i]));
 
-            for (var i = 0; i < jsonResult.machine_tags.Count; i++)
+            for (var i = 0; i < jsonResult.objects_in_field.Count; i++)
                 result.ObjectsInfField.Add(Convert.ToString(jsonResult.objects_in_field[i]));
 
-            for (var i = 0; i < jsonResult.machine_tags.Count; i++)
+            for (var i = 0; i < jsonResult.tags.Count; i++)
                 result.Tags.Add(Convert.ToString(jsonResult.tags[i]));
 
             return result;
