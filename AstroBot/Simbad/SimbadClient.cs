@@ -44,7 +44,10 @@ namespace AstroBot.Simbad
 
             foreach (var type in result.ResultDataSet)
             {
-                cache.Add((string)type["ShortName"], (string)type["LongName"]);
+                if (!cache.ContainsKey((string)type["ShortName"]))
+                {
+                    cache.Add((string)type["ShortName"], (string)type["LongName"]);
+                }
             }
 
             ShortTypeNameCache = cache;
