@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -56,6 +57,11 @@ namespace AstroBot.Commands
                     return true;
                 }
 
+                if (!ValidateNewConfigValue(key, value))
+                {
+                    await receivedMessage.Channel.SendMessageAsync($"{value} is not valid setting for {key}!").ConfigureAwait(false);
+					return true;
+                }
                 receivedMessage.ApiWrapper.ConfigStore.SetConfigValue(key, value, receivedMessage.Channel.ParentServer);
                 await receivedMessage.Channel.SendMessageAsync($"Done").ConfigureAwait(false);
             }
@@ -101,6 +107,19 @@ namespace AstroBot.Commands
             }
 
             return true;
+        }
+
+        private bool ValidateNewConfigValue(string key, string value)
+        {
+            switch (key.ToLower())
+            {
+                case "greetnewusers":
+                case "rocketlaunchesnewsenabled":
+                    return bool.TryParse(value, out _);
+                default:
+                    return true;
+            }
+
         }
 
         private static bool IsServerAllowedForBanning(ReceivedMessage receivedMessage)
