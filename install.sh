@@ -41,7 +41,7 @@ echo -e "$GREEN Installing Astrobot into the folder '$installPath' $NC"
 sudo mkdir -p $installPath
 
 # Copy the files
-sudo rsync -rv bin/Release/netcoreapp3.1/publish/* $installPath/ --exclude appsettings.json
+sudo rsync -rv bin/Release/net7.0/publish/* $installPath/ --exclude appsettings.json
 
 echo -e "$GREEN Setting up systemd service ...' $NC"
 
