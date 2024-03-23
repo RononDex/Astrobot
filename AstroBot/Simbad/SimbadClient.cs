@@ -1,10 +1,11 @@
-using System.Globalization;
-using System.Linq;
-using System.IO;
-using AstroBot.Objects;
-using System.Collections.Generic;
-using System.Net.Http;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Web;
+using AstroBot.Objects;
 using AstroBot.Objects.AstronomicalObjects;
 
 namespace AstroBot.Simbad
@@ -70,7 +71,9 @@ namespace AstroBot.Simbad
             };
 
             var content = new FormUrlEncodedContent(values);
-            var response = client.PostAsync(TAP_QUERY_ENDPOINT, content).Result;
+            var response = client.PostAsync(TAP_QUERY_ENDPOINT
+                                            + "?"
+                                            + string.Join('&', values.Select(k => HttpUtility.UrlEncode(k.Key) + "=" + HttpUtility.UrlEncode(k.Value))), content).Result;
             var text = response.Content.ReadAsStringAsync().Result;
 
             return new SimbadTAPQueryResult(text);

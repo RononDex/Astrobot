@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/AstroBot/bin/Debug/netcoreapp3.1/AstroBot.dll",
+            "program": "${workspaceFolder}/AstroBot/bin/Debug/net7.0/AstroBot.dll",
             "args": [],
             "cwd": "${workspaceFolder}/AstroBot",
             "console": "internalConsole",
