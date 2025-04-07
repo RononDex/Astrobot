@@ -21,7 +21,7 @@ namespace AstroBot.Simbad
         /// <value></value>
         internal static IReadOnlyDictionary<string, string> ShortTypeNameCache { get; private set; }
 
-        const string TAP_QUERY_ENDPOINT = "http://simbad.u-strasbg.fr/simbad/sim-tap/sync";
+        const string TAP_QUERY_ENDPOINT = "https://simbad.u-strasbg.fr/simbad/sim-tap/sync";
 
         public SimbadClient()
         {
