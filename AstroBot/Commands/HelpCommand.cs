@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,18 +10,27 @@ using System.Reflection;
 
 namespace AstroBot.Commands
 {
-    public class HelpCommand : AwesomeChatBot.Commands.Command, ISlashCommand, ICommandDescription
+    public class HelpCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ISlashCommand, ICommandDescription
     {
 
         public override string Name => "Help";
 
         public string Description => "Displays this help";
 
+        public List<string> Regex => new List<string> { "help" };
+
+        public string[] ExampleCalls => new[] { "Help" };
+
         public string SlashName => "help";
 
         public string SlashDescription => "Lists all commands of AstroBot";
 
         public IReadOnlyList<SlashCommandOption> Options => Array.Empty<SlashCommandOption>();
+
+        public Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
+        {
+            return RegexSlashCommandInvocation.ExecuteAsync(this, receivedMessage);
+        }
 
         public async Task ExecuteSlashCommandAsync(SlashCommandInvocation invocation)
         {
@@ -58,6 +68,10 @@ namespace AstroBot.Commands
                             builder.Append(' ').Append(option.Name).Append(option.Required ? ":<...>" : ":[...]");
                         }
                         builder.Append("\r\n");
+                        foreach (var exampleCall in command.ExampleCalls)
+                        {
+                            builder.Append("@AstroBot ").Append(exampleCall).Append("\r\n");
+                        }
 
                         curMessage += formatter.Quote(builder.ToString());
 

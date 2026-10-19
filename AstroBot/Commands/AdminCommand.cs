@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,25 @@ using AwesomeChatBot.Commands.Handlers;
 
 namespace AstroBot.Commands
 {
-    public class AdminCommand : AwesomeChatBot.Commands.Command, ISlashCommand, ICommandDescription
+    public class AdminCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ISlashCommand, ICommandDescription
     {
         public override string Name => "Admin";
 
         public string Description => "Administrative commands";
+
+        public List<string> Regex => new List<string>
+        {
+            "(?'ListServerSettings'show server config)",
+            "set server config (?'SetServerConfigKey'\\w*) (?'SetServerConfigValue'.*\\w)",
+            "unban (?'UnbanBotUsageUserId'\\d*) from bot usage",
+            "ban (?'BanBotUsageUserId'\\d*) from bot usage",
+        };
+
+        public string[] ExampleCalls => new[]
+        {
+            "show server config",
+            "set server config <key> <value>"
+        };
 
         public string SlashName => "admin";
 
@@ -40,6 +55,33 @@ namespace AstroBot.Commands
             new SlashCommandOption { Name = "value", Description = "Config value (set-config)", Type = SlashOptionType.String, Required = false },
             new SlashCommandOption { Name = "user_id", Description = "Id of the user (ban / unban)", Type = SlashOptionType.String, Required = false },
         };
+
+        public Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
+        {
+            var options = new Dictionary<string, object>();
+            if (regexMatch.Groups["ListServerSettings"].Success)
+            {
+                options["action"] = "show-config";
+            }
+            else if (regexMatch.Groups["SetServerConfigKey"].Success)
+            {
+                options["action"] = "set-config";
+                options["key"] = regexMatch.Groups["SetServerConfigKey"].Value;
+                options["value"] = regexMatch.Groups["SetServerConfigValue"].Value;
+            }
+            else if (regexMatch.Groups["UnbanBotUsageUserId"].Success)
+            {
+                options["action"] = "unban";
+                options["user_id"] = regexMatch.Groups["UnbanBotUsageUserId"].Value;
+            }
+            else
+            {
+                options["action"] = "ban";
+                options["user_id"] = regexMatch.Groups["BanBotUsageUserId"].Value;
+            }
+
+            return RegexSlashCommandInvocation.ExecuteAsync(this, receivedMessage, options);
+        }
 
         public async Task ExecuteSlashCommandAsync(SlashCommandInvocation invocation)
         {

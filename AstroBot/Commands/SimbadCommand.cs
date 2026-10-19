@@ -16,11 +16,31 @@ using AwesomeChatBot.Commands.Handlers;
 
 namespace AstroBot.Commands
 {
-    public class SimbadCommand : AwesomeChatBot.Commands.Command, ISlashCommand, ICommandDescription
+    public class SimbadCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ISlashCommand, ICommandDescription
     {
         public string Description => "Access data from the SIMBAD database";
 
         public override string Name => "Simbad";
+
+        public List<string> Regex => new List<string>()
+        {
+            @"what is around (?'CenterOfSearchRA'\d*\.\d*)\s(?'CenterOfSearchDEC'[+-]\d*\.\d*)",
+            @"what is around (?'CenterOfSearchName'.*\w)",
+            @"what do you know about (?'AstroObject'.*\w)(\?)?",
+            @"what is (?'AstroObject'.*\w)(\?)?",
+        };
+
+        public string[] ExampleCalls => new string[]
+        {
+            "what is M31?",
+            "what do you know about M31?",
+            "what is around [RA] [DEC]",
+            "what is around M51",
+            // "how far away is M13?",
+            // "fluxes of NGC6888?",
+            // "how bright is M78?",
+            // "how big is M31?"
+        };
 
         public string SlashName => "simbad";
 
@@ -33,6 +53,27 @@ namespace AstroBot.Commands
         };
 
         private static readonly Regex RaDecRegex = new Regex(@"^(?'RA'\d*\.?\d+)\s+(?'DEC'[+-]?\d*\.?\d+)$");
+
+        public Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
+        {
+            var options = new Dictionary<string, object>();
+            if (regexMatch.Groups["CenterOfSearchRA"].Success)
+            {
+                options["object"] = $"{regexMatch.Groups["CenterOfSearchRA"].Value} {regexMatch.Groups["CenterOfSearchDEC"].Value}";
+                options["around"] = true;
+            }
+            else if (regexMatch.Groups["CenterOfSearchName"].Success)
+            {
+                options["object"] = regexMatch.Groups["CenterOfSearchName"].Value;
+                options["around"] = true;
+            }
+            else
+            {
+                options["object"] = regexMatch.Groups["AstroObject"].Value;
+            }
+
+            return RegexSlashCommandInvocation.ExecuteAsync(this, receivedMessage, options);
+        }
 
         public Task ExecuteSlashCommandAsync(SlashCommandInvocation invocation)
         {

@@ -22,6 +22,7 @@ namespace AstroBot
             var botFramework = InitializeFramework();
 
             // Register commands
+            botFramework.RegisterCommand(new Commands.ValidateUserBanCommand());
             botFramework.RegisterCommand(new Commands.TestCommand());
             botFramework.RegisterCommand(new Commands.LocationCommand());
             botFramework.RegisterCommand(new Commands.HelpCommand());
@@ -30,8 +31,9 @@ namespace AstroBot
             botFramework.RegisterCommand(new Commands.SimbadCommand());
             botFramework.RegisterCommand(new Commands.AdminCommand());
             botFramework.RegisterCommand(new Commands.DssCommand());
+            botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
 
-            // Globally banned users can't use any command
+            // Slash commands don't go through the regex handlers, so ValidateUserBanCommand doesn't cover them
             botFramework.SlashCommandFilter = async invocation =>
             {
                 if (!Globals.GloballyBannedUsers.Contains(invocation.Author.UserID))

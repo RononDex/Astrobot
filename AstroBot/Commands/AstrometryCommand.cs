@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AstroBot.Astrometry.Nova;
@@ -8,11 +9,19 @@ using System;
 
 namespace AstroBot.Commands
 {
-    public class AstrometryCommand : AwesomeChatBot.Commands.Command, ISlashCommand, ICommandDescription
+    public class AstrometryCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ISlashCommand, ICommandDescription
     {
         public string Description => "Platesolves and analyses the attached photo";
 
         public override string Name => "Astrometry";
+
+        public List<string> Regex => new List<string> {
+            @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo|picture)(\?)?",
+            @"what can you (find|figure) out (about|on|from|for) this (image|photo|picture)(\?)?",
+            @"what (space )?(objects|DSO) (are|do you know) in this (image|photo|picture)(\?)?",
+        };
+
+        public string[] ExampleCalls => new[] { "analyse this image" };
 
         public string SlashName => "astrometry";
 
@@ -22,6 +31,18 @@ namespace AstroBot.Commands
         {
             new SlashCommandOption { Name = "image", Description = "The astro photo to analyse", Type = SlashOptionType.Attachment, Required = true }
         };
+
+        public Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
+        {
+            // Without an attached image, the slash command answers with "No file attached!"
+            var options = new Dictionary<string, object>();
+            if (receivedMessage.Attachments.Count > 0)
+            {
+                options["image"] = receivedMessage.Attachments[0];
+            }
+
+            return RegexSlashCommandInvocation.ExecuteAsync(this, receivedMessage, options);
+        }
 
         public async Task ExecuteSlashCommandAsync(SlashCommandInvocation invocation)
         {

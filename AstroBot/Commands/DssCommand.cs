@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,11 +9,23 @@ using AwesomeChatBot.Commands.Handlers;
 
 namespace AstroBot.Commands
 {
-    public class DssCommand : AwesomeChatBot.Commands.Command, ISlashCommand, ICommandDescription
+    public class DssCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ISlashCommand, ICommandDescription
     {
         public string Description => "Queries image data from DSS (Deep sky survey)";
 
         public override string Name => "DeepSkySurvey";
+
+        public List<string> Regex => new List<string>
+        {
+            @"(how|what) does (?'ObjectNameColor'.+?(?= look)) look like in col(o|ou)r(\?)?",
+            @"(how|what) does (?'ObjectNameIr'.+?(?= look)) look like in (ir|infrared)(\?)?",
+            @"(how|what) does (?'ObjectNameRed'.+?(?= look)) look like(\?)?"
+        };
+
+        public string[] ExampleCalls => new string[]
+        {
+            "how does M31 look like?"
+        };
 
         public string SlashName => "dss";
 
@@ -37,6 +50,19 @@ namespace AstroBot.Commands
         private const float FACTOR_ANGULARSIZE_ARCMINUTES = 1.7f;
         private const float MAX_ANGULARSIZE_ARCMINUTES = 120f;
         private const float MIN_ANGULARSIZE_ARCMINUTES = 30f;
+
+        public Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
+        {
+            var (group, band) = regexMatch.Groups["ObjectNameColor"].Success ? ("ObjectNameColor", "color")
+                : regexMatch.Groups["ObjectNameIr"].Success ? ("ObjectNameIr", "infrared")
+                : ("ObjectNameRed", "red");
+
+            return RegexSlashCommandInvocation.ExecuteAsync(this, receivedMessage, new Dictionary<string, object>
+            {
+                ["object"] = regexMatch.Groups[group].Value,
+                ["band"] = band
+            });
+        }
 
         public async Task ExecuteSlashCommandAsync(SlashCommandInvocation invocation)
         {
