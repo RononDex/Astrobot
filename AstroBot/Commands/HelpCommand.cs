@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Linq;
 using System.Threading.Tasks;
 using AwesomeChatBot.ApiWrapper;
@@ -9,24 +9,27 @@ using System.Reflection;
 
 namespace AstroBot.Commands
 {
-    public class HelpCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ICommandDescription
+    public class HelpCommand : AwesomeChatBot.Commands.Command, ISlashCommand, ICommandDescription
     {
 
         public override string Name => "Help";
 
         public string Description => "Displays this help";
 
-        public string[] ExampleCalls => new[] { "Help" };
+        public string SlashName => "help";
 
-        public List<string> Regex => new List<string> { "help" };
+        public string SlashDescription => "Lists all commands of AstroBot";
 
-        public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
+        public IReadOnlyList<SlashCommandOption> Options => Array.Empty<SlashCommandOption>();
+
+        public async Task ExecuteSlashCommandAsync(SlashCommandInvocation invocation)
         {
             var ass = Assembly.GetEntryAssembly();
+            var formatter = Globals.ApiWrapper.MessageFormatter;
 
-            await receivedMessage.Channel.SendMessageAsync("Following commands are available in this server:").ConfigureAwait(false);
-            var configStore = receivedMessage.ApiWrapper.ConfigStore;
-            var context = new IConfigurationDependency[] { receivedMessage.Channel.ParentServer };
+            await invocation.RespondAsync("Following commands are available in this server:").ConfigureAwait(false);
+            var configStore = Globals.BotFramework!.ConfigStore;
+            var context = new IConfigurationDependency?[] { invocation.Channel?.ParentServer };
             var message = "";
 
             foreach (TypeInfo ti in ass.DefinedTypes)
@@ -35,8 +38,8 @@ namespace AstroBot.Commands
                 {
                     var command = ass.CreateInstance(ti.FullName) as ICommandDescription;
 
-                    // Only list commands
-                    if (command is AwesomeChatBot.Commands.Command)
+                    // Only list slash commands
+                    if (command is AwesomeChatBot.Commands.Command && command is ISlashCommand slashCommand)
                     {
                         // Ignore disabled commands
                         if (!configStore.IsCommandActive(
@@ -48,22 +51,20 @@ namespace AstroBot.Commands
                         }
 
                         // Write help output for the command
-                        var formatter = receivedMessage.ApiWrapper.MessageFormatter;
-                        var curMessage = $"{formatter.Bold(command.Name)}: {command.Description}\r\nExample(s):\r\n";
-                        var examples = string.Empty;
+                        var curMessage = $"{formatter.Bold(command.Name)}: {command.Description}\r\nUsage:\r\n";
                         var builder = new System.Text.StringBuilder();
-                        builder.Append(examples);
-                        foreach (var exampleCall in command.ExampleCalls)
+                        builder.Append('/').Append(slashCommand.SlashName);
+                        foreach (var option in slashCommand.Options)
                         {
-                            builder.Append("@AstroBot ").Append(exampleCall).Append("\r\n");
+                            builder.Append(' ').Append(option.Name).Append(option.Required ? ":<...>" : ":[...]");
                         }
-                        examples = builder.ToString();
+                        builder.Append("\r\n");
 
-                        curMessage += formatter.Quote(examples);
+                        curMessage += formatter.Quote(builder.ToString());
 
                         if (message.Length + curMessage.Length > 2000)
                         {
-                            await receivedMessage.Channel.SendMessageAsync(new SendMessage(message)).ConfigureAwait(false);
+                            await invocation.RespondAsync(message).ConfigureAwait(false);
                             message = string.Empty;
                         }
 
@@ -72,9 +73,7 @@ namespace AstroBot.Commands
                 }
             }
 
-            await receivedMessage.Channel.SendMessageAsync(new SendMessage(message)).ConfigureAwait(false);
-
-            return true;
+            await invocation.RespondAsync(message).ConfigureAwait(false);
         }
     }
 }

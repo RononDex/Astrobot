@@ -7,7 +7,7 @@ namespace AstroBot.Config
 {
     public static class DefaultConfigsHelper
     {
-        private static IReadOnlyList<ConfigValue> DefaultServerConfig => new List<ConfigValue>
+        internal static IReadOnlyList<ConfigValue> DefaultServerConfig => new List<ConfigValue>
         {
             new ConfigValue { Key = "GreetNewUsersChannel", Value = null },
             new ConfigValue { Key = "GreetNewUsers", Value = "false" },

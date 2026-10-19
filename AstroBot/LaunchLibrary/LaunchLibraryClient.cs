@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -12,7 +12,19 @@ namespace AstroBot.LaunchLibrary
     {
         public const string ApiUrl = "https://ll.thespacedevs.com/2.0.0/";
 
-        public static IReadOnlyList<Launch> GetUpcomingLaunches(int limit)
+        private static async Task<string> GetAsync(string requestUrl)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Accept.ParseAdd("application/json");
+            request.Headers.Add("X-Requested-With", "AstroBot");
+            request.Headers.UserAgent.ParseAdd("AstroBot");
+
+            using var response = await Globals.HttpClient.SendAsync(request).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        public static async Task<IReadOnlyList<Launch>> GetUpcomingLaunchesAsync(int limit)
         {
             var logger = Globals.LoggerFactory.CreateLogger(nameof(LaunchLibraryClient));
 
@@ -20,17 +32,7 @@ namespace AstroBot.LaunchLibrary
             {
                 logger.Log(LogLevel.Information, $"Requesting the next {limit} upcoming launches from LaunchLibrary");
                 var requestUrl = $"{ApiUrl}launch/upcoming/?mode=detailed&format=json&limit={limit}";
-                var webRequest = WebRequest.CreateHttp(requestUrl);
-                webRequest.Accept = "application/json";
-                webRequest.Headers["X-Requested-With"] = "AstroBot";
-                webRequest.UserAgent = "AstroBot";
-
-                var response = (HttpWebResponse)webRequest.GetResponse();
-                string text;
-                using (var sr = new StreamReader(response.GetResponseStream()))
-                {
-                    text = sr.ReadToEnd();
-                }
+                var text = await GetAsync(requestUrl).ConfigureAwait(false);
 
                 var result = JsonConvert.DeserializeObject<RootLaunches>(text);
                 logger.Log(LogLevel.Information, $"Found {result.Results.Count} upcoming launches");
@@ -43,7 +45,7 @@ namespace AstroBot.LaunchLibrary
             }
         }
 
-        public static IReadOnlyList<Event> GetUpcomingEvents(int limit)
+        public static async Task<IReadOnlyList<Event>> GetUpcomingEventsAsync(int limit)
         {
             var logger = Globals.LoggerFactory.CreateLogger(nameof(LaunchLibraryClient));
 
@@ -51,17 +53,7 @@ namespace AstroBot.LaunchLibrary
             {
                 logger.Log(LogLevel.Information, $"Requesting the next {limit} upcoming events from LaunchLibrary");
                 var requestUrl = $"{ApiUrl}event/upcoming/?mode=detailed&format=json&limit={limit}";
-                var webRequest = WebRequest.CreateHttp(requestUrl);
-                webRequest.Accept = "application/json";
-                webRequest.Headers["X-Requested-With"] = "AstroBot";
-                webRequest.UserAgent = "AstroBot";
-
-                var response = (HttpWebResponse)webRequest.GetResponse();
-                string text;
-                using (var sr = new StreamReader(response.GetResponseStream()))
-                {
-                    text = sr.ReadToEnd();
-                }
+                var text = await GetAsync(requestUrl).ConfigureAwait(false);
 
                 var result = JsonConvert.DeserializeObject<RootEvents>(text);
                 logger.Log(LogLevel.Information, $"Found {result.Results.Count} upcoming events");

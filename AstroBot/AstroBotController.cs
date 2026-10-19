@@ -26,7 +26,6 @@ namespace AstroBot
             var botFramework = BotFramework;
 
             // Register commands
-            botFramework.RegisterCommand(new Commands.ValidateUserBanCommand());
             botFramework.RegisterCommand(new Commands.TestCommand());
             botFramework.RegisterCommand(new Commands.LocationCommand());
             botFramework.RegisterCommand(new Commands.HelpCommand());
@@ -35,8 +34,16 @@ namespace AstroBot
             botFramework.RegisterCommand(new Commands.SimbadCommand());
             botFramework.RegisterCommand(new Commands.AdminCommand());
             botFramework.RegisterCommand(new Commands.DssCommand());
-            botFramework.RegisterCommand(new Commands.SmallTalkCommand());
-            botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
+
+            // Globally banned users can't use any command
+            botFramework.SlashCommandFilter = async invocation =>
+            {
+                if (!Globals.GloballyBannedUsers.Contains(invocation.Author.UserID))
+                    return true;
+
+                await invocation.RespondAsync("You have been banned from using this bot").ConfigureAwait(false);
+                return false;
+            };
 
             // Register events
             botFramework.NewUserJoinedServer += Events.UserServerEvents.UserJoinedServerAsync;

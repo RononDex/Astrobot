@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace AstroBot.GeoLocation
@@ -36,18 +37,11 @@ namespace AstroBot.GeoLocation
         /// </summary>
         /// <param name="address"></param>
         /// <returns></returns>
-        public static Objects.LatLngLocation? FindLocation(string address)
+        public static async Task<Objects.LatLngLocation?> FindLocationAsync(string address)
         {
             Log<AstroBotController>.Info($"Requesting GeoLocation for {address}");
 
-            var webRequest = WebRequest.Create($"https://maps.googleapis.com/maps/api/geocode/json?address={WebUtility.UrlEncode(address)}&key={GoogleApiKey}");
-            var response = (HttpWebResponse)webRequest.GetResponse();
-
-            string text;
-            using (var sr = new StreamReader(response.GetResponseStream()))
-            {
-                text = sr.ReadToEnd();
-            }
+            var text = await Globals.HttpClient.GetStringAsync($"https://maps.googleapis.com/maps/api/geocode/json?address={WebUtility.UrlEncode(address)}&key={GoogleApiKey}").ConfigureAwait(false);
 
             dynamic? result = JsonConvert.DeserializeObject(text);
             if (result!.results.Count == 0)

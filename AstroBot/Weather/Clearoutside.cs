@@ -1,6 +1,5 @@
 using System;
-using System.IO;
-using System.Net;
+using System.Threading.Tasks;
 using AstroBot.Objects;
 using AwesomeChatBot.ApiWrapper;
 
@@ -16,7 +15,7 @@ namespace AstroBot.Weather
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public static Attachment GetWeatherForecast(LatLngLocation location)
+        public static async Task<Attachment> GetWeatherForecastAsync(LatLngLocation location)
         {
             #region PRECONDITION
 
@@ -27,17 +26,7 @@ namespace AstroBot.Weather
 
             var attachment = new SendAttachment();
             attachment.Name = "forecast.png";
-
-            var request = WebRequest.Create(string.Format(FORECAST_LARGE_REQUESTURI, location.Lat, location.Lng));
-            var result = request.GetResponseAsync().Result;
-            var response = result.GetResponseStream();
-
-            using (var ms = new MemoryStream())
-            {
-                response.CopyTo(ms);
-                var imageData = ms.ToArray();
-                attachment.Content = imageData;
-            }
+            attachment.Content = await Globals.HttpClient.GetByteArrayAsync(string.Format(FORECAST_LARGE_REQUESTURI, location.Lat, location.Lng)).ConfigureAwait(false);
 
             return attachment;
         }

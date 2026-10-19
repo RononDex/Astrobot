@@ -1,6 +1,4 @@
-using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AstroBot.Astrometry.Nova;
 using AwesomeChatBot.ApiWrapper;
@@ -10,40 +8,42 @@ using System;
 
 namespace AstroBot.Commands
 {
-    public class AstrometryCommand : AwesomeChatBot.Commands.Command, IRegexCommand, ICommandDescription
+    public class AstrometryCommand : AwesomeChatBot.Commands.Command, ISlashCommand, ICommandDescription
     {
-        public List<string> Regex => new List<string> {
-            @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo|picture)(\?)?",
-            @"what can you (find|figure) out (about|on|from|for) this (image|photo|picture)(\?)?",
-            @"what (space )?(objects|DSO) (are|do you know) in this (image|photo|picture)(\?)?",
-        };
-
         public string Description => "Platesolves and analyses the attached photo";
-
-        public string[] ExampleCalls => new[] { "analyse this image" };
 
         public override string Name => "Astrometry";
 
-        public async Task<bool> ExecuteRegexCommandAsync(ReceivedMessage receivedMessage, Match regexMatch)
+        public string SlashName => "astrometry";
+
+        public string SlashDescription => Description;
+
+        public IReadOnlyList<SlashCommandOption> Options => new[]
+        {
+            new SlashCommandOption { Name = "image", Description = "The astro photo to analyse", Type = SlashOptionType.Attachment, Required = true }
+        };
+
+        public async Task ExecuteSlashCommandAsync(SlashCommandInvocation invocation)
         {
             // If no attachment provided -> error
-            if (receivedMessage.Attachments.Count == 0)
+            var image = invocation.GetOption<Attachment>("image");
+            if (image == null)
             {
-                await receivedMessage.Channel.SendMessageAsync("No file attached!").ConfigureAwait(false);
-                return true;
+                await invocation.RespondAsync("No file attached!").ConfigureAwait(false);
+                return;
             }
 
-            var formatter = receivedMessage.ApiWrapper.MessageFormatter;
+            var formatter = Globals.ApiWrapper.MessageFormatter;
             var novaAstrometryClient = new NovaAstrometryClient();
-            await receivedMessage.Channel.SendMessageAsync("Submitting your image to nova.astrometry.net for platesolving and image analysis ...").ConfigureAwait(false);
-            var sessionId = novaAstrometryClient.Login();
+            await invocation.RespondAsync("Submitting your image to nova.astrometry.net for platesolving and image analysis ...").ConfigureAwait(false);
+            var sessionId = await novaAstrometryClient.LoginAsync().ConfigureAwait(false);
 
-            var submissionId = novaAstrometryClient.UploadFile(
-                receivedMessage.Attachments.First().Content,
-                receivedMessage.Attachments.First().Name,
-                sessionId);
+            var submissionId = await novaAstrometryClient.UploadFileAsync(
+                await image.GetContentAsync().ConfigureAwait(false),
+                image.Name,
+                sessionId).ConfigureAwait(false);
 
-            await receivedMessage.Channel.SendMessageAsync($"Submission {submissionId} successful, awaiting analysis results...\r\n(Depending on the image, this might take a few minutes, please be patient...)").ConfigureAwait(false);
+            await invocation.RespondAsync($"Submission {submissionId} successful, awaiting analysis results...\r\n(Depending on the image, this might take a few minutes, please be patient...)").ConfigureAwait(false);
 
             // Wait for the astrometry server to complete the plate solving process
             const int waitDelta = 5000;         // 5s
@@ -53,7 +53,7 @@ namespace AstroBot.Commands
             var finished = false;
             while (curWait <= maxWait)
             {
-                var status = novaAstrometryClient.GetSubmissionStatus(submissionId);
+                var status = await novaAstrometryClient.GetSubmissionStatusAsync(submissionId).ConfigureAwait(false);
 
                 if (status.JobID != null)
                     jobId = status.JobID.Value;
@@ -70,33 +70,31 @@ namespace AstroBot.Commands
 
             if (!finished)
             {
-                await receivedMessage.Channel.SendMessageAsync($"{formatter.Bold(formatter.Underline("WARNING:"))}\r\nAstrometry could not finish the image analysis within {maxWait / 1000 / 60} minutes for submission {formatter.Bold(submissionId)}.Please check the results yourself on the provided submission link:\r\n http://nova.astrometry.net/status/{submissionId}").ConfigureAwait(false);
-                return true;
+                await invocation.RespondAsync($"{formatter.Bold(formatter.Underline("WARNING:"))}\r\nAstrometry could not finish the image analysis within {maxWait / 1000 / 60} minutes for submission {formatter.Bold(submissionId)}.Please check the results yourself on the provided submission link:\r\n http://nova.astrometry.net/status/{submissionId}").ConfigureAwait(false);
+                return;
             }
 
-            var calibrationData = novaAstrometryClient.GetCalibrationFromFinishedJob(jobId);
-            var embeddedMessage = await CreateEmbeddedMessageAsync(receivedMessage, submissionId, calibrationData).ConfigureAwait(false);
+            var calibrationData = await novaAstrometryClient.GetCalibrationFromFinishedJobAsync(jobId).ConfigureAwait(false);
+            var embeddedMessage = await CreateEmbeddedMessageAsync(invocation, submissionId, calibrationData).ConfigureAwait(false);
 
-            await receivedMessage.Channel.SendMessageAsync(embeddedMessage).ConfigureAwait(false);
-            var annotatedImage = novaAstrometryClient.DownloadAnnotatedImage(jobId);
+            await invocation.RespondAsync(new SendMessage(embeddedMessage)).ConfigureAwait(false);
+            var annotatedImage = await novaAstrometryClient.DownloadAnnotatedImageAsync(jobId).ConfigureAwait(false);
 
-            await receivedMessage.Channel.SendMessageAsync(new SendMessage(string.Empty, new List<Attachment> { new SendAttachment
+            await invocation.RespondAsync(new SendMessage(string.Empty, new List<Attachment> { new SendAttachment
                 {
                     Name = $"annotated_{calibrationData.FileName}",
                     Content = annotatedImage
                 }
             })).ConfigureAwait(false);
 
-            await receivedMessage.Channel.SendMessageAsync($"Link to astrometry job result: http://nova.astrometry.net/status/{submissionId}").ConfigureAwait(false);
-
-            return true;
+            await invocation.RespondAsync($"Link to astrometry job result: http://nova.astrometry.net/status/{submissionId}").ConfigureAwait(false);
         }
 
-        private static async Task<EmbeddedMessage> CreateEmbeddedMessageAsync(ReceivedMessage receivedMessage, string submissionId, AstrometrySubmissionResult calibrationData)
+        private static async Task<EmbeddedMessage> CreateEmbeddedMessageAsync(SlashCommandInvocation invocation, string submissionId, AstrometrySubmissionResult calibrationData)
         {
             var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
 
-            await receivedMessage.Channel.SendMessageAsync($"Image analysis for submission {submissionId} completed. Here is the result:").ConfigureAwait(false);
+            await invocation.RespondAsync($"Image analysis for submission {submissionId} completed. Here is the result:").ConfigureAwait(false);
 
             var embeddedMessage = new EmbeddedMessage
             {

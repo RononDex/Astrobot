@@ -11,8 +11,11 @@ namespace AstroBot.CronTasks
 
         public override async Task ExecuteAsync()
         {
-            var newCacheLaunches = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunches(10);
-            var newCacheEvents = LaunchLibrary.LaunchLibraryClient.GetUpcomingEvents(10);
+            // Both requests run concurrently
+            var launchesTask = LaunchLibrary.LaunchLibraryClient.GetUpcomingLaunchesAsync(10);
+            var eventsTask = LaunchLibrary.LaunchLibraryClient.GetUpcomingEventsAsync(10);
+            var newCacheLaunches = await launchesTask.ConfigureAwait(false);
+            var newCacheEvents = await eventsTask.ConfigureAwait(false);
 
             Globals.UpcomingRocketLaunchesCache = newCacheLaunches ?? Globals.UpcomingRocketLaunchesCache;
             Globals.UpcomingEventsCache = newCacheEvents ?? Globals.UpcomingEventsCache;

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using AstroBot.Config;
 using AstroBot.LaunchLibrary;
 using AwesomeChatBot.ApiWrapper;
 using Microsoft.Extensions.Configuration;
@@ -37,11 +36,19 @@ namespace AstroBot
         /// </summary>
         public static AwesomeChatBot.AwesomeChatBot? BotFramework { get; internal set; }
 
+        /// <summary>
+        /// The (only) chat api wrapper, slash command invocations don't carry their own
+        /// </summary>
+        public static ApiWrapper ApiWrapper => BotFramework!.ApiWrappers[0];
+
+        /// <summary>
+        /// Shared HttpClient, one instance for the whole app to avoid socket exhaustion
+        /// </summary>
+        public static System.Net.Http.HttpClient HttpClient { get; } = new System.Net.Http.HttpClient();
+
         public static IReadOnlyList<Launch>? UpcomingRocketLaunchesCache { get; internal set; }
 
         public static IReadOnlyList<Event>? UpcomingEventsCache { get; internal set; }
-
-        public static Root? SmallTalkReponsesConfig { get; internal set; }
 
         public static List<string> GloballyBannedUsers { get; set; } = new List<string>();
 
@@ -68,13 +75,9 @@ namespace AstroBot
             configuration.GetSection("AwesomeChatBotSettings").Bind(awesomeChatbotSettings);
             AwesomeChatBotSettings = awesomeChatbotSettings;
 
-
-            SmallTalkReponsesConfig = JsonConvert.DeserializeObject<Root>(File.ReadAllText("smallTalkConfig.json"));
-            Console.WriteLine($"Loaded {SmallTalkReponsesConfig.SmallTalkResponses.Count} small talk responses");
-
             // Create logger factory
-            LoggerFactory = new LoggerFactory();
-            LoggerFactory.AddNLog();
+            // Trace, so nlog.config stays the only place that filters log levels
+            LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Trace).AddNLog());
         }
 
         public static void UpdateBanCache(ApiWrapper wrapper)

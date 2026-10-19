@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace AstroBot.Astrometry.Nova
@@ -33,32 +33,18 @@ namespace AstroBot.Astrometry.Nova
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public string Login()
+        public async Task<string> LoginAsync()
         {
             Log<AstroBotController>.Info("Login into Astrometry...");
 
             // Setup json payload
             var json = new { apikey = ApiKey };
 
-            var webRequest = (HttpWebRequest)WebRequest.Create("http://nova.astrometry.net/api/login");
-            webRequest.ContentType = "application/x-www-form-urlencoded";
-            webRequest.Method = "POST";
-
             // Send the json payload
-            using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
-            {
-                streamWriter.Write(string.Format("request-json={0}", WebUtility.UrlEncode(JsonConvert.SerializeObject(json))));
-                streamWriter.Flush();
-            }
-
-            var response = (HttpWebResponse)webRequest.GetResponse();
-
-            // Get answer from server
-            string text;
-            using (var sr = new StreamReader(response.GetResponseStream()))
-            {
-                text = sr.ReadToEnd();
-            }
+            var content = new FormUrlEncodedContent(new Dictionary<string, string> { ["request-json"] = JsonConvert.SerializeObject(json) });
+            using var response = await Globals.HttpClient.PostAsync("http://nova.astrometry.net/api/login", content).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            var text = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             dynamic jsonResult = JsonConvert.DeserializeObject(text);
             if (jsonResult.status != "success")
@@ -76,12 +62,12 @@ namespace AstroBot.Astrometry.Nova
         /// <param name="fileName"></param>
         /// <param name="sessionID"></param>
         /// <returns></returns>
-        public string UploadFile(byte[] file, string fileName, string sessionID)
+        public async Task<string> UploadFileAsync(byte[] file, string fileName, string sessionID)
         {
             Log<AstroBotController>.Info($"Submitting a file to astrometry (SessionID: {sessionID}, File: {fileName})");
 
             // Get answer from server
-            string text = UploadFile(sessionID, file, fileName);
+            string text = await PostFileAsync(sessionID, file, fileName).ConfigureAwait(false);
 
             dynamic jsonResult = JsonConvert.DeserializeObject(text);
             if (jsonResult.status != "success")
@@ -97,19 +83,11 @@ namespace AstroBot.Astrometry.Nova
         /// </summary>
         /// <param name="submissionID"></param>
         /// <returns></returns>
-        public AstrometrySubmissionStatus GetSubmissionStatus(string submissionID)
+        public async Task<AstrometrySubmissionStatus> GetSubmissionStatusAsync(string submissionID)
         {
             Log<AstroBotController>.Info($"Getting submission status from astrometry for submission {submissionID}");
 
-            var webRequest = (HttpWebRequest)WebRequest.Create(string.Format("http://nova.astrometry.net/api/submissions/{0}", submissionID));
-            var response = (HttpWebResponse)webRequest.GetResponse();
-
-            // Get answer from server
-            string text;
-            using (var sr = new StreamReader(response.GetResponseStream()))
-            {
-                text = sr.ReadToEnd();
-            }
+            var text = await Globals.HttpClient.GetStringAsync($"http://nova.astrometry.net/api/submissions/{submissionID}").ConfigureAwait(false);
 
             dynamic jsonResult = JsonConvert.DeserializeObject(text);
             var status = new AstrometrySubmissionStatus();
@@ -135,13 +113,10 @@ namespace AstroBot.Astrometry.Nova
 
 
         /// <summary>
-        /// Query SIMBAD with the given TAP query
+        /// Posts the file to the upload endpoint, returns the raw response
         /// </summary>
-        /// <param name="simbadTAPQuery"></param>
-        /// <returns></returns>
-        public string UploadFile(string sessionID, byte[] file, string fileName)
+        private static async Task<string> PostFileAsync(string sessionID, byte[] file, string fileName)
         {
-            var client = new HttpClient();
             var url = "http://nova.astrometry.net/api/upload";
 
             // Setup json payload
@@ -151,10 +126,8 @@ namespace AstroBot.Astrometry.Nova
             content.Add(new ByteArrayContent(file, 0, file.Length), "file", fileName);
             content.Add(new StringContent(JsonConvert.SerializeObject(json)), "request-json");
 
-            var response = client.PostAsync(url, content).Result;
-            var text = response.Content.ReadAsStringAsync().Result;
-
-            return text;
+            using var response = await Globals.HttpClient.PostAsync(url, content).ConfigureAwait(false);
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -162,19 +135,11 @@ namespace AstroBot.Astrometry.Nova
         /// </summary>
         /// <param name="jobID"></param>
         /// <returns></returns>
-        public AstrometrySubmissionResult GetCalibrationFromFinishedJob(int jobID)
+        public async Task<AstrometrySubmissionResult> GetCalibrationFromFinishedJobAsync(int jobID)
         {
             Log<AstroBotController>.Info($"Getting job result from astrometry for job {jobID}");
 
-            var webRequest = (HttpWebRequest)WebRequest.Create($"http://nova.astrometry.net/api/jobs/{jobID}/info/");
-            var response = (HttpWebResponse)webRequest.GetResponse();
-
-            // Get answer from server
-            string text;
-            using (var sr = new StreamReader(response.GetResponseStream()))
-            {
-                text = sr.ReadToEnd();
-            }
+            var text = await Globals.HttpClient.GetStringAsync($"http://nova.astrometry.net/api/jobs/{jobID}/info/").ConfigureAwait(false);
 
             dynamic jsonResult = JsonConvert.DeserializeObject(text);
             var result = new AstrometrySubmissionResult();
@@ -212,10 +177,9 @@ namespace AstroBot.Astrometry.Nova
         /// </summary>
         /// <param name="jobID"></param>
         /// <returns></returns>
-        public byte[] DownloadAnnotatedImage(int jobID)
+        public Task<byte[]> DownloadAnnotatedImageAsync(int jobID)
         {
-            var wc = new WebClient();
-            return wc.DownloadData(GetAnnotatedImageURL(jobID));
+            return Globals.HttpClient.GetByteArrayAsync(GetAnnotatedImageURL(jobID));
         }
 
         /// <summary>

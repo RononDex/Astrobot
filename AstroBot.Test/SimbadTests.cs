@@ -1,4 +1,6 @@
+using System;
 using System.IO;
+using System.Threading.Tasks;
 using AstroBot.Simbad;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,11 +12,12 @@ namespace AstroBot.Test
         [TestInitialize]
         public void Setup()
         {
-            Directory.SetCurrentDirectory("../../../../AstroBot/bin/Debug/netcoreapp3.1/");
+            // The Simbad/Queries files are copied next to the test assembly
+            Directory.SetCurrentDirectory(AppContext.BaseDirectory);
         }
 
         [TestMethod]
-        public void TestBasicTapQuery()
+        public async Task TestBasicTapQuery()
         {
             var simbadClient = new SimbadClient();
             var testQuery = @"
@@ -35,24 +38,38 @@ namespace AstroBot.Test
                     AND CONTAINS(POINT('ICRS', RA, DEC), CIRCLE('ICRS', 10, 5, 5)) = 1
                 ORDER BY ""Name""; ";
 
-            var result = simbadClient.QuerySimbad(new SimbadTAPQuery(testQuery));
+            var result = await simbadClient.QuerySimbadAsync(new SimbadTAPQuery(testQuery));
+            Assert.IsTrue(result.ResultDataSet.Count > 0);
         }
 
         [TestMethod]
-        public void TestFindObjectByName()
+        public async Task TestFindObjectByName()
         {
             var objName = "M31";
             var simbadClient = new SimbadClient();
-            var foundObject = simbadClient.FindObjectByName(objName);
+            var foundObject = await simbadClient.FindObjectByNameAsync(objName);
+            Assert.IsNotNull(foundObject);
         }
 
         [TestMethod]
-        public void TestQueryAround()
+        public async Task TestConcurrentQueries()
         {
             var simbadClient = new SimbadClient();
-            var objects = simbadClient.QueryAround(
+            var found = await Task.WhenAll(
+                simbadClient.FindObjectByNameAsync("M31"),
+                simbadClient.FindObjectByNameAsync("M42"),
+                simbadClient.FindObjectByNameAsync("M51"));
+            CollectionAssert.AllItemsAreNotNull(found);
+        }
+
+        [TestMethod]
+        public async Task TestQueryAround()
+        {
+            var simbadClient = new SimbadClient();
+            var objects = await simbadClient.QueryAroundAsync(
                 new Objects.RaDecCoordinate(rightAscension: 20, declination: 10),
                 radiusInDegrees: 1.5f);
+            Assert.IsTrue(objects.Count > 0);
         }
     }
 }
