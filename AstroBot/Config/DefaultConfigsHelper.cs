@@ -9,15 +9,11 @@ namespace AstroBot.Config
     {
         internal static IReadOnlyList<ConfigValue> DefaultServerConfig => new List<ConfigValue>
         {
-            new ConfigValue { Key = "GreetNewUsersChannel", Value = null },
-            new ConfigValue { Key = "GreetNewUsers", Value = "false" },
-            new ConfigValue { Key = "GreetNewUsersMessage", Value = "Welcome @UserMention" },
             new ConfigValue { Key = "UserSelfAssignableRoles", Value = "" },
             new ConfigValue { Key = "RocketLaunchesNewsEnabled", Value = "false" },
             new ConfigValue { Key = "RocketLaunchesNewsChannel", Value = "news" },
             new ConfigValue { Key = "RocketLaunchesIntermediateTagRole", Value = "LaunchNotify" },
             new ConfigValue { Key = "RocketLaunchesIntermediateTagRoleEvents", Value = "SpaceEventsNotify" },
-            new ConfigValue { Key = "LogChannel", Value = "bot-log" },
         };
 
         /// <summary>

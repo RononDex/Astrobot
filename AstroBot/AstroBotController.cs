@@ -46,9 +46,7 @@ namespace AstroBot
             };
 
             // Register events
-            botFramework.NewUserJoinedServer += Events.UserServerEvents.UserJoinedServerAsync;
             botFramework.ServerAvailable += Events.ServerEvents.ServerAvailableAsync;
-            botFramework.MessageDeleted += Events.ServerEvents.MessageDeletedAsync;
 
             // Register CronJobs
             CronTaskManager.Register(new UpdateLaunchLibraryCache());
@@ -97,7 +95,8 @@ namespace AstroBot
             var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", "");
 
             // Setup bot framework
-            var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory, GatewayIntents.All);
+            // No privileged intents, so nothing has to be enabled in the discord developer portal
+            var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory, GatewayIntents.AllUnprivileged);
             var wrappers = new List<ApiWrapper> { discordWrapper };
             BotFramework = new AwesomeChatBot.AwesomeChatBot(wrappers, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
 

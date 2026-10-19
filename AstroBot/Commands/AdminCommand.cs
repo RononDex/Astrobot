@@ -131,7 +131,6 @@ namespace AstroBot.Commands
         {
             switch (key.ToLower())
             {
-                case "greetnewusers":
                 case "rocketlaunchesnewsenabled":
                     return bool.TryParse(value, out _);
                 default:
