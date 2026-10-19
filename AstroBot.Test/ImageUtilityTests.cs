@@ -19,18 +19,6 @@ namespace AstroBot.Test
         }
 
         [TestMethod]
-        public void TestMergeTogether()
-        {
-            var merged = ImageUtility.MergeTogether(CreateGif(200, 300, 200), CreateGif(100, 250, 300));
-
-            Assert.IsNotNull(merged);
-            merged.Position = 0;
-            using var result = Image.Load<Rgba32>(merged);
-            Assert.AreEqual(250, result.Width);
-            Assert.AreEqual(200, result.Height);
-        }
-
-        [TestMethod]
         public void TestMakeGrayscaleFromRGB()
         {
             var gray = ImageUtility.MakeGrayscaleFromRGB(CreateGif(200, 300, 200));

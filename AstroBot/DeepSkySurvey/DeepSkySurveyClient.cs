@@ -41,37 +41,5 @@ namespace AstroBot.DeepSkySurvey
                 }
             }
         }
-
-        public static async Task<byte[]?> GetColorImageAsync(float ra, float dec, string size = "60", string mimetype = "download-gif")
-        {
-            // Download both plates concurrently
-            var redTask = Globals.HttpClient.GetByteArrayAsync($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra.ToString())}&dec={HttpUtility.UrlEncode(dec.ToString())}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey=DSS2-red&equinox=J2000&statsmode=VO");
-            var blueTask = Globals.HttpClient.GetByteArrayAsync($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra.ToString())}&dec={HttpUtility.UrlEncode(dec.ToString())}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey=DSS2-blue&equinox=J2000&statsmode=VO");
-            var redData = await redTask.ConfigureAwait(false);
-            var blueData = await blueTask.ConfigureAwait(false);
-
-            using (var redStream = new MemoryStream(redData))
-            {
-                using (var blueStream = new MemoryStream(blueData))
-                {
-                    var newImage = Utilities.ImageUtility.MergeTogether(redStream, blueStream);
-                    if (newImage == null)
-                        return null;
-
-                    newImage.Position = 0;
-
-                    var buffer = new byte[16 * 1024];
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        int read;
-                        while ((read = newImage.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            ms.Write(buffer, 0, read);
-                        }
-                        return ms.ToArray();
-                    }
-                }
-            }
-        }
     }
 }

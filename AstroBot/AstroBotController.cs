@@ -30,7 +30,7 @@ namespace AstroBot
             botFramework.RegisterCommand(new Commands.AstrometryCommand());
             botFramework.RegisterCommand(new Commands.SimbadCommand());
             botFramework.RegisterCommand(new Commands.AdminCommand());
-            botFramework.RegisterCommand(new Commands.DssCommand());
+            botFramework.RegisterCommand(new Commands.SkySurveyCommand());
             botFramework.RegisterCommandHandler(new AwesomeChatBot.Commands.Handlers.RegexCommandHandler());
 
             // Slash commands don't go through the regex handlers, so ValidateUserBanCommand doesn't cover them
