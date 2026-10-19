@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using AstroBot.Objects;
+using AstroBot.SkySurveys;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AstroBot.Test
@@ -9,35 +10,44 @@ namespace AstroBot.Test
     public class SkySurveyCommandTests
     {
         [TestMethod]
-        [DataRow("how does M31 look like?", "ObjectName", "M31", "")]
-        [DataRow("how does M31 look like in color?", "ObjectNameColor", "M31", "")]
-        [DataRow("how does M31 look like in infrared?", "ObjectNameIr", "M31", "")]
-        [DataRow("how does M42 look in h-alpha?", "ObjectNameNarrowband", "M42", "h-alpha")]
-        [DataRow("what does NGC 7000 look like in narrowband", "ObjectNameNarrowband", "NGC 7000", "narrowband")]
-        public void TestRegexPicksTheRightBand(string message, string group, string objectName, string band)
+        [DataRow("how does M31 look like?", "M31", SkySurveyBand.Color)]
+        [DataRow("how does M31 look like in colour?", "M31", SkySurveyBand.Color)]
+        [DataRow("how does M31 look like in ir?", "M31", SkySurveyBand.Infrared)]
+        [DataRow("how does M31 look like in infrared?", "M31", SkySurveyBand.Infrared)]
+        [DataRow("how does M42 look in h-alpha?", "M42", SkySurveyBand.Halpha)]
+        [DataRow("what does NGC 7000 look like in narrowband", "NGC 7000", SkySurveyBand.Narrowband)]
+        public void TestRegexPicksTheRightBand(string message, string objectName, SkySurveyBand band)
         {
             // Same as the regex handler: the first matching regex wins
             var match = new Commands.SkySurveyCommand().Regex
                 .Select(r => new Regex(r, RegexOptions.IgnoreCase).Match(message))
                 .First(m => m.Success);
 
-            Assert.AreEqual(objectName, match.Groups[group].Value);
-            Assert.AreEqual(band, match.Groups["Band"].Value);
+            Assert.AreEqual(objectName, match.Groups["ObjectName"].Value);
+            Assert.AreEqual(band, Commands.SkySurveyCommand.ParseBand(match.Groups["Band"].Value));
         }
-    
+
         [TestMethod]
-        [DataRow(null, 41.27, SkySurvey.Dss)]
-        [DataRow("color", 41.27, SkySurvey.Dss)]
-        [DataRow("halpha", -15, SkySurvey.Nsns)]
-        [DataRow("narrowband", 41.27, SkySurvey.Nsns)]
-        [DataRow("red", 41.27, SkySurvey.Dss)]
-        [DataRow("infrared", 41.27, SkySurvey.Dss)]
-        [DataRow(null, -59.87, SkySurvey.Dss)]
-        [DataRow("oiii", -59.87, SkySurvey.Dss)]
-        [DataRow("narrowband", -59.87, SkySurvey.Dss)]
-        public void TestGetSkySurvey(string band, double declination, SkySurvey expected)
+        public void TestAllBandChoicesCanBeParsed()
         {
-            Assert.AreEqual(expected, Commands.SkySurveyCommand.GetSkySurvey(band, declination));
+            var choices = new Commands.SkySurveyCommand().Options.Single(o => o.Name == "band").Choices!;
+
+            CollectionAssert.AreEquivalent(
+                System.Enum.GetValues<SkySurveyBand>(),
+                choices.Select(c => Commands.SkySurveyCommand.ParseBand((string)c.Value)).ToArray());
+        }
+
+        [TestMethod]
+        [DataRow(SkySurveyBand.Color, 41.27, SkySurvey.Dss)]
+        [DataRow(SkySurveyBand.Red, 41.27, SkySurvey.Dss)]
+        [DataRow(SkySurveyBand.Infrared, 41.27, SkySurvey.Dss)]
+        [DataRow(SkySurveyBand.Halpha, -15, SkySurvey.Nsns)]
+        [DataRow(SkySurveyBand.Narrowband, 41.27, SkySurvey.Nsns)]
+        [DataRow(SkySurveyBand.Oiii, -59.87, SkySurvey.Dss)]
+        [DataRow(SkySurveyBand.Narrowband, -59.87, SkySurvey.Dss)]
+        public void TestGetSkySurvey(SkySurveyBand band, double declination, SkySurvey expected)
+        {
+            Assert.AreEqual(expected, SkySurveyService.GetSkySurvey(band, declination));
         }
     }
 }
