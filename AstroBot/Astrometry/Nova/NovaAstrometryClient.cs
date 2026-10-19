@@ -9,7 +9,7 @@ namespace AstroBot.Astrometry.Nova
 {
     class NovaAstrometryClient
     {
-        private static string _apiKey;
+        private static string? _apiKey;
 
         /// <summary>
         /// Cache the api key from the file to reduce I/O
@@ -46,7 +46,7 @@ namespace AstroBot.Astrometry.Nova
             response.EnsureSuccessStatusCode();
             var text = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            dynamic jsonResult = JsonConvert.DeserializeObject(text);
+            dynamic jsonResult = ParseJson(text);
             if (jsonResult.status != "success")
                 throw new Exception("Login was refused by Astrometry API");
 
@@ -69,7 +69,7 @@ namespace AstroBot.Astrometry.Nova
             // Get answer from server
             string text = await PostFileAsync(sessionID, file, fileName).ConfigureAwait(false);
 
-            dynamic jsonResult = JsonConvert.DeserializeObject(text);
+            dynamic jsonResult = ParseJson(text);
             if (jsonResult.status != "success")
                 throw new Exception("Submission of your file to Astrometry failed.");
 
@@ -89,14 +89,12 @@ namespace AstroBot.Astrometry.Nova
 
             var text = await Globals.HttpClient.GetStringAsync($"http://nova.astrometry.net/api/submissions/{submissionID}").ConfigureAwait(false);
 
-            dynamic jsonResult = JsonConvert.DeserializeObject(text);
-            var status = new AstrometrySubmissionStatus();
+            dynamic jsonResult = ParseJson(text);
+            var status = new AstrometrySubmissionStatus { SubmissionID = submissionID };
             if (jsonResult.processing_finished.Value != "None")
                 status.FinishTime = Convert.ToDateTime(jsonResult.processing_finished.Value);
             if (jsonResult.processing_started.Value != "None")
                 status.StartTime = Convert.ToDateTime(jsonResult.processing_started.Value);
-
-            status.SubmissionID = submissionID;
 
             if (jsonResult.jobs.Count > 0 && jsonResult.jobs[0] != null)
                 status.JobID = Convert.ToInt32(jsonResult.jobs[0]);
@@ -111,6 +109,11 @@ namespace AstroBot.Astrometry.Nova
             return status;
         }
 
+
+        private static dynamic ParseJson(string text)
+        {
+            return JsonConvert.DeserializeObject(text) ?? throw new Exception("Astrometry API returned an empty response");
+        }
 
         /// <summary>
         /// Posts the file to the upload endpoint, returns the raw response
@@ -141,8 +144,7 @@ namespace AstroBot.Astrometry.Nova
 
             var text = await Globals.HttpClient.GetStringAsync($"http://nova.astrometry.net/api/jobs/{jobID}/info/").ConfigureAwait(false);
 
-            dynamic jsonResult = JsonConvert.DeserializeObject(text);
-            var result = new AstrometrySubmissionResult();
+            dynamic jsonResult = ParseJson(text);
             var calibrationData = new AstrometrySubmissionCalibrationData
             {
                 Orientation = Convert.ToSingle(jsonResult.calibration.orientation),
@@ -155,10 +157,12 @@ namespace AstroBot.Astrometry.Nova
                 WCSFileUrl = GetWCSFileUrl(jobID)
             };
 
-            result.CalibrationData = calibrationData;
-            result.JobID = jobID;
-
-            result.FileName = jsonResult.original_filename;
+            var result = new AstrometrySubmissionResult
+            {
+                CalibrationData = calibrationData,
+                JobID = jobID,
+                FileName = jsonResult.original_filename
+            };
 
             for (var i = 0; i < jsonResult.machine_tags.Count; i++)
                 result.MachineTags.Add(Convert.ToString(jsonResult.machine_tags[i]));

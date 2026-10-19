@@ -55,7 +55,7 @@ namespace AstroBot.Commands
                 return;
             }
 
-            var configStore = Globals.BotFramework!.ConfigStore;
+            var configStore = Globals.BotFramework.ConfigStore;
             var key = invocation.GetOption<string>("key");
             var value = invocation.GetOption<string>("value");
             var userId = invocation.GetOption<string>("user_id")?.Trim();
@@ -141,12 +141,12 @@ namespace AstroBot.Commands
 
         private static bool IsServerAllowedForBanning(Server server)
         {
-            return Globals.BotSettings!.GlobalUserBanServerWhiteList.Any(x => x == server.ServerID);
+            return Globals.BotSettings.GlobalUserBanServerWhiteList.Any(x => x == server.ServerID);
         }
 
         private static Task PrintServerConfigAsync(SlashCommandInvocation invocation, Server server)
         {
-            var configEntries = Globals.BotFramework!.ConfigStore.GetAllConfigValues(server).OrderBy(x => x.Key);
+            var configEntries = Globals.BotFramework.ConfigStore.GetAllConfigValues(server).OrderBy(x => x.Key);
             var configTable = "";
 
             foreach (var configEntry in configEntries)

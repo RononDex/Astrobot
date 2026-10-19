@@ -119,15 +119,16 @@ namespace AstroBot.Commands
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Coordinates:", coordinates, inline: true);
             AddFieldToEmbeddedMessageIfNotEmpty(embeddedMessage, "Relative Velocity:", foundObject.RelativeVelocity?.ToString(), inline: true);
 
-            var estimatedDistance = foundObject.MeasuredDistance != null
-                ? $"{foundObject.MeasuredDistance}"
+            var measuredDistance = foundObject.MeasuredDistance;
+            var estimatedDistance = measuredDistance != null
+                ? $"{measuredDistance}"
                 : null;
-            if (estimatedDistance != null)
+            if (measuredDistance != null)
             {
                 var convertedDistance = AstronomicalDistanceUnitConverter.ConvertMeasurementWithErrorTo(
-                    foundObject.MeasuredDistance,
+                    measuredDistance,
                     AstronomicalDistanceUnitType.SI);
-                if (convertedDistance.Value != foundObject.MeasuredDistance.Value)
+                if (convertedDistance.Value != measuredDistance.Value)
                 {
                     estimatedDistance += $"\r\n{convertedDistance}";
                 }
@@ -154,7 +155,7 @@ namespace AstroBot.Commands
         private static void AddFieldToEmbeddedMessageIfNotEmpty(
             EmbeddedMessage embeddedMessage,
             string title,
-            string fieldValue,
+            string? fieldValue,
             bool inline)
         {
             if (!string.IsNullOrEmpty(fieldValue))

@@ -9,15 +9,17 @@ namespace AstroBot
     {
         static void Main(string[] args)
         {
-            // Not every host console supports setting window width
-            try
+            // Only windows supports setting the console width, and not every windows console either
+            if (OperatingSystem.IsWindows())
             {
-                // Set console width
-                Console.WindowWidth = 190;
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Your terminal / console does not support setting window width!");
+                try
+                {
+                    Console.WindowWidth = 190;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Your terminal / console does not support setting window width!");
+                }
             }
 
             // Register a global exception handler
@@ -33,13 +35,13 @@ namespace AstroBot
         /// <returns></returns>
         public Task MainAsync()
         {
-            LogManager.LoadConfiguration("nlog.config");
+            LogManager.Setup().LoadConfigurationFromFile("nlog.config");
 
-            LogManager.GetLogger(GetType().FullName).Info("---------------------------------------------------------");
-            LogManager.GetLogger(GetType().FullName).Info("----------------- Launching Astro bot -------------------");
-            LogManager.GetLogger(GetType().FullName).Info("---------------------------------------------------------");
-            LogManager.GetLogger(GetType().FullName).Info("");
-            LogManager.GetLogger(GetType().FullName).Info("NLog logging system loaded");
+            LogManager.GetCurrentClassLogger().Info("---------------------------------------------------------");
+            LogManager.GetCurrentClassLogger().Info("----------------- Launching Astro bot -------------------");
+            LogManager.GetCurrentClassLogger().Info("---------------------------------------------------------");
+            LogManager.GetCurrentClassLogger().Info("");
+            LogManager.GetCurrentClassLogger().Info("NLog logging system loaded");
 
             // Initialize globals
             Globals.InitGlobals();

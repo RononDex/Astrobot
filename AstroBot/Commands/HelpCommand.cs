@@ -24,19 +24,18 @@ namespace AstroBot.Commands
 
         public async Task ExecuteSlashCommandAsync(SlashCommandInvocation invocation)
         {
-            var ass = Assembly.GetEntryAssembly();
             var formatter = Globals.ApiWrapper.MessageFormatter;
 
             await invocation.RespondAsync("Following commands are available in this server:").ConfigureAwait(false);
-            var configStore = Globals.BotFramework!.ConfigStore;
+            var configStore = Globals.BotFramework.ConfigStore;
             var context = new IConfigurationDependency?[] { invocation.Channel?.ParentServer };
             var message = "";
 
-            foreach (TypeInfo ti in ass.DefinedTypes)
+            foreach (TypeInfo ti in typeof(HelpCommand).Assembly.DefinedTypes)
             {
                 if (ti.ImplementedInterfaces.Contains(typeof(ICommandDescription)))
                 {
-                    var command = ass.CreateInstance(ti.FullName) as ICommandDescription;
+                    var command = Activator.CreateInstance(ti) as ICommandDescription;
 
                     // Only list slash commands
                     if (command is AwesomeChatBot.Commands.Command && command is ISlashCommand slashCommand)

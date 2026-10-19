@@ -34,7 +34,7 @@ namespace AstroBot.LaunchLibrary
                 var requestUrl = $"{ApiUrl}launch/upcoming/?mode=detailed&format=json&limit={limit}";
                 var text = await GetAsync(requestUrl).ConfigureAwait(false);
 
-                var result = JsonConvert.DeserializeObject<RootLaunches>(text);
+                var result = JsonConvert.DeserializeObject<RootLaunches>(text) ?? throw new Exception("LaunchLibrary returned an empty response");
                 logger.Log(LogLevel.Information, $"Found {result.Results.Count} upcoming launches");
                 return result.Results.OrderBy(x => x.Net).ToList();
             }
@@ -55,7 +55,7 @@ namespace AstroBot.LaunchLibrary
                 var requestUrl = $"{ApiUrl}event/upcoming/?mode=detailed&format=json&limit={limit}";
                 var text = await GetAsync(requestUrl).ConfigureAwait(false);
 
-                var result = JsonConvert.DeserializeObject<RootEvents>(text);
+                var result = JsonConvert.DeserializeObject<RootEvents>(text) ?? throw new Exception("LaunchLibrary returned an empty response");
                 logger.Log(LogLevel.Information, $"Found {result.Results.Count} upcoming events");
                 return result.Results.OrderBy(x => x.EventTime).ToList();
             }

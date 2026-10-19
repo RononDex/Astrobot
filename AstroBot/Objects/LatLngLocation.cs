@@ -9,7 +9,7 @@ namespace AstroBot.Objects
         /// Name of the location
         /// </summary>
         /// <value></value>
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         /// <summary>
         /// The latitude component of the coordinate

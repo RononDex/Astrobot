@@ -16,39 +16,41 @@ namespace AstroBot
     /// </summary>
     public static class Globals
     {
+        // The settings, logger factory and bot framework are set once at startup (InitGlobals / AstroBotController),
+        // before anything else runs, hence null! instead of nullable types
         /// <summary>
         /// Logger factory used to create logger instances
         /// </summary>
-        public static ILoggerFactory? LoggerFactory { get; private set; }
+        public static ILoggerFactory LoggerFactory { get; private set; } = null!;
 
         /// <summary>
         /// The settings belonging to the AwesomeChatBot framework
         /// </summary>
-        public static AwesomeChatBot.AwesomeChatBotSettings? AwesomeChatBotSettings { get; private set; }
+        public static AwesomeChatBot.AwesomeChatBotSettings AwesomeChatBotSettings { get; private set; } = null!;
 
         /// <summary>
         /// The bot wide settings
         /// </summary>
-        public static Objects.Config.BotSettings? BotSettings { get; private set; }
+        public static Objects.Config.BotSettings BotSettings { get; private set; } = null!;
 
         /// <summary>
         /// Globally stored BotFramework instance for easy access
         /// </summary>
-        public static AwesomeChatBot.AwesomeChatBot? BotFramework { get; internal set; }
+        public static AwesomeChatBot.AwesomeChatBot BotFramework { get; internal set; } = null!;
 
         /// <summary>
         /// The (only) chat api wrapper, slash command invocations don't carry their own
         /// </summary>
-        public static ApiWrapper ApiWrapper => BotFramework!.ApiWrappers[0];
+        public static ApiWrapper ApiWrapper => BotFramework.ApiWrappers[0];
 
         /// <summary>
         /// Shared HttpClient, one instance for the whole app to avoid socket exhaustion
         /// </summary>
         public static System.Net.Http.HttpClient HttpClient { get; } = new System.Net.Http.HttpClient();
 
-        public static IReadOnlyList<Launch>? UpcomingRocketLaunchesCache { get; internal set; }
+        public static IReadOnlyList<Launch> UpcomingRocketLaunchesCache { get; internal set; } = [];
 
-        public static IReadOnlyList<Event>? UpcomingEventsCache { get; internal set; }
+        public static IReadOnlyList<Event> UpcomingEventsCache { get; internal set; } = [];
 
         public static List<string> GloballyBannedUsers { get; set; } = new List<string>();
 

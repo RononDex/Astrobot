@@ -21,12 +21,12 @@ namespace AstroBot.Astrometry
         /// The RA/DEC coordinates
         /// </summary>
         /// <value></value>
-        public RaDecCoordinate Coordinates { get; set; }
+        public required RaDecCoordinate Coordinates { get; set; }
 
         /// <summary>
         /// The url to the wcs file
         /// </summary>
         /// <value></value>
-        public string WCSFileUrl { get; set; }
+        public required string WCSFileUrl { get; set; }
     }
 }

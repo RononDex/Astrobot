@@ -16,14 +16,10 @@ namespace AstroBot
     /// </summary>
     public class AstroBotController
     {
-        private AwesomeChatBot.AwesomeChatBot BotFramework { get; set; }
-
         public void Initialize()
         {
             // Initialize the DI provider, configs and bot framework
-            InitializeFramework();
-
-            var botFramework = BotFramework;
+            var botFramework = InitializeFramework();
 
             // Register commands
             botFramework.RegisterCommand(new Commands.TestCommand());
@@ -63,7 +59,7 @@ namespace AstroBot
         /// <summary>
         /// Initializes the bot framework, loads configs etc.
         /// </summary>
-        private void InitializeFramework()
+        private AwesomeChatBot.AwesomeChatBot InitializeFramework()
         {
             Log<AstroBotController>.Info("Initializing bot...");
 
@@ -76,7 +72,7 @@ namespace AstroBot
             var configuration = builder.Build();
 
             // Load settings
-            NLog.LogManager.GetLogger(GetType().FullName).Info("Reading settings...");
+            NLog.LogManager.GetCurrentClassLogger().Info("Reading settings...");
             var discordSettings = new DiscordSettings();
             configuration.GetSection("DiscordSettings").Bind(discordSettings);
 
@@ -86,11 +82,11 @@ namespace AstroBot
                 throw new ArgumentException($"The discord token file {discordSettings.DiscordTokenPath} does not exist!");
             }
 
-            NLog.LogManager.GetLogger(GetType().FullName).Info($" - DiscordSettings.TokenPath:                         {discordSettings.DiscordTokenPath}");
-            NLog.LogManager.GetLogger(GetType().FullName).Info($" - AwesomeChatBotSettings.ConfigFolderPath:           {Globals.AwesomeChatBotSettings!.ConfigFolderPath}");
-            NLog.LogManager.GetLogger(GetType().FullName).Info($" - AwesomeChatBotSettings.CommandsEnabledByDefault:   {Globals.AwesomeChatBotSettings.CommandsEnabledByDefault}");
-            NLog.LogManager.GetLogger(GetType().FullName).Info($" - BotSettings.GoogleGeoLocationTokenPath:            {Globals.BotSettings!.GoogleGeoLocationTokenPath}");
-            NLog.LogManager.GetLogger(GetType().FullName).Info($" - BotSettings.NovaAstrometryApiKeyPath:              {Globals.BotSettings.NovaAstrometryApiKeyPath}");
+            NLog.LogManager.GetCurrentClassLogger().Info($" - DiscordSettings.TokenPath:                         {discordSettings.DiscordTokenPath}");
+            NLog.LogManager.GetCurrentClassLogger().Info($" - AwesomeChatBotSettings.ConfigFolderPath:           {Globals.AwesomeChatBotSettings.ConfigFolderPath}");
+            NLog.LogManager.GetCurrentClassLogger().Info($" - AwesomeChatBotSettings.CommandsEnabledByDefault:   {Globals.AwesomeChatBotSettings.CommandsEnabledByDefault}");
+            NLog.LogManager.GetCurrentClassLogger().Info($" - BotSettings.GoogleGeoLocationTokenPath:            {Globals.BotSettings.GoogleGeoLocationTokenPath}");
+            NLog.LogManager.GetCurrentClassLogger().Info($" - BotSettings.NovaAstrometryApiKeyPath:              {Globals.BotSettings.NovaAstrometryApiKeyPath}");
 
             var discordToken = File.ReadAllText(discordSettings.DiscordTokenPath).Replace("\r", "").Replace("\n", "");
 
@@ -98,9 +94,10 @@ namespace AstroBot
             // No privileged intents, so nothing has to be enabled in the discord developer portal
             var discordWrapper = new DiscordWrapper(discordToken, Globals.LoggerFactory, GatewayIntents.AllUnprivileged);
             var wrappers = new List<ApiWrapper> { discordWrapper };
-            BotFramework = new AwesomeChatBot.AwesomeChatBot(wrappers, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
+            var botFramework = new AwesomeChatBot.AwesomeChatBot(wrappers, Globals.LoggerFactory, Globals.AwesomeChatBotSettings);
 
-            Globals.BotFramework = BotFramework;
+            Globals.BotFramework = botFramework;
+            return botFramework;
         }
     }
 }

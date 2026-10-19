@@ -43,8 +43,8 @@ namespace AstroBot.GeoLocation
 
             var text = await Globals.HttpClient.GetStringAsync($"https://maps.googleapis.com/maps/api/geocode/json?address={WebUtility.UrlEncode(address)}&key={GoogleApiKey}").ConfigureAwait(false);
 
-            dynamic? result = JsonConvert.DeserializeObject(text);
-            if (result!.results.Count == 0)
+            dynamic result = JsonConvert.DeserializeObject(text) ?? throw new Exception("Google GeoLocation API returned an empty response");
+            if (result.results.Count == 0)
                 return null;
 
             var hit = result.results[0];

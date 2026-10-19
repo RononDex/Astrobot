@@ -9,7 +9,7 @@
         /// Path to the file containing the discord token to login
         /// </summary>
         /// <value></value>
-        public string DiscordTokenPath { get; set; }
+        public string DiscordTokenPath { get; set; } = string.Empty;
 
     }
 }

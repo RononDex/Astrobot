@@ -6,7 +6,7 @@ namespace AstroBot.Astrometry
     public class AstrometrySubmissionStatus
     {
         public int? JobID { get; set; }
-        public string SubmissionID { get; set; }
+        public required string SubmissionID { get; set; }
 
         public DateTime? StartTime { get; set; }
 

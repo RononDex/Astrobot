@@ -20,7 +20,7 @@ namespace AstroBot.Simbad
         /// Internal cache for lookup of long type names from short type names
         /// </summary>
         /// <value></value>
-        internal static IReadOnlyDictionary<string, string> ShortTypeNameCache { get; private set; }
+        internal static IReadOnlyDictionary<string, string> ShortTypeNameCache { get; private set; } = new Dictionary<string, string>();
 
         const string TAP_QUERY_ENDPOINT = "https://simbad.u-strasbg.fr/simbad/sim-tap/sync";
 
@@ -54,9 +54,9 @@ namespace AstroBot.Simbad
 
             foreach (var type in result.ResultDataSet)
             {
-                if (!cache.ContainsKey((string)type["ShortName"]))
+                if (type["ShortName"] is string shortName && type["LongName"] is string longName)
                 {
-                    cache.Add((string)type["ShortName"], (string)type["LongName"]);
+                    cache.TryAdd(shortName, longName);
                 }
             }
 
@@ -98,7 +98,7 @@ namespace AstroBot.Simbad
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<AstronomicalObject> FindObjectByNameAsync(string name)
+        public async Task<AstronomicalObject?> FindObjectByNameAsync(string name)
         {
             var query = File.ReadAllText("Simbad/Queries/FindByName.adql");
             query = query.Replace("{{name}}", name);

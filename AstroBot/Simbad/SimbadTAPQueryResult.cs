@@ -11,7 +11,7 @@ namespace AstroBot.Simbad
     /// </summary>
     public class SimbadTAPQueryResult
     {
-        public IReadOnlyList<Dictionary<string, object>> ResultDataSet { get; private set; } = null!;
+        public IReadOnlyList<Dictionary<string, object?>> ResultDataSet { get; private set; } = null!;
 
         /// <summary>
         /// Initializes the result from the result of a TAP query
@@ -30,17 +30,17 @@ namespace AstroBot.Simbad
         private void ParseResultIntoDataset(string tapResultText)
         {
             var parsed = JObject.Parse(tapResultText);
-            var header = parsed["metadata"];
+            var header = parsed["metadata"]!;
             var columnNames = header.Select(x => (string)x["name"]!).ToArray();
 
-            var resultDataSet = new List<Dictionary<string, object>>();
+            var resultDataSet = new List<Dictionary<string, object?>>();
 
             foreach (var row in parsed["data"]!)
             {
-                var dictionaryRow = new Dictionary<string, object>();
+                var dictionaryRow = new Dictionary<string, object?>();
                 for (var i = 0; i < row.Count(); i++)
                 {
-                    dictionaryRow.Add(columnNames[i], (row[i] as JValue).Value!);
+                    dictionaryRow.Add(columnNames[i], (row[i] as JValue)?.Value);
                 }
 
                 resultDataSet.Add(dictionaryRow);
@@ -76,7 +76,7 @@ namespace AstroBot.Simbad
         /// <param name="columnNames"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        private static Dictionary<string, object?> ParseProperties(string[] columnNames, object[] values)
+        private static Dictionary<string, object?> ParseProperties(string[] columnNames, object?[] values)
         {
             var properties = new Dictionary<string, object?>();
 

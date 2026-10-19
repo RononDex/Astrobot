@@ -4,13 +4,13 @@ namespace AstroBot.Astrometry
 {
     public class AstrometrySubmissionResult
     {
-        public AstrometrySubmissionCalibrationData CalibrationData { get; set; }
+        public required AstrometrySubmissionCalibrationData CalibrationData { get; set; }
 
         public List<string> MachineTags { get; set; } = new List<string>();
 
         public List<string> Tags { get; set; } = new List<string>();
 
-        public string FileName { get; set; }
+        public required string FileName { get; set; }
 
         public List<string> ObjectsInfField { get; set; } = new List<string>();
 

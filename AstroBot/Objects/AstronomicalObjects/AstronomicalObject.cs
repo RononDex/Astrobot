@@ -13,18 +13,18 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// Internal storage of properties
         /// </summary>
         /// <value></value>
-        private Dictionary<string, object> Properties { get; set; }
+        private Dictionary<string, object?> Properties { get; set; }
 
         /// <summary>
         /// public accessor for the properties
         /// </summary>
-        public object this[string key] => Properties[key];
+        public object? this[string key] => Properties[key];
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="properties">Properties of the object</param>
-        public AstronomicalObject(Dictionary<string, object> properties)
+        public AstronomicalObject(Dictionary<string, object?> properties)
         {
             Properties = properties;
         }
@@ -34,9 +34,9 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public T Get<T>(string property)
+        public T? Get<T>(string property)
         {
-            return Properties.ContainsKey(property) ? (T)Convert.ChangeType(this[property], typeof(T)) : default;
+            return Properties.ContainsKey(property) ? (T?)Convert.ChangeType(this[property], typeof(T)) : default;
         }
 
         /// <summary>
@@ -48,58 +48,53 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// The main name of the object
         /// </summary>
         /// <returns></returns>
-        public string Name => Get<string>("Name");
+        public string Name => Get<string>("Name") ?? string.Empty;
 
         /// <summary>
         /// The type of the object
         /// </summary>
         /// <returns></returns>
-        public string Type => Get<string>("Type");
+        public string? Type => Get<string>("Type");
 
         /// <summary>
         /// A short code describing the type
         /// </summary>
         /// <returns></returns>
-        public string ShortType => Get<string>("TypeShort");
+        public string? ShortType => Get<string>("TypeShort");
 
         /// <summary>
         /// Other types of the object
         /// </summary>
         /// <typeparam name="string"></typeparam>
         /// <returns></returns>
-        public List<string> OtherTypes => Properties.ContainsKey("OtherTypes")
-            ? Get<string>("OtherTypes")?.Split('|').ToList()
-            : null;
+        public List<string> OtherTypes => Get<string>("OtherTypes")?.Split('|').ToList() ?? [];
 
         /// <summary>
         /// A list of alternative names for this object
         /// </summary>
         /// <returns></returns>
-        public List<string> OtherNames => Properties.ContainsKey("OtherNames")
-            ? Get<string>("OtherNames")?.Split('|').ToList()
-            : null;
+        public List<string> OtherNames => Get<string>("OtherNames")?.Split('|').ToList() ?? [];
 
         /// <summary>
         /// Relative velocity measurement of the object
         /// </summary>
         /// <returns></returns>
-        public MeasurementWithError RelativeVelocity => Properties.ContainsKey("RelativeVelocity") ?
+        public MeasurementWithError? RelativeVelocity => Properties.ContainsKey("RelativeVelocity") ?
             new MeasurementWithError
             {
                 Value = Get<double>("RelativeVelocity"),
-                Unit = (string.Equals(Get<string>("RelativeVelocityType").Trim(), "v", StringComparison.Ordinal)
-                        || string.Equals(Get<string>("RelativeVelocityType").Trim(), "c", StringComparison.Ordinal)) ? "km/s" : "",
+                Unit = Get<string>("RelativeVelocityType")?.Trim() is "v" or "c" ? "km/s" : "",
                 Error = Properties.ContainsKey("RelativeVelocityError") ?
                     Get<double>("RelativeVelocityError") :
                     new double?()
             }
             : null;
 
-        public MeasurementWithError MeasuredDistance => Properties.ContainsKey("Distance")
+        public MeasurementWithError? MeasuredDistance => Properties.ContainsKey("Distance")
             ? new MeasurementWithError
             {
                 Value = Get<double>("Distance"),
-                Unit = Get<string>("DistanceUnit"),
+                Unit = Get<string>("DistanceUnit") ?? "",
                 Error = Get<double>("DistanceMinusErr")
             }
             : null;
@@ -108,7 +103,7 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// Angular dimensions of the object
         /// </summary>
         /// <returns></returns>
-        public DimensionsWithAngle AngularDimensions => Properties.ContainsKey("MajorAxisDimension") ?
+        public DimensionsWithAngle? AngularDimensions => Properties.ContainsKey("MajorAxisDimension") ?
             new DimensionsWithAngle
             {
                 MajorAxis = Get<double>("MajorAxisDimension"),
@@ -121,16 +116,14 @@ namespace AstroBot.Objects.AstronomicalObjects
         /// Every astronomical object should have RA and DEC coordinates
         /// </summary>
         /// <returns></returns>
-        public RaDecCoordinate RaDecCoordinate => Properties.ContainsKey("Ra") && Properties.ContainsKey("Dec") ?
+        public RaDecCoordinate? RaDecCoordinate => Properties.ContainsKey("Ra") && Properties.ContainsKey("Dec") ?
             new RaDecCoordinate(rightAscension: Get<double>("Ra"), declination: Get<double>("Dec")) :
             null;
 
         /// <summary>
         /// The morphological type of a galaxy (null if not a galaxy)
         /// </summary>
-        public string MorphologicalType => Properties.ContainsKey("MorphologicalType")
-            ? Get<string>("MorphologicalType")
-            : null;
+        public string? MorphologicalType => Get<string>("MorphologicalType");
 
         /// <summary>
         /// A list of known fluxes of the object
