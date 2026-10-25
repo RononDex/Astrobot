@@ -10,13 +10,13 @@
 		<NoWarn>CSE0003;CC0038;IDE0008;CC0035;CC0045;CC0042;CC0076;MA0007;MA0004;RCS1090</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.13"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.13"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.13"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.13"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.13"/>
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.13"/>
-		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.13"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.14"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.14"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.14"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.14"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.14"/>
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.14"/>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.14"/>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
 		<PackageReference Include="NLog" Version="6.2.2"/>
 		<PackageReference Include="NLog.Extensions.Logging" Version="6.2.2"/>
